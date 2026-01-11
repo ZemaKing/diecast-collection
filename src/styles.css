@@ -1,0 +1,215 @@
+:root {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color-scheme: light;
+    --bg: #0b0f17;
+    --panel: #121a27;
+    --panel2: #0f1622;
+    --text: #e7eefc;
+    --muted: rgba(231, 238, 252, 0.7);
+    --border: rgba(231, 238, 252, 0.12);
+    --accent: #6fd768;
+}
+
+/* Mobile-first foundation */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+.appShell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.topHeader {
+    padding: 12px;
+    background: var(--panel2);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap; /* mobile-safe */
+}
+
+.logo {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.countPill {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Layout: mobile default = one column stacked */
+.body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    flex: 1;
+}
+
+/* Sidebar (mobile: normal flow, no sticky) */
+.sidebar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    height: fit-content;
+    position: static; /* important for mobile-first */
+}
+
+.sidebarTitle {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.fieldLabel {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 12px;
+    background: var(--accent);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    word-break: break-word;
+}
+
+/* Main */
+.main {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    min-width: 0; /* prevents grid overflow */
+}
+
+.mainTitle {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.list {
+    display: grid;
+    gap: 10px;
+}
+
+/* Cards */
+.card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.cardTitle {
+    font-weight: 700;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.cardMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.emptyState {
+    color: var(--muted);
+    padding: 20px;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+/* -----------------------------
+   Enhancements for larger screens
+-------------------------------- */
+
+/* >= 720px: slightly roomier */
+@media (min-width: 720px) {
+    .topHeader {
+        height: 56px;
+        padding: 0 16px;
+        flex-wrap: nowrap;
+    }
+
+    .countPill {
+        font-size: 13px;
+    }
+
+    .body {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .main {
+        padding: 16px;
+    }
+
+    select,
+    .btn {
+        padding: 10px 10px;
+    }
+}
+
+/* >= 900px: switch to 2-column layout */
+@media (min-width: 900px) {
+    .body {
+        grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 72px;
+    }
+}

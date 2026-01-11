@@ -1,0 +1,42 @@
+[
+  {
+    "id": "vw-golf-gti-16v-1987-altaya-gold",
+    "name": "Volkswagen Golf GTI 16V",
+    "year": 1987,
+    "brand": "Volkswagen",
+    "manufacturer": "Altaya",
+    "color": ["Gold"]
+  },
+  {
+    "id": "porsche-935-k3-1980-altaya-pink",
+    "name": "Porsche 935 K3",
+    "year": 1980,
+    "brand": "Porsche",
+    "manufacturer": "Altaya",
+    "color": ["Pink"]
+  },
+  {
+    "id": "subaru-impreza-wrc-2002-altaya-blue",
+    "name": "Subaru Impreza WRC",
+    "year": 2002,
+    "brand": "Subaru",
+    "manufacturer": "Altaya",
+    "color": ["Blue"]
+  },
+  {
+    "id": "range-rover-sport-2006-altaya-gold",
+    "name": "Range Rover Sport",
+    "year": 2006,
+    "brand": "Land Rover",
+    "manufacturer": "Altaya",
+    "color": ["Gold"]
+  },
+  {
+    "id": "lamborghini-reventon-2009-ixo-gray",
+    "name": "Lamborghini Reventón",
+    "year": 2009,
+    "brand": "Lamborghini",
+    "manufacturer": "Ixo",
+    "color": ["Gray"]
+  }
+]

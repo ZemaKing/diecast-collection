@@ -1,35 +1,136 @@
-import {useState} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {useMemo, useState} from "react";
+import rawModels from "./data/models.json";
+import type {DiecastModel} from "./types";
+import "./styles.css";
 
-function App() {
-    const [count, setCount] = useState(0)
+const models = rawModels as DiecastModel[];
 
-    return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
-    )
+function uniqSorted(values: string[]) {
+    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
 
-export default App
+function getFilterOptions(items: DiecastModel[]) {
+    return {
+        brands: uniqSorted(items.map((x) => x.brand)),
+        manufacturers: uniqSorted(items.map((x) => x.manufacturer)),
+        colors: uniqSorted(items.flatMap((x) => x.color)),
+    };
+}
+
+function ModelCard({model}: { model: DiecastModel }) {
+    return (
+        <div className="card">
+            <div className="cardTitle">{model.name}</div>
+            <div className="cardMeta">
+                <span>{model.brand}</span>
+                <span>•</span>
+                <span>{model.year}</span>
+                <span>•</span>
+                <span>{model.manufacturer}</span>
+                <span>•</span>
+                <span>{model.color.join(' - ')}</span>
+            </div>
+        </div>
+    );
+}
+
+export default function App() {
+    const [brand, setBrand] = useState<string>("All");
+    const [manufacturer, setManufacturer] = useState<string>("All");
+    const [color, setColor] = useState<string>("All");
+
+    const options = useMemo(() => getFilterOptions(models), []);
+
+    const filtered = useMemo(() => {
+        return models
+            .filter((m) => (brand === "All" ? true : m.brand === brand))
+            .filter((m) =>
+                manufacturer === "All" ? true : m.manufacturer === manufacturer
+            )
+            .filter((m) =>
+                color === "All" ? true : m.color.includes(color)
+            )
+            .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+    }, [brand, manufacturer, color]);
+
+    const clearFilters = () => {
+        setBrand("All");
+        setManufacturer("All");
+        setColor("All");
+    };
+
+    return (
+        <div className="appShell">
+            <header className="topHeader">
+                <div className="logo">Diecast Collection</div>
+                <div className="headerRight">
+                    <div className="countPill">{filtered.length} models</div>
+                </div>
+            </header>
+
+            <div className="body">
+                <aside className="sidebar">
+                    <div className="sidebarTitle">Filters</div>
+
+                    <label className="field">
+                        <span className="fieldLabel">Brand</span>
+                        <select value={brand} onChange={(e) => setBrand(e.target.value)}>
+                            <option value="All">All</option>
+                            {options.brands.map((x) => (
+                                <option key={x} value={x}>
+                                    {x}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <label className="field">
+                        <span className="fieldLabel">Manufacturer</span>
+                        <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
+                            <option value="All">All</option>
+                            {options.manufacturers.map((x) => (
+                                <option key={x} value={x}>
+                                    {x}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <label className="field">
+                        <span className="fieldLabel">Color</span>
+                        <select value={color} onChange={(e) => setColor(e.target.value)}>
+                            <option value="All">All</option>
+                            {options.colors.map((x) => (
+                                <option key={x} value={x}>
+                                    {x}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <button className="btn" onClick={clearFilters}>
+                        Clear
+                    </button>
+
+                    <div className="hint">
+                        Tip: add more models in <code>src/data/models.json</code>
+                    </div>
+                </aside>
+
+                <main className="main">
+                    <div className="mainTitle">Models</div>
+
+                    {filtered.length === 0 ? (
+                        <div className="emptyState">No models match the selected filters.</div>
+                    ) : (
+                        <div className="list">
+                            {filtered.map((m) => (
+                                <ModelCard key={m.id} model={m}/>
+                            ))}
+                        </div>
+                    )}
+                </main>
+            </div>
+        </div>
+    );
+}
