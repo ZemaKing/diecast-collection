@@ -65,7 +65,7 @@ body {
     padding: 12px;
 
     width: 100%;
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
 
     flex: 1;
@@ -238,9 +238,14 @@ select {
     }
 }
 
-/* >= 900px: switch to 2-column layout */
 @media (min-width: 1280px) {
     .list {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1440px) {
+    .list {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
