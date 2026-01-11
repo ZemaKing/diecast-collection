@@ -22,7 +22,7 @@ function ModelCard({model}: { model: DiecastModel }) {
         <div className="card">
             <div className="thumb">
                 <img
-                    src={model.imageUrl}
+                    src={model.thumbnail}
                     alt={`${model.name} (${model.year})`}
                     loading="lazy"
                     decoding="async"
