@@ -116,13 +116,6 @@ select {
     cursor: pointer;
 }
 
-.hint {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--muted);
-    word-break: break-word;
-}
-
 /* Main */
 .main {
     background: var(--panel);
@@ -139,6 +132,7 @@ select {
 
 .list {
     display: grid;
+    grid-template-columns: 1fr;
     gap: 10px;
 }
 
@@ -148,6 +142,24 @@ select {
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px;
+}
+
+.thumb {
+    min-width: 250px;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    margin-bottom: 10px;
+}
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    object-position: center;
 }
 
 .cardTitle {
@@ -176,7 +188,7 @@ select {
 -------------------------------- */
 
 /* >= 720px: slightly roomier */
-@media (min-width: 720px) {
+@media (min-width: 640px) {
     .topHeader {
         height: 56px;
         padding: 0 16px;
@@ -200,10 +212,14 @@ select {
     .btn {
         padding: 10px 10px;
     }
+
+    .list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* >= 900px: switch to 2-column layout */
-@media (min-width: 900px) {
+@media (min-width: 1024px) {
     .body {
         grid-template-columns: 280px 1fr;
     }
@@ -211,5 +227,12 @@ select {
     .sidebar {
         position: sticky;
         top: 72px;
+    }
+}
+
+/* >= 900px: switch to 2-column layout */
+@media (min-width: 1280px) {
+    .list {
+        grid-template-columns: repeat(3, 1fr);
     }
 }

@@ -20,6 +20,14 @@ function getFilterOptions(items: DiecastModel[]) {
 function ModelCard({model}: { model: DiecastModel }) {
     return (
         <div className="card">
+            <div className="thumb">
+                <img
+                    src={model.imageUrl}
+                    alt={`${model.name} (${model.year})`}
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
             <div className="cardTitle">{model.name}</div>
             <div className="cardMeta">
                 <span>{model.brand}</span>
@@ -41,17 +49,18 @@ export default function App() {
 
     const options = useMemo(() => getFilterOptions(models), []);
 
-    const filtered = useMemo(() => {
+    const filteredModels = useMemo(() => {
         return models
-            .filter((m) => (brand === "All" ? true : m.brand === brand))
-            .filter((m) =>
-                manufacturer === "All" ? true : m.manufacturer === manufacturer
-            )
-            .filter((m) =>
-                color === "All" ? true : m.color.includes(color)
-            )
-            .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
-    }, [brand, manufacturer, color]);
+            .filter((m) => brand === "All" || m.brand === brand)
+            .filter((m) => manufacturer === "All" || m.manufacturer === manufacturer)
+            .filter((m) => color === "All" || m.color.includes(color))
+            .sort(
+                (a, b) =>
+                    a.name.localeCompare(b.name, undefined, {sensitivity: "base"}) ||
+                    b.year - a.year
+            );
+    }, [models, brand, manufacturer, color]);
+
 
     const clearFilters = () => {
         setBrand("All");
@@ -64,7 +73,7 @@ export default function App() {
             <header className="topHeader">
                 <div className="logo">Diecast Collection</div>
                 <div className="headerRight">
-                    <div className="countPill">{filtered.length} models</div>
+                    <div className="countPill">{filteredModels.length} models</div>
                 </div>
             </header>
 
@@ -111,20 +120,16 @@ export default function App() {
                     <button className="btn" onClick={clearFilters}>
                         Clear
                     </button>
-
-                    <div className="hint">
-                        Tip: add more models in <code>src/data/models.json</code>
-                    </div>
                 </aside>
 
                 <main className="main">
                     <div className="mainTitle">Models</div>
 
-                    {filtered.length === 0 ? (
+                    {filteredModels.length === 0 ? (
                         <div className="emptyState">No models match the selected filters.</div>
                     ) : (
                         <div className="list">
-                            {filtered.map((m) => (
+                            {filteredModels.map((m) => (
                                 <ModelCard key={m.id} model={m}/>
                             ))}
                         </div>
