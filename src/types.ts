@@ -5,5 +5,5 @@ export type DiecastModel = {
     brand: string;
     manufacturer: string;
     color: string[];
-    scale: string;
+    imageUrl: string;
 };
