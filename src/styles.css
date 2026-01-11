@@ -21,6 +21,7 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
+    font-family: "Jost", sans-serif;
 }
 
 .appShell {
@@ -78,6 +79,13 @@ body {
     padding: 14px;
     height: fit-content;
     position: static; /* important for mobile-first */
+}
+
+.siteLogo {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    display: block;
 }
 
 .sidebarTitle {

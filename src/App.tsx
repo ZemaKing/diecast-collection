@@ -79,6 +79,12 @@ export default function App() {
 
             <div className="body">
                 <aside className="sidebar">
+                    <img
+                        src="/logo.png"
+                        alt="ZemaKing logo"
+                        className="siteLogo"
+                    />
+
                     <div className="sidebarTitle">Filters</div>
 
                     <label className="field">
