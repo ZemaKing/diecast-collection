@@ -195,6 +195,14 @@ select {
     font-style: italic;
 }
 
+.carDriverLogo {
+    width: 12px !important;
+    height: 18px !important;
+    margin-right: 6px;
+    padding: 0.5px;
+    vertical-align: middle;
+}
+
 .cardTitle {
     display: flex;
     justify-content: space-between;
