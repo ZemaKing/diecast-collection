@@ -171,6 +171,8 @@ select {
 }
 
 .cardTitle {
+    display: flex;
+    justify-content: space-between;
     font-weight: 700;
     margin-bottom: 6px;
     word-break: break-word;

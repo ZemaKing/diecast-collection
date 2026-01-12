@@ -2,6 +2,8 @@ import {useMemo, useState} from "react";
 import rawModels from "./data/models.json";
 import type {DiecastModel} from "./types";
 import "./styles.css";
+import {ColorCircle} from "./components/ColorCircle/ColorCircle.tsx";
+import {CategoryLabel} from "./components/CategoryLabel/CategoryLabel.tsx";
 
 const models = rawModels as DiecastModel[];
 
@@ -28,7 +30,10 @@ function ModelCard({model}: { model: DiecastModel }) {
                     decoding="async"
                 />
             </div>
-            <div className="cardTitle">{model.name}</div>
+            <div className="cardTitle">
+                {model.name}
+                {model.hex && <ColorCircle hex={model.hex}/>}
+            </div>
             <div className="cardMeta">
                 <span>{model.brand}</span>
                 <span>•</span>
@@ -36,7 +41,7 @@ function ModelCard({model}: { model: DiecastModel }) {
                 <span>•</span>
                 <span>{model.manufacturer}</span>
                 <span>•</span>
-                <span>{model.color.join(' - ')}</span>
+                <CategoryLabel category={model.category} />
             </div>
         </div>
     );
@@ -59,7 +64,7 @@ export default function App() {
                     a.name.localeCompare(b.name, undefined, {sensitivity: "base"}) ||
                     b.year - a.year
             );
-    }, [models, brand, manufacturer, color]);
+    }, [brand, manufacturer, color]);
 
 
     const clearFilters = () => {
@@ -104,9 +109,7 @@ export default function App() {
                         <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
                             <option value="All">All</option>
                             {options.manufacturers.map((x) => (
-                                <option key={x} value={x}>
-                                    {x}
-                                </option>
+                                <option key={x} value={x}>{x}</option>
                             ))}
                         </select>
                     </label>
@@ -116,9 +119,7 @@ export default function App() {
                         <select value={color} onChange={(e) => setColor(e.target.value)}>
                             <option value="All">All</option>
                             {options.colors.map((x) => (
-                                <option key={x} value={x}>
-                                    {x}
-                                </option>
+                                <option key={x} value={x}>{x}</option>
                             ))}
                         </select>
                     </label>
