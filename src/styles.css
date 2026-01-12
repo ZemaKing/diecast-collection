@@ -153,12 +153,13 @@ select {
 }
 
 .thumb {
-    min-width: 250px;
-    aspect-ratio: 4 / 3;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    position: relative;
+    min-width: 250px;
     margin-bottom: 10px;
 }
 
@@ -168,6 +169,30 @@ select {
     display: block;
     object-fit: contain;
     object-position: center;
+}
+
+.carDetails {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+    width: 100%;
+}
+
+.carNumber {
+    color: var(--muted);
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.carDriver {
+    color: var(--muted);
+    display: flex;
+    font-size: 13px;
+    font-style: italic;
 }
 
 .cardTitle {

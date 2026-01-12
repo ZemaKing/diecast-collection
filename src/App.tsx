@@ -29,6 +29,20 @@ function ModelCard({model}: { model: DiecastModel }) {
                     loading="lazy"
                     decoding="async"
                 />
+
+                {(model.carNumber !== undefined || !!model.carDriver) && (
+                    <div className="carDetails">
+                        <div className="carNumber">No. #{model.carNumber}</div>
+                        <div className="carDriver">
+                            <img
+                                src="/wheel.svg"
+                                alt="wheel"
+                                style={{ width: 12, height: 18, marginRight: 6, padding: 0.5, verticalAlign: "middle" }}
+                            />
+                            {model.carDriver}
+                        </div>
+                    </div>
+                )}
             </div>
             <div className="cardTitle">
                 {model.name}
