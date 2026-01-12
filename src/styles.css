@@ -277,6 +277,24 @@ select {
     .list {
         grid-template-columns: repeat(3, 1fr);
     }
+
+    .carDetails {
+        padding: 2px 8px;
+    }
+
+    .carNumber {
+        font-size: 12px;
+    }
+
+    .carDriver {
+        font-size: 12px;
+    }
+
+    .carDriverLogo {
+        width: 13px !important;
+        height: 16px !important;
+        padding: 0.5px;
+    }
 }
 
 @media (min-width: 1440px) {
