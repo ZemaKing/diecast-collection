@@ -15,6 +15,7 @@ function getFilterOptions(items: DiecastModel[]) {
     return {
         brands: uniqSorted(items.map((x) => x.brand)),
         manufacturers: uniqSorted(items.map((x) => x.manufacturer)),
+        categories: uniqSorted(items.map((x) => x.category)),
         colors: uniqSorted(items.flatMap((x) => x.color)),
     };
 }
@@ -68,6 +69,7 @@ function ModelCard({model}: { model: DiecastModel }) {
 export default function App() {
     const [brand, setBrand] = useState<string>("All");
     const [manufacturer, setManufacturer] = useState<string>("All");
+    const [category, setCategory] = useState<string>("All");
     const [color, setColor] = useState<string>("All");
 
     const options = useMemo(() => getFilterOptions(models), []);
@@ -76,18 +78,20 @@ export default function App() {
         return models
             .filter((m) => brand === "All" || m.brand === brand)
             .filter((m) => manufacturer === "All" || m.manufacturer === manufacturer)
+            .filter((m) => category === "All" || m.category === category)
             .filter((m) => color === "All" || m.color.includes(color))
             .sort(
                 (a, b) =>
                     a.name.localeCompare(b.name, undefined, {sensitivity: "base"}) ||
                     b.year - a.year
             );
-    }, [brand, manufacturer, color]);
+    }, [brand, manufacturer, category, color]);
 
 
     const clearFilters = () => {
         setBrand("All");
         setManufacturer("All");
+        setCategory("All");
         setColor("All");
     };
 
@@ -127,6 +131,16 @@ export default function App() {
                         <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
                             <option value="All">All</option>
                             {options.manufacturers.map((x) => (
+                                <option key={x} value={x}>{x}</option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <label className="field">
+                        <span className="fieldLabel">Category</span>
+                        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                            <option value="All">All</option>
+                            {options.categories.map((x) => (
                                 <option key={x} value={x}>{x}</option>
                             ))}
                         </select>
