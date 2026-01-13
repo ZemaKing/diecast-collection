@@ -188,6 +188,21 @@ select {
     font-style: italic;
 }
 
+.carNumberWrapper {
+    color: var(--muted);
+    display: flex;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.carNumberLogo {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 6px;
+    padding: 0.5px;
+    vertical-align: middle;
+}
+
 .carDriver {
     color: var(--muted);
     display: flex;
