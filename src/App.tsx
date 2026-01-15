@@ -34,7 +34,7 @@ function ModelCard({model}: { model: DiecastModel }) {
                 {(model.carNumber !== undefined || !!model.carDriver) && (
                     <div className="carDetails">
                         <div className="carNumber">
-                            {model.carNumber && (
+                            {model.carNumber !== undefined && (
                                 <div className="carNumberWrapper">
                                     № {model.carNumber}
                                 </div>
