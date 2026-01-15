@@ -1,3 +1,5 @@
+import "./ColorCircle.css";
+
 type ColorCircleProps = {
     hex: string[];
 };
@@ -14,15 +16,5 @@ export function ColorCircle({hex}: ColorCircleProps) {
                 })
                 .join(", ")})`;
 
-    return (
-        <div
-            style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                background,
-                border: "1px solid #121A27",
-            }}
-        />
-    );
+    return <div className="circle" style={{background}}/>;
 }
