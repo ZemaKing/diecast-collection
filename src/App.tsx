@@ -4,6 +4,7 @@ import type {DiecastModel} from "./types";
 import "./styles.css";
 import {ColorCircle} from "./components/ColorCircle/ColorCircle.tsx";
 import {CategoryLabel} from "./components/CategoryLabel/CategoryLabel.tsx";
+import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 
 const models = rawModels as DiecastModel[];
 
@@ -20,13 +21,14 @@ function getFilterOptions(items: DiecastModel[]) {
     };
 }
 
-function ModelCard({model}: { model: DiecastModel }) {
+function ModelCard({model, onClick}: { model: DiecastModel, onClick: () => void }) {
     return (
         <div className="card">
             <div className="thumb">
                 <img
                     src={model.thumbnail}
                     alt={`${model.name} (${model.year})`}
+                    onClick={onClick}
                     loading="lazy"
                     decoding="async"
                 />
@@ -71,6 +73,11 @@ export default function App() {
     const [manufacturer, setManufacturer] = useState<string>("All");
     const [category, setCategory] = useState<string>("All");
     const [color, setColor] = useState<string>("All");
+
+    const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
+
+    const openModal = (model: DiecastModel) => setSelectedModel(model);
+    const closeModal = () => setSelectedModel(null);
 
     const options = useMemo(() => getFilterOptions(models), []);
 
@@ -169,10 +176,16 @@ export default function App() {
                     ) : (
                         <div className="list">
                             {filteredModels.map((m) => (
-                                <ModelCard key={m.id} model={m}/>
+                                <ModelCard key={m.id} model={m} onClick={() => openModal(m)}/>
                             ))}
                         </div>
                     )}
+
+                    <DetailsModal
+                        model={selectedModel}
+                        isOpen={!!selectedModel}
+                        onClose={closeModal}
+                    />
                 </main>
             </div>
         </div>

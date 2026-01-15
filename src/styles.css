@@ -156,6 +156,7 @@ select {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border);
     border-radius: 12px;
+    cursor: pointer;
     aspect-ratio: 4 / 3;
     overflow: hidden;
     position: relative;

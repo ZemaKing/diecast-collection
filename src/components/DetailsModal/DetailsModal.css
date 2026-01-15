@@ -1,0 +1,113 @@
+.zkModalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    z-index: 9999;
+}
+
+.zkModal {
+    width: min(980px, 100%);
+    background: #19212E;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    max-height: -webkit-fill-available;
+}
+
+.zkModalClose {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.zkModalClose:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.zkModalBody {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding: 18px;
+}
+
+.zkModalImageWrap {
+    background: #222A36;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    place-items: center;
+}
+
+.zkModalImage {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    object-fit: contain;
+    max-height: 60vh;
+}
+
+.zkModalInfo {
+    color: #fff;
+}
+
+.zkModalTitle {
+    margin: 0 0 12px 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.zkModalGrid {
+    display: grid;
+    gap: 10px;
+}
+
+.zkModalRow {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.zkModalLabel {
+    opacity: 0.75;
+    font-weight: 600;
+}
+
+.zkModalValue {
+    opacity: 0.95;
+}
+
+.zkModalNotes {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 860px) {
+    .zkModalBody {
+        grid-template-columns: 1fr;
+    }
+
+    .zkModalRow {
+        grid-template-columns: 120px 1fr;
+    }
+}
