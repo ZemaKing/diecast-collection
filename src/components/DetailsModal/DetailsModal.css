@@ -20,16 +20,22 @@
 }
 
 .zkModalClose {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 5px;
     position: absolute;
     top: 24px;
     right: 24px;
-    border: 0;
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
     width: 36px;
     height: 36px;
-    border-radius: 10px;
-    cursor: pointer;
     z-index: 2;
 }
 
@@ -116,18 +122,21 @@
 
 /* Expand icon */
 .zkImageExpand {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #FFFFFF;
+    cursor: pointer;
+    line-height: 30px;
+    font-size: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 5px;
     position: absolute;
     bottom: 10px;
     right: 10px;
     z-index: 2;
-    border: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
 }
 
 .zkImageExpand:hover {

@@ -54,7 +54,8 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
 
                     {/* IMAGE */}
                     <div className="zkModalTop">
-                        <button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⤢</button>
+                        <button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⛶</button>
+                        {/*<button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⤢</button>*/}
 
                         <img className="zkModalImage" src={model.imageUrl} alt={model.name}/>
                     </div>
