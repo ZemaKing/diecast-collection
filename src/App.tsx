@@ -1,15 +1,16 @@
 import {useMemo, useState} from "react";
-import rawModels from "./data/models.json";
-import type {DiecastModel} from "./types";
 
-import {ColorCircle} from "./components/ColorCircle/ColorCircle.tsx";
-import {CategoryLabel} from "./components/CategoryLabel/CategoryLabel.tsx";
+import {Header} from "./components/Header/Header.tsx";
+import {ModelCard} from "./components/ModelCard/ModelCard.tsx";
+import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
+
+import rawModels from "./data/models.json";
+
+import type {DiecastModel} from "./types";
 
 import "./styles/theme.css";
 import "./styles.css";
-import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
-import {Header} from "./components/Header/Header.tsx";
 
 const models = rawModels as DiecastModel[];
 
@@ -24,53 +25,6 @@ function getFilterOptions(items: DiecastModel[]) {
         categories: uniqSorted(items.map((x) => x.category)),
         colors: uniqSorted(items.flatMap((x) => x.color)),
     };
-}
-
-function ModelCard({model, onClick}: { model: DiecastModel, onClick: () => void }) {
-    return (
-        <div className="card">
-            <div className="thumb">
-                <img
-                    src={model.thumbnail}
-                    alt={`${model.name} (${model.year})`}
-                    onClick={onClick}
-                    loading="lazy"
-                    decoding="async"
-                />
-
-                {(model.carNumber !== undefined || !!model.carDriver) && (
-                    <div className="carDetails">
-                        <div className="carNumber">
-                            {model.carNumber !== undefined && (
-                                <div className="carNumberWrapper">
-                                    № {model.carNumber}
-                                </div>
-                            )}
-                        </div>
-                        {model.carDriver && (
-                            <div className="carDriver">
-                                <img className="carDriverLogo" src="/wheel.svg" alt="wheel"/>
-                            {model.carDriver}
-                        </div>
-                        )}
-                    </div>
-                )}
-            </div>
-            <div className="cardTitle">
-                {model.name}
-                {model.hex && <ColorCircle hex={model.hex}/>}
-            </div>
-            <div className="cardMeta">
-                <span>{model.brand}</span>
-                <span>•</span>
-                <span>{model.year}</span>
-                <span>•</span>
-                <span>{model.manufacturer}</span>
-                <span>•</span>
-                <CategoryLabel category={model.category} />
-            </div>
-        </div>
-    );
 }
 
 export default function App() {
@@ -137,7 +91,7 @@ export default function App() {
                     ) : (
                         <div className="list">
                             {filteredModels.map((m) => (
-                                <ModelCard key={m.id} model={m} onClick={() => openModal(m)}/>
+                                <ModelCard key={m.id} model={m} onClick={() => openModal(m)} />
                             ))}
                         </div>
                     )}
