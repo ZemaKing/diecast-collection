@@ -2,11 +2,12 @@ import {useMemo, useState} from "react";
 
 import {Header} from "./components/Header/Header.tsx";
 import {ModelCard} from "./components/ModelCard/ModelCard.tsx";
-import type {Filters} from "./components/Sidebar/Sidebar.tsx";
 import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 
 import rawModels from "./data/models.json";
+
+import type {Filters} from "./components/Sidebar/Sidebar.tsx";
 import type {DiecastModel} from "./types";
 
 import "./styles/theme.css";
