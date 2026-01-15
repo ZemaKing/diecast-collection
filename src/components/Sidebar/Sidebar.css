@@ -30,17 +30,15 @@
 }
 
 .countPill {
-    padding: 6px 10px;
     border: 1px solid var(--border);
     border-radius: 999px;
-    /*font-size: 12px;*/
-    font-size: 13px;
     color: var(--muted);
+    font-size: 12px;
+    padding: 6px 10px;
     white-space: nowrap;
 }
 
 .countPill--small {
-    /*font-size: var(--fs-12);*/
     font-size: 12px;
     padding: 6px 10px;
 }
@@ -90,5 +88,16 @@ select {
 
     .filters {
         grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media (min-width: 1024px) {
+    .sidebar {
+        position: sticky;
+        top: 72px;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
     }
 }

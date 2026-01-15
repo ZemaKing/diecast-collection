@@ -12,7 +12,7 @@ export function Header({ title, count, rightSlot }: Props) {
             <div className="logo">{title}</div>
 
             <div className="headerRight">
-                <div className="countPill">{count} models</div>
+                <div className="countPill countPillTotal">{count} models</div>
                 {rightSlot}
                 {/* rightSlot → future-proof (theme toggle, search, profile, etc.) */}
             </div>

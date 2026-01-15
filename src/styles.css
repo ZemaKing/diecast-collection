@@ -179,25 +179,12 @@ body {
     .list {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .filters {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
 }
 
 /* >= 900px: switch to 2-column layout */
 @media (min-width: 1024px) {
     .body {
         grid-template-columns: 280px 1fr;
-    }
-
-    .sidebar {
-        position: sticky;
-        top: 72px;
-    }
-
-    .filters {
-        grid-template-columns: 1fr;
     }
 }
 

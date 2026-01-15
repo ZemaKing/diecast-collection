@@ -111,7 +111,7 @@ export default function App() {
         <div className="appShell">
             <Header
                 title="ZemaKing Diecast Collection"
-                count={filteredModels.length}
+                count={models.length}
             />
 
             <div className="body">

@@ -44,7 +44,7 @@ export function Sidebar({
 
             <div className="sidebarTopRow">
                 <div className="sidebarTitle">Filters</div>
-                <div className="countPill countPill--small">{filteredCount}</div>
+                <div className="countPill countPill--small">{filteredCount} models</div>
             </div>
 
             <div className="filters">
