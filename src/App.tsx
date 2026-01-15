@@ -105,7 +105,7 @@ export default function App() {
     return (
         <div className="appShell">
             <header className="topHeader">
-                <div className="logo">Diecast Collection</div>
+                <div className="logo">ZemaKing Diecast Collection</div>
                 <div className="headerRight">
                     <div className="countPill">{filteredModels.length} models</div>
                 </div>

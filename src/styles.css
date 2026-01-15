@@ -313,7 +313,7 @@ select {
     }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1500px) {
     .list {
         grid-template-columns: repeat(4, 1fr);
     }

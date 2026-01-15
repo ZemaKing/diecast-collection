@@ -28,12 +28,20 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
 
         document.addEventListener("keydown", onKeyDown);
         // prevent background scroll
-        const prevOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
+        // const prevOverflow = document.body.style.overflow;
+        // document.body.style.overflow = "hidden";
+
+        const scrollY = window.scrollY;
+        document.body.classList.add("zkNoScroll");
+        document.body.style.top = `-${scrollY}px`;
 
         return () => {
             document.removeEventListener("keydown", onKeyDown);
-            document.body.style.overflow = prevOverflow;
+            // document.body.style.overflow = prevOverflow;
+
+            document.body.classList.remove("zkNoScroll");
+            document.body.style.top = "";
+            window.scrollTo(0, scrollY);
         };
     }, [isOpen, isImageOpen, onClose]);
 
