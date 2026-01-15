@@ -1,4 +1,4 @@
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
 import {Header} from "./components/Header/Header.tsx";
 import {ModelCard} from "./components/ModelCard/ModelCard.tsx";
@@ -16,6 +16,7 @@ import "./App.css";
 const models = rawModels as DiecastModel[];
 
 export default function App() {
+    const [showScrollTop, setShowScrollTop] = useState(false);
     const [filters, setFilters] = useState<Filters>({brand: "All", manufacturer: "All", category: "All", color: "All"});
 
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
@@ -37,6 +38,19 @@ export default function App() {
                     b.year - a.year
             );
     }, [filters]);
+
+    useEffect(() => {
+        const onScroll = () => {
+            setShowScrollTop(window.scrollY > 300);
+        };
+
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     return (
         <div className="layout">
@@ -65,6 +79,8 @@ export default function App() {
                     <DetailsModal model={selectedModel} isOpen={!!selectedModel} onClose={closeModal}/>
                 </main>
             </div>
+
+            {showScrollTop && <button className="scrollTopButton" onClick={scrollToTop}>˄</button>}
         </div>
     );
 }
