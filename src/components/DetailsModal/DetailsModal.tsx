@@ -1,13 +1,29 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import "./DetailsModal.css";
 import type {DiecastModel} from "../../types.ts";
 
-export function DetailsModal({model, isOpen, onClose}: { model: DiecastModel; isOpen: boolean; onClose: () => void }) {
+type DetailsModalProps = {
+    model: DiecastModel | null;
+    isOpen: boolean;
+    onClose: () => void;
+};
+
+const getValue = (v: unknown, fallback: string = "—") => v === null || v === undefined || v === "" ? fallback : String(v);
+
+export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
+    const [isImageOpen, setIsImageOpen] = useState(false);
+
     useEffect(() => {
         if (!isOpen) return;
 
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape") {
+                if (isImageOpen) {
+                    setIsImageOpen(false);
+                } else {
+                    onClose();
+                }
+            }
         };
 
         document.addEventListener("keydown", onKeyDown);
@@ -19,60 +35,93 @@ export function DetailsModal({model, isOpen, onClose}: { model: DiecastModel; is
             document.removeEventListener("keydown", onKeyDown);
             document.body.style.overflow = prevOverflow;
         };
-    }, [isOpen, onClose]);
+    }, [isOpen, isImageOpen, onClose]);
 
     if (!isOpen || !model) return null;
 
     return (
-        <div className="zkModalOverlay" onMouseDown={onClose}>
-            <div
-                className="zkModal"
-                onMouseDown={(e) => e.stopPropagation()}
-                role="dialog"
-                aria-modal="true"
-                aria-label={`Details for ${model.name}`}
-            >
-                <button className="zkModalClose" onClick={onClose} aria-label="Close">
-                    ✕
-                </button>
+        <>
+            {/* MAIN DETAILS MODAL */}
+            <div className="zkModalOverlay" onMouseDown={onClose}>
+                <div
+                    className="zkModal"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`Details for ${model.name}`}
+                >
+                    <button className="zkModalClose" onClick={onClose} aria-label="Close">✕</button>
 
-                <div className="zkModalBody">
-                    <div className="zkModalImageWrap">
+                    {/* IMAGE */}
+                    <div className="zkModalTop">
+                        <button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⤢</button>
+
                         <img className="zkModalImage" src={model.imageUrl} alt={model.name}/>
                     </div>
 
-                    <div className="zkModalInfo">
+
+                    {/* DETAILS */}
+                    <div className="zkModalBottom">
                         <h2 className="zkModalTitle">{model.name}</h2>
 
-                        <div className="zkModalGrid">
-                            <div className="zkModalRow">
-                                <span className="zkModalLabel">Year</span>
-                                <span className="zkModalValue">{model.year ?? "—"}</span>
+                        <div className="zkModalTwoCols">
+                            <div className="zkModalCol">
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Brand</span>
+                                    <span className="zkModalValue">{getValue(model.brand)}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Manufacturer</span>
+                                    <span className="zkModalValue">{getValue(model.manufacturer)}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Category</span>
+                                    <span className="zkModalValue">{getValue(model.category)}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Year</span>
+                                    <span className="zkModalValue">{getValue(model.year)}</span>
+                                </div>
                             </div>
 
-                            <div className="zkModalRow">
-                                <span className="zkModalLabel">Brand</span>
-                                <span className="zkModalValue">{model.brand ?? "—"}</span>
-                            </div>
-
-                            <div className="zkModalRow">
-                                <span className="zkModalLabel">Manufacturer</span>
-                                <span className="zkModalValue">{model.manufacturer ?? "—"}</span>
-                            </div>
-
-                            <div className="zkModalRow">
-                                <span className="zkModalLabel">Category</span>
-                                <span className="zkModalValue">{model.category ?? "—"}</span>
-                            </div>
-
-                            <div className="zkModalRow">
-                                <span className="zkModalLabel">Color</span>
-                                <span className="zkModalValue">{model.color ?? "—"}</span>
+                            <div className="zkModalCol">
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Color</span>
+                                    <span className="zkModalValue">{getValue(model.color)}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Scale</span>
+                                    <span className="zkModalValue">{getValue(model.scale, "1:43")}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Driver</span>
+                                    <span className="zkModalValue">{getValue(model.carDriver)}</span>
+                                </div>
+                                <div className="zkModalRow">
+                                    <span className="zkModalLabel">Car Number</span>
+                                    <span className="zkModalValue">{getValue(model.carNumber)}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/* FULLSCREEN IMAGE MODAL */}
+            {isImageOpen && (
+                <div className="zkImageOverlay" onMouseDown={() => setIsImageOpen(false)}>
+                    <div className="zkImageContainer" onMouseDown={(e) => e.stopPropagation()}>
+                        <button
+                            className="zkImageClose"
+                            onClick={() => setIsImageOpen(false)}
+                            aria-label="Close image preview"
+                        >✕</button>
+
+                        <img className="zkImageFullscreen" src={model.imageUrl} alt={model.name}
+                             onMouseDown={(e) => e.stopPropagation()}/>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

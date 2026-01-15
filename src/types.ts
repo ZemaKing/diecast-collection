@@ -11,4 +11,5 @@ export type DiecastModel = {
     hex?: string[];
     thumbnail: string;
     imageUrl: string;
+    scale?: string;
 };

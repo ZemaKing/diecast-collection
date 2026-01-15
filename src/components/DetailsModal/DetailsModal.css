@@ -21,8 +21,8 @@
 
 .zkModalClose {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 24px;
+    right: 24px;
     border: 0;
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
@@ -30,10 +30,26 @@
     height: 36px;
     border-radius: 10px;
     cursor: pointer;
+    z-index: 2;
 }
 
 .zkModalClose:hover {
     background: rgba(255, 255, 255, 0.14);
+}
+
+.zkModalTop {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding: 0 14px;
+    margin: 14px;
+}
+
+.zkModalBottom {
+    padding: 14px 16px 16px;
 }
 
 .zkModalBody {
@@ -58,6 +74,7 @@
     border-radius: 12px;
     object-fit: contain;
     max-height: 60vh;
+    max-width: 500px;
 }
 
 .zkModalInfo {
@@ -68,9 +85,21 @@
     margin: 0 0 12px 0;
     font-size: 22px;
     font-weight: 700;
+    color: #fff;
 }
 
 .zkModalGrid {
+    display: grid;
+    gap: 10px;
+}
+
+.zkModalTwoCols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.zkModalCol {
     display: grid;
     gap: 10px;
 }
@@ -85,6 +114,84 @@
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Expand icon */
+.zkImageExpand {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.zkImageExpand:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Fullscreen image overlay */
+.zkImageOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.92);
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    animation: zkFadeIn 120ms ease-out;
+}
+
+@keyframes zkFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.zkImageContainer {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.zkImageClose {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+}
+
+.zkImageClose:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.zkImageFullscreen {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #1E2532;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    object-fit: contain;
+}
+
 .zkModalLabel {
     opacity: 0.75;
     font-weight: 600;
@@ -92,14 +199,7 @@
 
 .zkModalValue {
     opacity: 0.95;
-}
-
-.zkModalNotes {
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    word-break: break-word;
 }
 
 @media (max-width: 860px) {
@@ -107,7 +207,17 @@
         grid-template-columns: 1fr;
     }
 
+    .zkModalTwoCols {
+        grid-template-columns: 1fr;
+    }
+
     .zkModalRow {
         grid-template-columns: 120px 1fr;
+    }
+
+    .zkImageClose {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
     }
 }
