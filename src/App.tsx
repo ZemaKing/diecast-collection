@@ -121,47 +121,49 @@ export default function App() {
 
                     <div className="sidebarTitle">Filters</div>
 
-                    <label className="field">
-                        <span className="fieldLabel">Brand</span>
-                        <select value={brand} onChange={(e) => setBrand(e.target.value)}>
-                            <option value="All">All</option>
-                            {options.brands.map((x) => (
-                                <option key={x} value={x}>
-                                    {x}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                    <div className="filters">
+                        <label className="field">
+                            <span className="fieldLabel">Brand</span>
+                            <select value={brand} onChange={(e) => setBrand(e.target.value)}>
+                                <option value="All">All</option>
+                                {options.brands.map((x) => (
+                                    <option key={x} value={x}>
+                                        {x}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
 
-                    <label className="field">
-                        <span className="fieldLabel">Manufacturer</span>
-                        <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
-                            <option value="All">All</option>
-                            {options.manufacturers.map((x) => (
-                                <option key={x} value={x}>{x}</option>
-                            ))}
-                        </select>
-                    </label>
+                        <label className="field">
+                            <span className="fieldLabel">Manufacturer</span>
+                            <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
+                                <option value="All">All</option>
+                                {options.manufacturers.map((x) => (
+                                    <option key={x} value={x}>{x}</option>
+                                ))}
+                            </select>
+                        </label>
 
-                    <label className="field">
-                        <span className="fieldLabel">Category</span>
-                        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                            <option value="All">All</option>
-                            {options.categories.map((x) => (
-                                <option key={x} value={x}>{x}</option>
-                            ))}
-                        </select>
-                    </label>
+                        <label className="field">
+                            <span className="fieldLabel">Category</span>
+                            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                                <option value="All">All</option>
+                                {options.categories.map((x) => (
+                                    <option key={x} value={x}>{x}</option>
+                                ))}
+                            </select>
+                        </label>
 
-                    <label className="field">
-                        <span className="fieldLabel">Color</span>
-                        <select value={color} onChange={(e) => setColor(e.target.value)}>
-                            <option value="All">All</option>
-                            {options.colors.map((x) => (
-                                <option key={x} value={x}>{x}</option>
-                            ))}
-                        </select>
-                    </label>
+                        <label className="field">
+                            <span className="fieldLabel">Color</span>
+                            <select value={color} onChange={(e) => setColor(e.target.value)}>
+                                <option value="All">All</option>
+                                {options.colors.map((x) => (
+                                    <option key={x} value={x}>{x}</option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
 
                     <button className="btn" onClick={clearFilters}>
                         Clear

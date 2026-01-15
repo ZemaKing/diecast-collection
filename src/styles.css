@@ -93,6 +93,13 @@ body {
     margin-bottom: 12px;
 }
 
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 8px;
+    margin-bottom: 4px;
+}
+
 .field {
     display: grid;
     gap: 6px;
@@ -274,6 +281,10 @@ select {
 
     .list {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
