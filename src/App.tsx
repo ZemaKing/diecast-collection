@@ -9,6 +9,7 @@ import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 import "./styles/theme.css";
 import "./styles.css";
 import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
+import {Header} from "./components/Header/Header.tsx";
 
 const models = rawModels as DiecastModel[];
 
@@ -108,12 +109,10 @@ export default function App() {
 
     return (
         <div className="appShell">
-            <header className="topHeader">
-                <div className="logo">ZemaKing Diecast Collection</div>
-                <div className="headerRight">
-                    <div className="countPill">{filteredModels.length} models</div>
-                </div>
-            </header>
+            <Header
+                title="ZemaKing Diecast Collection"
+                count={filteredModels.length}
+            />
 
             <div className="body">
                 <Sidebar

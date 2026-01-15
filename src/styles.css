@@ -31,22 +31,6 @@ body {
 }
 
 /* Header */
-.topHeader {
-    padding: 12px;
-    background: var(--panel2);
-    border-bottom: 1px solid var(--border);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap; /* mobile-safe */
-}
-
-.logo {
-    font-weight: 700;
-    letter-spacing: 0.3px;
-}
 
 /* Layout: mobile default = one column stacked */
 .body {
@@ -183,16 +167,6 @@ body {
 
 /* >= 720px: slightly roomier */
 @media (min-width: 640px) {
-    .topHeader {
-        height: 56px;
-        padding: 0 16px;
-        flex-wrap: nowrap;
-    }
-
-    .countPill {
-        font-size: 13px;
-    }
-
     .body {
         padding: 16px;
         gap: 16px;
@@ -200,11 +174,6 @@ body {
 
     .main {
         padding: 16px;
-    }
-
-    select,
-    .btn {
-        padding: 10px 10px;
     }
 
     .list {

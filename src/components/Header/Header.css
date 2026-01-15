@@ -1,0 +1,47 @@
+.topHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    /*padding: var(--space-12) var(--space-16);*/
+    background: #0F1622;
+    /*background: var(--surface);*/
+    border-bottom: 1px solid var(--border);
+    z-index: 1;
+    /*z-index: var(--z-header);*/
+    gap: 10px;
+    flex-wrap: wrap; /* mobile-safe */
+}
+
+.logo {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    will-change: filter;
+    transition: filter 300ms;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.headerRight {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+@media (min-width: 640px) {
+    .topHeader {
+        height: 56px;
+        padding: 0 16px;
+        flex-wrap: nowrap;
+    }
+
+    .countPill {
+        font-size: 13px;
+    }
+}
