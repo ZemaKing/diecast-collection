@@ -1,0 +1,83 @@
+.sidebar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    height: fit-content;
+    position: static;
+}
+
+.siteLogo {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    display: block;
+}
+
+.sidebarTopRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    /*gap: var(--space-12);*/
+    margin-bottom: 12px;
+    /*margin-bottom: var(--space-12);*/
+}
+
+.sidebarTitle {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.countPill {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.countPill--small {
+    /*font-size: var(--fs-12);*/
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 8px;
+    margin-bottom: 4px;
+}
+
+.field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.fieldLabel {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    outline: none;
+}
+
+.clearButton {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 12px;
+    background: var(--accent);
+    font-weight: 700;
+    cursor: pointer;
+}

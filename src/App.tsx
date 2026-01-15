@@ -8,6 +8,7 @@ import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 
 import "./styles/theme.css";
 import "./styles.css";
+import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 
 const models = rawModels as DiecastModel[];
 
@@ -115,63 +116,19 @@ export default function App() {
             </header>
 
             <div className="body">
-                <aside className="sidebar">
-                    <img
-                        src="/logo.png"
-                        alt="ZemaKing logo"
-                        className="siteLogo"
-                    />
-
-                    <div className="sidebarTitle">Filters</div>
-
-                    <div className="filters">
-                        <label className="field">
-                            <span className="fieldLabel">Brand</span>
-                            <select value={brand} onChange={(e) => setBrand(e.target.value)}>
-                                <option value="All">All</option>
-                                {options.brands.map((x) => (
-                                    <option key={x} value={x}>
-                                        {x}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-
-                        <label className="field">
-                            <span className="fieldLabel">Manufacturer</span>
-                            <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
-                                <option value="All">All</option>
-                                {options.manufacturers.map((x) => (
-                                    <option key={x} value={x}>{x}</option>
-                                ))}
-                            </select>
-                        </label>
-
-                        <label className="field">
-                            <span className="fieldLabel">Category</span>
-                            <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                                <option value="All">All</option>
-                                {options.categories.map((x) => (
-                                    <option key={x} value={x}>{x}</option>
-                                ))}
-                            </select>
-                        </label>
-
-                        <label className="field">
-                            <span className="fieldLabel">Color</span>
-                            <select value={color} onChange={(e) => setColor(e.target.value)}>
-                                <option value="All">All</option>
-                                {options.colors.map((x) => (
-                                    <option key={x} value={x}>{x}</option>
-                                ))}
-                            </select>
-                        </label>
-                    </div>
-
-                    <button className="btn" onClick={clearFilters}>
-                        Clear
-                    </button>
-                </aside>
+                <Sidebar
+                    brand={brand}
+                    manufacturer={manufacturer}
+                    category={category}
+                    color={color}
+                    options={options}
+                    onBrandChange={setBrand}
+                    onManufacturerChange={setManufacturer}
+                    onCategoryChange={setCategory}
+                    onColorChange={setColor}
+                    onClear={clearFilters}
+                    filteredCount={filteredModels.length}
+                />
 
                 <main className="main">
                     <div className="mainTitle">Models</div>
@@ -186,11 +143,7 @@ export default function App() {
                         </div>
                     )}
 
-                    <DetailsModal
-                        model={selectedModel}
-                        isOpen={!!selectedModel}
-                        onClose={closeModal}
-                    />
+                    <DetailsModal model={selectedModel} isOpen={!!selectedModel} onClose={closeModal}/>
                 </main>
             </div>
         </div>
