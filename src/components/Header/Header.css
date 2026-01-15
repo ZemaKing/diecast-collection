@@ -32,8 +32,8 @@
 }
 
 .countPillTotal {
-    border: 1px solid rgba(212, 175, 55, 0.7);
-    color: rgba(212, 175, 55, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.7) !important;
+    color: rgba(212, 175, 55, 0.7) !important;
 }
 
 @media (min-width: 640px) {

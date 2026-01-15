@@ -2,11 +2,11 @@ import {useMemo, useState} from "react";
 
 import {Header} from "./components/Header/Header.tsx";
 import {ModelCard} from "./components/ModelCard/ModelCard.tsx";
+import type {Filters} from "./components/Sidebar/Sidebar.tsx";
 import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 
 import rawModels from "./data/models.json";
-
 import type {DiecastModel} from "./types";
 
 import "./styles/theme.css";
@@ -14,33 +14,17 @@ import "./styles.css";
 
 const models = rawModels as DiecastModel[];
 
-function uniqSorted(values: string[]) {
-    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-}
-
-function getFilterOptions(items: DiecastModel[]) {
-    return {
-        brands: uniqSorted(items.map((x) => x.brand)),
-        manufacturers: uniqSorted(items.map((x) => x.manufacturer)),
-        categories: uniqSorted(items.map((x) => x.category)),
-        colors: uniqSorted(items.flatMap((x) => x.color)),
-    };
-}
-
 export default function App() {
-    const [brand, setBrand] = useState<string>("All");
-    const [manufacturer, setManufacturer] = useState<string>("All");
-    const [category, setCategory] = useState<string>("All");
-    const [color, setColor] = useState<string>("All");
+    const [filters, setFilters] = useState<Filters>({brand: "All", manufacturer: "All", category: "All", color: "All"});
 
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
 
     const openModal = (model: DiecastModel) => setSelectedModel(model);
     const closeModal = () => setSelectedModel(null);
 
-    const options = useMemo(() => getFilterOptions(models), []);
-
     const filteredModels = useMemo(() => {
+        const {brand, manufacturer, category, color} = filters;
+
         return models
             .filter((m) => brand === "All" || m.brand === brand)
             .filter((m) => manufacturer === "All" || m.manufacturer === manufacturer)
@@ -51,35 +35,16 @@ export default function App() {
                     a.name.localeCompare(b.name, undefined, {sensitivity: "base"}) ||
                     b.year - a.year
             );
-    }, [brand, manufacturer, category, color]);
-
-
-    const clearFilters = () => {
-        setBrand("All");
-        setManufacturer("All");
-        setCategory("All");
-        setColor("All");
-    };
+    }, [filters]);
 
     return (
         <div className="appShell">
-            <Header
-                title="ZemaKing Diecast Collection"
-                count={models.length}
-            />
+            <Header title="ZemaKing Diecast Collection" count={models.length}/>
 
             <div className="body">
                 <Sidebar
-                    brand={brand}
-                    manufacturer={manufacturer}
-                    category={category}
-                    color={color}
-                    options={options}
-                    onBrandChange={setBrand}
-                    onManufacturerChange={setManufacturer}
-                    onCategoryChange={setCategory}
-                    onColorChange={setColor}
-                    onClear={clearFilters}
+                    models={models}
+                    onFiltersChange={setFilters}
                     filteredCount={filteredModels.length}
                 />
 
