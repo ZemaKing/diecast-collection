@@ -10,7 +10,7 @@ import rawModels from "./data/models.json";
 import type {DiecastModel} from "./types";
 
 import "./styles/theme.css";
-import "./styles.css";
+import "./App.css";
 
 const models = rawModels as DiecastModel[];
 
@@ -38,10 +38,10 @@ export default function App() {
     }, [filters]);
 
     return (
-        <div className="appShell">
+        <div className="layout">
             <Header title="ZemaKing Diecast Collection" count={models.length}/>
 
-            <div className="body">
+            <div className="content">
                 <Sidebar
                     models={models}
                     onFiltersChange={setFilters}
@@ -52,9 +52,9 @@ export default function App() {
                     <div className="mainTitle">Models</div>
 
                     {filteredModels.length === 0 ? (
-                        <div className="emptyState">No models match the selected filters.</div>
+                        <div className="contentEmpty">No models match the selected filters.</div>
                     ) : (
-                        <div className="list">
+                        <div className="modelGrid">
                             {filteredModels.map((m) => (
                                 <ModelCard key={m.id} model={m} onClick={() => openModal(m)} />
                             ))}

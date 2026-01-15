@@ -1,35 +1,10 @@
-:root {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color-scheme: light;
-    --bg: #0b0f17;
-    --panel: #121a27;
-    --panel2: #0f1622;
-    --text: #e7eefc;
-    --muted: rgba(231, 238, 252, 0.7);
-    --border: rgba(231, 238, 252, 0.12);
-    --accent: #6fd768;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    font-family: "Jost", sans-serif;
-}
-
-.appShell {
+.layout {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-.body {
+.content {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
@@ -52,21 +27,21 @@ body {
     margin-bottom: 12px;
 }
 
-.list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-}
-
-.emptyState {
+.contentEmpty {
     border: 1px dashed var(--border);
     border-radius: 14px;
     color: var(--muted);
     padding: 20px;
 }
 
+.modelGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
 @media (min-width: 640px) {
-    .body {
+    .content {
         padding: 16px;
         gap: 16px;
     }
@@ -75,25 +50,25 @@ body {
         padding: 16px;
     }
 
-    .list {
+    .modelGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
-    .body {
+    .content {
         grid-template-columns: 280px 1fr;
     }
 }
 
 @media (min-width: 1280px) {
-    .list {
+    .modelGrid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (min-width: 1500px) {
-    .list {
+    .modelGrid {
         grid-template-columns: repeat(4, 1fr);
     }
 }

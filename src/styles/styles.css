@@ -1,0 +1,23 @@
+:root {
+    color-scheme: light;
+    --bg: #0b0f17;
+    --panel: #121a27;
+    --panel2: #0f1622;
+    --text: #e7eefc;
+    --muted: rgba(231, 238, 252, 0.7);
+    --border: rgba(231, 238, 252, 0.12);
+    --accent: #6fd768;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    font-family: "Jost", sans-serif;
+}
