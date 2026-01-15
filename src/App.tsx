@@ -1,10 +1,13 @@
 import {useMemo, useState} from "react";
 import rawModels from "./data/models.json";
 import type {DiecastModel} from "./types";
-import "./styles.css";
+
 import {ColorCircle} from "./components/ColorCircle/ColorCircle.tsx";
 import {CategoryLabel} from "./components/CategoryLabel/CategoryLabel.tsx";
 import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
+
+import "./styles/theme.css";
+import "./styles.css";
 
 const models = rawModels as DiecastModel[];
 

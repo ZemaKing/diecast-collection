@@ -63,12 +63,9 @@ body {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 12px;
-
     width: 100%;
     max-width: 1500px;
     margin: 0 auto;
-
-    flex: 1;
 }
 
 /* Sidebar (mobile: normal flow, no sticky) */
