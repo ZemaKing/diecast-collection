@@ -1,16 +1,13 @@
 .topHeader {
+    background: #0F1622;
+    border-bottom: 1px solid var(--border);
     display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
     padding: 12px;
-    /*padding: var(--space-12) var(--space-16);*/
-    background: #0F1622;
-    /*background: var(--surface);*/
-    border-bottom: 1px solid var(--border);
     z-index: 1;
-    /*z-index: var(--z-header);*/
-    gap: 10px;
-    flex-wrap: wrap; /* mobile-safe */
 }
 
 .logo {
