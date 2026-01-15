@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
-import "./DetailsModal.css";
+
 import type {DiecastModel} from "../../types.ts";
+
+import "./DetailsModal.css";
 
 type DetailsModalProps = {
     model: DiecastModel | null;
@@ -12,6 +14,14 @@ const getValue = (v: unknown, fallback: string = "—") => v === null || v === u
 
 export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
     const [isImageOpen, setIsImageOpen] = useState(false);
+
+    const preSortedColors = (colors: string[]) => {
+        if (colors.length <= 1) {
+            return colors;
+        }
+
+        return [colors[colors.length - 1], ...colors.slice(0, -1)];
+    }
 
     useEffect(() => {
         if (!isOpen) return;
@@ -27,9 +37,6 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
         };
 
         document.addEventListener("keydown", onKeyDown);
-        // prevent background scroll
-        // const prevOverflow = document.body.style.overflow;
-        // document.body.style.overflow = "hidden";
 
         const scrollY = window.scrollY;
         document.body.classList.add("zkNoScroll");
@@ -49,7 +56,6 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
 
     return (
         <>
-            {/* MAIN DETAILS MODAL */}
             <div className="zkModalOverlay" onMouseDown={onClose}>
                 <div
                     className="zkModal"
@@ -60,16 +66,13 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
                 >
                     <button className="zkModalClose" onClick={onClose} aria-label="Close">✕</button>
 
-                    {/* IMAGE */}
                     <div className="zkModalTop">
                         <button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⛶</button>
-                        {/*<button className="zkImageExpand" onClick={() => setIsImageOpen(true)}>⤢</button>*/}
 
                         <img className="zkModalImage" src={model.imageUrl} alt={model.name}/>
                     </div>
 
 
-                    {/* DETAILS */}
                     <div className="zkModalBottom">
                         <h2 className="zkModalTitle">{model.name}</h2>
 
@@ -95,8 +98,12 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
 
                             <div className="zkModalCol">
                                 <div className="zkModalRow">
-                                    <span className="zkModalLabel">Color</span>
-                                    <span className="zkModalValue">{getValue(model.color)}</span>
+                                    <span className="zkModalLabel">Colors</span>
+                                    <span className="zkModalValue">
+                                        {preSortedColors(model.hex ?? []).map(color => (
+                                            <span key={color} className="colorPill" style={{background: color}}></span>
+                                        ))}
+                                    </span>
                                 </div>
                                 <div className="zkModalRow">
                                     <span className="zkModalLabel">Scale</span>
@@ -116,7 +123,6 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
                 </div>
             </div>
 
-            {/* FULLSCREEN IMAGE MODAL */}
             {isImageOpen && (
                 <div className="zkImageOverlay" onMouseDown={() => setIsImageOpen(false)}>
                     <div className="zkImageContainer" onMouseDown={(e) => e.stopPropagation()}>

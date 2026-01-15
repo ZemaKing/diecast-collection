@@ -218,19 +218,24 @@
 }
 
 .zkModalLabel {
-    /*opacity: 0.75;*/
+    color: var(--muted);
+    font-size: 13px;
     font-weight: 600;
+}
 
+.zkModalValue {
     color: var(--muted);
     font-size: 13px;
 }
 
-.zkModalValue {
-    /*opacity: 0.95;*/
-    word-break: break-word;
-
-    color: var(--muted);
-    font-size: 13px;
+.colorPill {
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    display: inline-block;
+    margin-right: 8px;
+    width: 32px;
+    height: 12px;
 }
 
 @media (max-width: 600px) {
