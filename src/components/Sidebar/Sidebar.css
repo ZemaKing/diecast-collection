@@ -74,7 +74,8 @@ select {
     border: 0;
     border-radius: 10px;
     cursor: pointer;
-    font-weight: 700;
+    font-family: Jost, sans-serif;
+    font-weight: 500;
     padding: 12px 12px;
     width: 100%;
 }
