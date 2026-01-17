@@ -82,11 +82,18 @@
 }
 
 .cardMeta {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 22px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    color: var(--muted);
-    font-size: 13px;
+}
+
+.brandLogo {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
 }
 
 @media (min-width: 1280px) {

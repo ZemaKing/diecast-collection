@@ -72,15 +72,14 @@ export function DetailsModal({model, isOpen, onClose}: DetailsModalProps) {
                         <img className="zkModalImage" src={model.imageUrl} alt={model.name}/>
                     </div>
 
-
                     <div className="zkModalBottom">
                         <h2 className="zkModalTitle">{model.name}</h2>
 
                         <div className="zkModalTwoCols">
                             <div className="zkModalCol">
-                                <div className="zkModalRow">
+                                <div className="zkModalRow zkModalBrandRow">
                                     <span className="zkModalLabel">Brand</span>
-                                    <span className="zkModalValue">{getValue(model.brand)}</span>
+                                    <img src={`/brands/${model.brand}.svg`} alt="Model Brand" className="brandLogo"/>
                                 </div>
                                 <div className="zkModalRow">
                                     <span className="zkModalLabel">Manufacturer</span>

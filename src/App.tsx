@@ -10,7 +10,6 @@ import rawModels from "./data/models.json";
 import type {Filters} from "./components/Sidebar/Sidebar.tsx";
 import type {DiecastModel} from "./types";
 
-import "./styles/theme.css";
 import "./App.css";
 
 const models = rawModels as DiecastModel[];

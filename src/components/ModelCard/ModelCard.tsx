@@ -46,7 +46,7 @@ export function ModelCard({ model, onClick }: ModelCardProps) {
             </div>
 
             <div className="cardMeta">
-                <span>{model.brand}</span>
+                <img src={`/brands/${model.brand}.svg`} alt="Model Brand" className="brandLogo"/>
                 <span>•</span>
                 <span>{model.year}</span>
                 <span>•</span>

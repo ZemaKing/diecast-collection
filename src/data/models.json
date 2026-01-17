@@ -1019,7 +1019,7 @@
   },
   {
     "id": "lamborghini-gallardo-lp-570-4-squadra-corse-2013-ixo-gray",
-    "name": "Lamborghini Gallardo LP 570-4 Squadra Corse",
+    "name": "Lamborghini Gallardo LP 570-4",
     "year": 2013,
     "brand": "Lamborghini",
     "manufacturer": "Ixo",
@@ -1201,7 +1201,7 @@
   },
   {
     "id": "mercedes-benz-c-class-dtm-di-resta-amg-2010-edicola-white",
-    "name": "Mercedes-Benz C Class DTM Di Resta AMG",
+    "name": "Mercedes-Benz AMG C Class DTM",
     "year": 2010,
     "brand": "Mercedes-Benz",
     "category": "Racing",
@@ -1651,7 +1651,7 @@
   },
   {
     "id": "porsche-911-gt3-rs-24-houres-du-mans-2001-altaya-black",
-    "name": "Porsche 911 GT3-RS 24 Houres Du Mans",
+    "name": "Porsche 911 GT3-RS",
     "year": 2001,
     "brand": "Porsche",
     "manufacturer": "Altaya",
@@ -1765,7 +1765,7 @@
     "id": "range-rover-sport-2006-altaya-gold",
     "name": "Range Rover Sport",
     "year": 2006,
-    "brand": "Range Rover",
+    "brand": "Land Rover",
     "manufacturer": "Altaya",
     "category": "Premium",
     "color": ["Gold"],
