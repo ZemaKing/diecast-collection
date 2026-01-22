@@ -896,6 +896,20 @@
     "imageUrl": "https://i.postimg.cc/0jB3BK66/ford-gt-2017-altaya-gray.png"
   },
   {
+    "id": "ford-gt-40-1969-altaya-white",
+    "name": "Ford GT 40",
+    "year": 1969,
+    "brand": "Ford",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carNumber": 68,
+    "carDriver": "Helmut Kelleners",
+    "color": ["White"],
+    "hex": ["#29282A", "#DF2D31", "#ECD591", "#F9F9F7"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+  },
+  {
     "id": "ford-mondeo-zetec-2009-atlas-multi",
     "name": "Ford Mondeo Zetec",
     "year": 2009,
