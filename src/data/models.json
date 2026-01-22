@@ -1404,6 +1404,20 @@
     "imageUrl": "https://i.postimg.cc/KYhYWRLw/nissan-gt-r-nismo-2017-altaya-white.png"
   },
   {
+    "id": "nissan-gt-r-skyline-r32-1993-ebbro-green",
+    "name": "Nissan GT-R Skyline (R32)",
+    "year": 1993,
+    "brand": "Nissan",
+    "manufacturer": "Ebbro",
+    "category": "Racing",
+    "carNumber": 55,
+    "carDriver": "Masahiro Hasemi",
+    "color": ["Green"],
+    "hex": ["#3E8B4F"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+  },
+  {
     "id": "nissan-gt-r-skyline-r34-1999-altaya-gray",
     "name": "Nissan GT-R Skyline (R34)",
     "year": 1999,
