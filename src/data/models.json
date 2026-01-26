@@ -11,7 +11,8 @@
     "color": ["Green"],
     "hex": ["#39C333", "#323F55"],
     "thumbnail": "https://i.postimg.cc/3R1fHdwb/abarth-124-rally-rgt-2017-altaya-green-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/k457r9pR/abarth-124-rally-rgt-2017-altaya-green.png"
+    "imageUrl": "https://i.postimg.cc/k457r9pR/abarth-124-rally-rgt-2017-altaya-green.png",
+    "NO_IMAGE": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
   },
   {
     "id": "abarth-grande-punto-s2000-2009-altaya-white",
@@ -906,8 +907,8 @@
     "carDriver": "Helmut Kelleners",
     "color": ["White"],
     "hex": ["#29282A", "#DF2D31", "#ECD591", "#F9F9F7"],
-    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
-    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+    "thumbnail": "https://i.postimg.cc/8PBQY11s/ford-gt-40-1969-altaya-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/WzLC9yCm/ford-gt-40-1969-altaya-white.png"
   },
   {
     "id": "ford-mondeo-zetec-2009-atlas-multi",
@@ -1414,8 +1415,8 @@
     "carDriver": "Masahiro Hasemi",
     "color": ["Green"],
     "hex": ["#3E8B4F"],
-    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
-    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+    "thumbnail": "https://i.postimg.cc/kXF3HnnX/nissan-gt-r-skyline-r32-1993-ebbro-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/J0VvTFvK/nissan-gt-r-skyline-r32-1993-ebbro-green.png"
   },
   {
     "id": "nissan-gt-r-skyline-r34-1999-altaya-gray",
