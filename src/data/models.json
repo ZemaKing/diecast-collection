@@ -717,6 +717,20 @@
     "imageUrl": "https://i.postimg.cc/KcR09z56/ferrari-mondial-quattrovalvole-1982-altaya-red.png"
   },
   {
+    "id": "fiat-131-abarth-1976-burago-white",
+    "name": "Fiat 131 Abarth",
+    "year": 1976,
+    "brand": "Fiat",
+    "manufacturer": "Burago",
+    "category": "Rally",
+    "carNumber": 1,
+    "carDriver": "Markku Alén",
+    "color": ["White"],
+    "hex": ["#38964F", "#F30524", "#FFFFFF"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+  },
+  {
     "id": "fiat-punto-s1600-2001-altaya-red",
     "name": "Fiat Punto S1600",
     "year": 2001,
@@ -1135,6 +1149,34 @@
     "hex": ["#0F111E", "#00CDFB"],
     "thumbnail": "https://i.postimg.cc/R0p5cs7B/maserati-mc12-2004-burago-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/gjF4Xy6t/maserati-mc12-2004-burago-black.png"
+  },
+  {
+    "id": "maserati-mc12-gt-1-2010-altaya-black",
+    "name": "Maserati MC12 GT 1",
+    "year": 2010,
+    "brand": "Maserati",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carNumber": 33,
+    "carDriver": "Alfred Heger",
+    "color": ["Black"],
+    "hex": ["#FFFFFF", "#F9BA0F", "#0A0F09"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
+  },
+  {
+    "id": "mazda-rx-7-1980-atlas-white",
+    "name": "Mazda RX-7",
+    "year": 1980,
+    "brand": "Mazda",
+    "manufacturer": "Atlas",
+    "category": "Racing",
+    "carNumber": 20,
+    "carDriver": "Win Percy",
+    "color": ["White"],
+    "hex": ["#D53834", "#353736", "#FCFAF8"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
   },
   {
     "id": "mclaren-720s-2017-altaya-gray",
@@ -1955,6 +1997,20 @@
     "hex": ["#A1CF58", "#2152EC"],
     "thumbnail": "https://i.postimg.cc/PJwjfW8G/subaru-impreza-wrc-2003-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/ry52hQgs/subaru-impreza-wrc-2003-altaya-blue.png"
+  },
+  {
+    "id": "subaru-impreza-wrc-2008-altaya-blue",
+    "name": "Subaru Impreza WRC",
+    "year": 2008,
+    "brand": "Subaru",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 5,
+    "carDriver": "Petter Solberg",
+    "color": ["Blue"],
+    "hex": ["#CAF7FF", "#2152EC"],
+    "thumbnail": "https://i.postimg.cc/0jShQwW9/no-available-image.png",
+    "imageUrl": "https://i.postimg.cc/0jShQwW9/no-available-image.png"
   },
   {
     "id": "subaru-impreza-wrc-2010-ixo-white",
