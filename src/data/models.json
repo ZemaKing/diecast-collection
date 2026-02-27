@@ -2139,6 +2139,20 @@
     "imageUrl": "https://i.postimg.cc/fbV6YKJZ/toyota-gr-yaris-2023-altaya-multi.png"
   },
   {
+    "id": "toyota-gr-yaris-2023-burago-black",
+    "name": "Toyota GR Yaris",
+    "year": 2023,
+    "brand": "Toyota",
+    "manufacturer": "Burago",
+    "category": "Rally",
+    "carNumber": 33,
+    "carDriver": "Elfyn Evans",
+    "color": ["Black"],
+    "hex": ["#83878F", "#08070C"],
+    "thumbnail": "https://i.postimg.cc/LsQ3KhVX/toyota-gr-yaris-2023-burago-black-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/CM3JxBpG/toyota-gr-yaris-2023-burago-black.png"
+  },
+  {
     "id": "toyota-ts050-hybrid-2019-altaya-multi",
     "name": "Toyota TS050 Hybrid",
     "year": 2019,
