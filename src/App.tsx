@@ -20,8 +20,19 @@ export default function App() {
 
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
 
-    const openModal = (model: DiecastModel) => setSelectedModel(model);
-    const closeModal = () => setSelectedModel(null);
+    const openModal = (model: DiecastModel) => {
+        setSelectedModel(model);
+        const url = new URL(window.location.href);
+        url.searchParams.set("model", String(model.id));
+        window.history.pushState({}, '', url);
+    };
+
+    const closeModal = () => {
+        setSelectedModel(null);
+        const url = new URL(window.location.href);
+        url.searchParams.delete("model");
+        window.history.pushState({}, '', url.pathname + url.search);
+    };
 
     const filteredModels = useMemo(() => {
         const {brand, manufacturer, category, color} = filters;
@@ -45,6 +56,30 @@ export default function App() {
 
         window.addEventListener("scroll", onScroll);
         return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        const modelId = url.searchParams.get("model");
+        if (modelId) {
+            const found = models.find(m => String(m.id) === modelId);
+            if (found) {
+                setTimeout(() => setSelectedModel(found), 0);
+            }
+        }
+
+        const onPopState = () => {
+            const url = new URL(window.location.href);
+            const modelId = url.searchParams.get("model");
+            if (modelId) {
+                const found = models.find(m => String(m.id) === modelId);
+                setSelectedModel(found || null);
+            } else {
+                setSelectedModel(null);
+            }
+        };
+        window.addEventListener("popstate", onPopState);
+        return () => window.removeEventListener("popstate", onPopState);
     }, []);
 
     const scrollToTop = () => {
