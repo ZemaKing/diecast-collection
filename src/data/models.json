@@ -29,6 +29,32 @@
     "imageUrl": "https://i.postimg.cc/HWqjMcKD/abarth-grande-punto-s2000-2009-altaya-white.png"
   },
   {
+    "id": "acura-nsx-2000-altaya-yellow",
+    "name": "Acura NSX",
+    "year": 2000,
+    "brand": "Acura",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "color": ["Yellow"],
+    "hex": ["#F8B400", "#955349"],
+    "thumbnail": "https://i.postimg.cc/VstJ21C7/acura-nsx-2000-altaya-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/76f252hm/acura-nsx-2000-altaya-yellow.png"
+  },
+  {
+    "id": "alpine-a110-r-gt-2021-altaya-blue",
+    "name": "Alpine A110 R-GT",
+    "year": 2021,
+    "brand": "Alpine",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 43,
+    "carDriver": "Emmanuel Guigou",
+    "color": ["Blue"],
+    "hex": ["#242626", "#CDDCE5", "#056B9F"],
+    "thumbnail": "https://i.postimg.cc/KcT1CFM0/alpine-a110-r-gt-2021-altaya-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/0QbwzwjX/alpine-a110-r-gt-2021-altaya-blue.png"
+  },
+  {
     "id": "alpine-a310-v6-1977-altaya-yellow",
     "name": "Alpine A310 V6",
     "year": 1977,
@@ -403,6 +429,18 @@
     "hex": ["#BADFFF", "#006DF8"],
     "thumbnail": "https://i.postimg.cc/NFp0T7j2/chevrolet-chevelle-ss-454-1970-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/W4g52JQs/chevrolet-chevelle-ss-454-1970-altaya-blue.png"
+  },
+  {
+    "id": "chevrolet-corvette-stingray-2020-ixo-yellow",
+    "name": "Chevrolet Corvette Stingray",
+    "year": 2020,
+    "brand": "Chevrolet",
+    "manufacturer": "Ixo",
+    "category": "Supercar",
+    "color": ["Yellow"],
+    "hex": ["#FEFF1C"],
+    "thumbnail": "https://i.postimg.cc/2jW1gmZ2/chevrolet-corvette-stingray-2020-ixo-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FR7LYLzG/chevrolet-corvette-stingray-2020-ixo-yellow.png"
   },
   {
     "id": "chevrolet-cruze-lt-btcc-2010-atlas-blue",
@@ -801,6 +839,20 @@
     "imageUrl": "https://i.postimg.cc/Kz4DsqnX/ford-fiesta-rs-wrc-2012-altaya-blue.png"
   },
   {
+    "id": "ford-fiesta-wrc-2013-altaya-orange",
+    "name": "Ford Fiesta WRC",
+    "year": 2013,
+    "brand": "Ford",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 21,
+    "carDriver": "Martin Prokop",
+    "color": ["Orange"],
+    "hex": ["#E2A84C", "#E05119"],
+    "thumbnail": "https://i.postimg.cc/tR6s8yxv/ford-fiesta-wrc-2013-altaya-orange-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/C1zqRq5Q/ford-fiesta-wrc-2013-altaya-orange.png"
+  },
+  {
     "id": "ford-fiesta-rs-2014-altaya-green",
     "name": "Ford Fiesta RS",
     "year": 2014,
@@ -813,6 +865,20 @@
     "hex": ["#8C9A72", "#416C6E"],
     "thumbnail": "https://i.postimg.cc/rszBnS9P/ford-fiesta-rs-2014-altaya-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/j5C4kgyQ/ford-fiesta-rs-2014-altaya-green.png"
+  },
+  {
+    "id": "ford-fiesta-wrc-2015-altaya-gray",
+    "name": "Ford Fiesta WRC",
+    "year": 2015,
+    "brand": "Ford",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 24,
+    "carDriver": "Robert Kubica",
+    "color": ["Gray"],
+    "hex": ["#B9CFE5", "#4D565C"],
+    "thumbnail": "https://i.postimg.cc/mZ9PKRHJ/ford-fiesta-wrc-2015-altaya-gray-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/gJnZxZrz/ford-fiesta-wrc-2015-altaya-gray.png"
   },
   {
     "id": "ford-fiesta-s2000-2010-altaya-white",
@@ -991,6 +1057,20 @@
     "hex": ["#46A391", "#CEF0FF"],
     "thumbnail": "https://i.postimg.cc/TPNMr7V5/ford-sierra-rs-cosworth-1988-ixo-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/DfjtZHCL/ford-sierra-rs-cosworth-1988-ixo-white.png"
+  },
+  {
+    "id": "honda-cr-z-2011-ebbro-gray",
+    "name": "Honda CR-Z",
+    "year": 2011,
+    "brand": "Honda",
+    "manufacturer": "EBBRO",
+    "category": "Rally",
+    "carNumber": 17,
+    "carDriver": "Keiichi Tsuchiya",
+    "color": ["Gray"],
+    "hex": ["#710018", "#A9BFD5"],
+    "thumbnail": "https://i.postimg.cc/SQ9nHqMH/honda-cr-z-2011-ebbro-gray-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/hjfdXdhj/honda-cr-z-2011-ebbro-gray.png"
   },
   {
     "id": "hyundai-accent-wrc-2003-altaya-gray",
@@ -1435,6 +1515,32 @@
     "imageUrl": "https://i.postimg.cc/9fHfkrTt/mitsubishi-lancer-wrc-2005-atlas-red.png"
   },
   {
+    "id": "nissan-240-rs-1984-altaya-multi",
+    "name": "Nissan 240 RS",
+    "year": 1984,
+    "brand": "Nissan",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 3,
+    "carDriver": "Timo Salonen",
+    "color": ["MULTI"],
+    "hex": ["#E13C4F", "#DCE7F0", "#1E5DA4"],
+    "thumbnail": "https://i.postimg.cc/v8n4CMVp/nissan-240-rs-1984-altaya-multi-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/859rMzrG/nissan-240-rs-1984-altaya-multi.png"
+  },
+  {
+    "id": "nissan-fairlady-z-2000-altaya-gold",
+    "name": "Nissan Fairlady Z (Z33)",
+    "year": 2002,
+    "brand": "Nissan",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "color": ["Gold"],
+    "hex": ["#F6E07B"],
+    "thumbnail": "https://i.postimg.cc/BZFjRsKr/nissan-fairlady-z-2000-altaya-gold-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/63gGnpG5/nissan-fairlady-z-2000-altaya-gold.png"
+  },
+  {
     "id": "nissan-gt-r-nismo-2017-altaya-white",
     "name": "Nissan GT-R Nismo",
     "year": 2017,
@@ -1775,6 +1881,18 @@
     "hex": ["#C9033C", "#D4F2FF"],
     "thumbnail": "https://i.postimg.cc/CKsdSgVy/porsche-911-sc-1982-ixo-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/RZBFsWcV/porsche-911-sc-1982-ixo-white.png"
+  },
+  {
+    "id": "porsche-918-spyder-2013-altaya-gray",
+    "name": "Porsche 918 Spyder",
+    "year": 2013,
+    "brand": "Porsche",
+    "manufacturer": "Altaya",
+    "category": "Supercar",
+    "color": ["Gray"],
+    "hex": ["#CFD4CE"],
+    "thumbnail": "https://i.postimg.cc/02qzs3YV/porsche-918-spyder-2013-altaya-gray-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Y9ZmYCmC/porsche-918-spyder-2013-altaya-gray.png"
   },
   {
     "id": "porsche-924-carrera-gts-1981-altaya-gold",
