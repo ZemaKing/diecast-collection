@@ -1,12 +1,13 @@
 import "./CategoryLabel.css";
 
-type Category = "Rally" | "Racing" | "Supercar" | "Premium";
+type Category = "Rally" | "Racing" | "Supercar" | "Premium" | "Retro";
 
 const CATEGORY_COLOR: Record<Category, string> = {
     Rally: "#D97706",
     Racing: "#DC2626",
     Supercar: "#2563EB",
     Premium: "#7C3AED",
+    Retro: "#1c9326",
 };
 
 type CategoryLabelProps = {
