@@ -407,6 +407,20 @@
     "imageUrl": "https://i.postimg.cc/K4SfTcX5/bmw-x6-m-2009-deagostini-black.png"
   },
   {
+    "id": "bmw-z4-m-2009-burago-white",
+    "name": "BMW Z4 M",
+    "year": 2009,
+    "brand": "BMW",
+    "manufacturer": "Burago",
+    "category": "Racing",
+    "carNumber": 50,
+    "carDriver": "Fariqe Hairuman",
+    "color": ["White"],
+    "hex": ["#33B6BE", "#EBEEEF"],
+    "thumbnail": "https://i.postimg.cc/sf61QgML/bmw-z4-m-2009-burago-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/G3qTFj5j/bmw-z4-m-2009-burago-white.png"
+  },
+  {
     "id": "bugatti-chiron-2016-altaya-blue",
     "name": "Bugatti Chiron",
     "year": 2016,
@@ -1581,7 +1595,7 @@
     "name": "Nissan GT-R Skyline (R32)",
     "year": 1993,
     "brand": "Nissan",
-    "manufacturer": "Ebbro",
+    "manufacturer": "EBBRO",
     "category": "Racing",
     "carNumber": 55,
     "carDriver": "Masahiro Hasemi",
