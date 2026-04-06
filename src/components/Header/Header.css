@@ -36,6 +36,23 @@
     color: rgba(212, 175, 55, 0.7) !important;
 }
 
+.linkPill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 20px;
+    border-radius: 50%;
+    color: #ffc400;
+    transition: all 0.2s ease;
+    padding: 3px !important;
+}
+
+.linkPill:hover {
+    background: rgba(255, 196, 0, 0.1);
+    transform: translateY(-1px);
+}
+
 @media (min-width: 640px) {
     .topHeader {
         height: 56px;

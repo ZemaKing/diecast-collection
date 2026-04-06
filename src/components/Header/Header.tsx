@@ -1,4 +1,6 @@
-import "./Header.css";
+import './Header.css';
+import {Instagram} from '../../icons/Instagram.tsx';
+import {Email} from '../../icons/Email.tsx';
 
 type Props = {
     title: string;
@@ -14,7 +16,20 @@ export function Header({ title, count, rightSlot }: Props) {
             <div className="headerRight">
                 <div className="countPill countPillTotal">{count} models</div>
                 {rightSlot}
-                {/* rightSlot → future-proof (theme toggle, search, profile, etc.) */}
+              <div className="countPill countPillTotal">
+                <a
+                  className="linkPill"
+                  href="https://www.instagram.com/zemaking89/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                ><Instagram/></a>
+              </div>
+              <div className="countPill countPillTotal">
+                <a href="mailto:zematule@gmail.com" className="linkPill" aria-label="Email">
+                  <Email/>
+                </a>
+              </div>
             </div>
         </header>
     );
