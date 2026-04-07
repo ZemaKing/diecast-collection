@@ -525,6 +525,20 @@
     "imageUrl": "https://i.postimg.cc/3RhnWxTn/citroen-c4-sport-2007-solido-red.png"
   },
   {
+    "id": "citroen-c4-wrc-2009-altaya-multi",
+    "name": "Citroën C4 WRC",
+    "year": 2009,
+    "brand": "Citroën",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 1,
+    "carDriver": "Sébastien Loeb",
+    "color": ["MULTI"],
+    "hex": ["#164384", "#E2C419", "#E9E9E7", "#B51E23"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "citroen-ds3-r3-2011-altaya-pink",
     "name": "Citroën DS3 R3",
     "year": 2011,
@@ -1351,6 +1365,18 @@
     "imageUrl": "https://i.postimg.cc/T3yX7pB2/mazda-rx-7-fd-1993-altaya-orange.png"
   },
   {
+    "id": "mazda-rx-8-1993-altaya-orange",
+    "name": "Mazda RX-8",
+    "year": 1993,
+    "brand": "Mazda",
+    "manufacturer": "Altaya",
+    "category": "Premium",
+    "color": ["Blue", "Black"],
+    "hex": ["#14181B", "#6BC4E4"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "mclaren-720s-2017-altaya-gray",
     "name": "McLaren 720S",
     "year": 2017,
@@ -2083,6 +2109,18 @@
     "hex": ["#CBE9FB", "#C5C3B9"],
     "thumbnail": "https://i.postimg.cc/T33pSqVy/porsche-963-2023-burago-gold-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/XqY8XyMr/porsche-963-2023-burago-gold.png"
+  },
+  {
+    "id": "porsche-cayenne-turbo-2010-minichamps-gold",
+    "name": "Porsche Cayenne Turbo",
+    "year": 2010,
+    "brand": "Porsche",
+    "manufacturer": "Minichamps",
+    "category": "Premium",
+    "color": ["Gold"],
+    "hex": ["#D0C2AA"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
     "id": "porsche-rs-spyder-2008-minichamps-yellow",
