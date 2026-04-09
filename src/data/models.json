@@ -1563,6 +1563,20 @@
     "imageUrl": "https://i.postimg.cc/MGgf71dt/mitsubishi-galant-vr-4-1989-altaya-white.png"
   },
   {
+    "id": "mitsubishi-lancer-evolution-i-1994-altaya-white",
+    "name": "Mitsubishi Lancer Evolution I",
+    "year": 1994,
+    "brand": "Mitsubishi",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 9,
+    "carDriver": "Kenneth Eriksson",
+    "color": ["White"],
+    "hex": ["#EC2A1C", "#2E6D3D", "#EEFCFE"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "mitsubishi-lancer-evolution-iii-1996-altaya-white",
     "name": "Mitsubishi Lancer Evolution III",
     "year": 1996,
@@ -2385,6 +2399,20 @@
     "hex": ["#EBFDFE", "#F3275D", "#0C44BD"],
     "thumbnail": "https://i.postimg.cc/Y2sN0wzb/subaru-impreza-wrx-sti-2011-ixo-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/cJtrLr0J/subaru-impreza-wrx-sti-2011-ixo-multi.png"
+  },
+  {
+    "id": "suzuki-sx4-wrc-2008-altaya-yellow",
+    "name": "Suzuki SX4 WRC",
+    "year": 2008,
+    "brand": "Suzuki",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 12,
+    "carDriver": "Per-Gunnar Andersson",
+    "color": ["Yellow"],
+    "hex": ["#F4FEFC", "#E1CC0A"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
     "id": "skoda-fabia-s2000-2009-altaya-green",
