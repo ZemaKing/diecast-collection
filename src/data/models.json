@@ -637,6 +637,20 @@
     "imageUrl": "https://i.postimg.cc/Y93RpzPt/corvetter-c5r-fia-gt-rac-tourist-trophy-2007-altaya-green.png"
   },
   {
+    "id": "datsun-240z-1971-altaya-red",
+    "name": "Datsun 240Z",
+    "year": 1971,
+    "brand": "Datsun",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 62,
+    "carDriver": "Rauno Aaltonen",
+    "color": ["Red"],
+    "hex": ["#07080A", "#971112"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "datsun-240z-rocket-b-1972-solido-red",
     "name": "Datsun 240Z Rocket B",
     "year": 1972,
@@ -2441,6 +2455,20 @@
     "hex": ["#1C60B8", "#D8F4FF"],
     "thumbnail": "https://i.postimg.cc/FHH7qgyL/talbot-sunbeam-lotus-1981-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/2ySw3Bpn/talbot-sunbeam-lotus-1981-altaya-white.png"
+  },
+  {
+    "id": "toyota-celica-gt-4-2010-altaya-multi",
+    "name": "Toyota Celica GT-4",
+    "year": 2010,
+    "brand": "Toyota",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 11,
+    "carDriver": "Claudie Tanghe",
+    "color": ["MULTI"],
+    "hex": ["#F2F2F2", "#F28437", "#F26DCC"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
     "id": "toyota-celica-turbo-4wd-1993-altaya-white",
