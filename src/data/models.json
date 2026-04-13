@@ -511,6 +511,20 @@
     "imageUrl": "https://i.postimg.cc/13cNGxDh/citroen-bx-4tc-1986-ixo-white.png"
   },
   {
+    "id": "citroen-c2-s1600-2004-altaya-red",
+    "name": "Citroën C2 S1600",
+    "year": 2004,
+    "brand": "Citroën",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 4,
+    "carDriver": "Luca Rossetti",
+    "color": ["Red"],
+    "hex": ["#9D1120"],
+    "thumbnail": "https://i.postimg.cc/0j8fWpfq/citroen-c2-s1600-2004-altaya-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/CMjXc7wC/citroen-c2-s1600-2004-altaya-red.png"
+  },
+  {
     "id": "citroen-c4-sport-2007-solido-red",
     "name": "Citroën C4 Sport",
     "year": 2007,
@@ -2233,6 +2247,20 @@
     "imageUrl": "https://i.postimg.cc/MpTng942/renault-clio-r3t-2017-altaya-yellow.png"
   },
   {
+    "id": "renault-clio-s1600-2004-altaya-yellow",
+    "name": "Renault Clio S1600",
+    "year": 2004,
+    "brand": "Renault",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 2,
+    "carDriver": "Simon Jean-Joseph",
+    "color": ["Yellow", "Blue"],
+    "hex": ["#0C319A", "#F4D500"],
+    "thumbnail": "https://i.postimg.cc/rs8JnSJk/renault-clio-s1600-2004-altaya-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/0jd4rkt6/renault-clio-s1600-2004-altaya-yellow.png"
+  },
+  {
     "id": "seat-124-fl-1800-1977-altaya-yellow",
     "name": "Seat 124 FL 1800",
     "year": 1977,
@@ -2469,6 +2497,20 @@
     "hex": ["#EFF1EE", "#09704B", "#D41807"],
     "thumbnail": "https://i.postimg.cc/BQLhRHQ6/skoda-fabia-wrc-2007-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/htHRHKBB/skoda-fabia-wrc-2007-altaya-multi.png"
+  },
+  {
+    "id": "talbot-samba-rallye-1984-altaya-red",
+    "name": "Talbot Samba Rallye",
+    "year": 1984,
+    "brand": "Talbot",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 165,
+    "carDriver": "Francois Delecour",
+    "color": ["Red"],
+    "hex": ["#A03D48"],
+    "thumbnail": "https://i.postimg.cc/j2sXgzXY/talbot-samba-rallye-1984-altaya-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/QCkzV86K/talbot-samba-rallye-1984-altaya-red.png"
   },
   {
     "id": "talbot-sunbeam-lotus-1981-altaya-white",
