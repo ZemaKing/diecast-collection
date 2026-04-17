@@ -2522,7 +2522,7 @@
     "carNumber": 165,
     "carDriver": "Francois Delecour",
     "color": ["Red"],
-    "hex": ["#A03D48"],
+    "hex": ["#A80925"],
     "thumbnail": "https://i.postimg.cc/j2sXgzXY/talbot-samba-rallye-1984-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/QCkzV86K/talbot-samba-rallye-1984-altaya-red.png"
   },
@@ -2536,7 +2536,7 @@
     "carNumber": 1,
     "carDriver": "Guy Fréquelin",
     "color": ["White"],
-    "hex": ["#1C60B8", "#D8F4FF"],
+    "hex": ["#2562AB", "#DFE4E8"],
     "thumbnail": "https://i.postimg.cc/FHH7qgyL/talbot-sunbeam-lotus-1981-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/2ySw3Bpn/talbot-sunbeam-lotus-1981-altaya-white.png"
   },
@@ -2550,7 +2550,7 @@
     "carNumber": 11,
     "carDriver": "Claudie Tanghe",
     "color": ["MULTI"],
-    "hex": ["#F2F2F2", "#F28437", "#F26DCC"],
+    "hex": ["#F2F2F2", "#DB7000", "#D7269D"],
     "thumbnail": "https://i.postimg.cc/SQCH8g3z/toyota-celica-gt-4-2010-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/8PWk7dBL/toyota-celica-gt-4-2010-altaya-multi.png"
   },
@@ -2564,23 +2564,9 @@
     "carNumber": 4,
     "carDriver": "Juha Kankkunen",
     "color": ["White"],
-    "hex": ["#00B33B", "#C91155", "#C3E5FF"],
+    "hex": ["#007907", "#9E1D27", "#E3E4E8"],
     "thumbnail": "https://i.postimg.cc/L4bk5M3x/toyota-celica-turbo-4wd-1993-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/pd5pLpRh/toyota-celica-turbo-4wd-1993-altaya-white.png"
-  },
-  {
-    "id": "toyota-corolla-wrc-1998-vitesse-white",
-    "name": "Toyota Corolla WRC",
-    "year": 1998,
-    "brand": "Toyota",
-    "manufacturer": "Vitesse",
-    "category": "Rally",
-    "carNumber": 5,
-    "carDriver": "Carlos Sainz",
-    "color": ["White"],
-    "hex": ["#C90740", "#00A34F", "#0E1872", "#D8F8FF"],
-    "thumbnail": "https://i.postimg.cc/9XnP0jY8/toyota-corolla-wrc-1998-vitesse-white-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/3w0dxdYG/toyota-corolla-wrc-1998-vitesse-white.png"
   },
   {
     "id": "toyota-corolla-wrc-2006-solido-multi",
@@ -2592,9 +2578,23 @@
     "carNumber": 8,
     "carDriver": "Olivier Panis",
     "color": ["MULTI"],
-    "hex": ["#4166B3", "#CFF0FF", "#B10D3D"],
+    "hex": ["#222840", "#E0DCD2", "#9E0E17"],
     "thumbnail": "https://i.postimg.cc/44SvyTQ2/toyota-corolla-wrc-2006-solido-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/TP5p3pfj/toyota-corolla-wrc-2006-solido-multi.png"
+  },
+  {
+    "id": "toyota-corolla-wrc-1998-vitesse-white",
+    "name": "Toyota Corolla WRC",
+    "year": 1998,
+    "brand": "Toyota",
+    "manufacturer": "Vitesse",
+    "category": "Rally",
+    "carNumber": 5,
+    "carDriver": "Carlos Sainz",
+    "color": ["White"],
+    "hex": ["#C90740", "#00781F", "#0E1872", "#D8F8FF"],
+    "thumbnail": "https://i.postimg.cc/9XnP0jY8/toyota-corolla-wrc-1998-vitesse-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/3w0dxdYG/toyota-corolla-wrc-1998-vitesse-white.png"
   },
   {
     "id": "toyota-gr-supra-2019-altaya-orange",
@@ -2604,7 +2604,7 @@
     "manufacturer": "Altaya",
     "category": "Premium",
     "color": ["Orange"],
-    "hex": ["#252527", "#ED8540"],
+    "hex": ["#16161C", "#DD6F00"],
     "thumbnail": "https://i.postimg.cc/HscSFXsJ/toyota-gr-supra-2019-altaya-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/0ND1vh8L/toyota-gr-supra-2019-altaya-orange.png"
   },
@@ -2618,7 +2618,7 @@
     "carNumber": 17,
     "carDriver": "Sébastien Ogier",
     "color": ["MULTI"],
-    "hex": ["#E70546", "#21273C", "#E6FEFF"],
+    "hex": ["#B01B2F", "#0A0A0C", "#EAEDF8"],
     "thumbnail": "https://i.postimg.cc/L6gtZ0x3/toyota-gr-yaris-2023-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wBR7j7gW/toyota-gr-yaris-2023-altaya-multi.png"
   },
@@ -2632,7 +2632,7 @@
     "carNumber": 33,
     "carDriver": "Elfyn Evans",
     "color": ["Black"],
-    "hex": ["#83878F", "#08070C"],
+    "hex": ["#83878F", "#0F0F0F"],
     "thumbnail": "https://i.postimg.cc/LsQ3KhVX/toyota-gr-yaris-2023-burago-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/CM3JxBpG/toyota-gr-yaris-2023-burago-black.png"
   },
@@ -2644,7 +2644,7 @@
     "manufacturer": "Altaya",
     "category": "Premium",
     "color": ["Orange"],
-    "hex": ["#A98432"],
+    "hex": ["#A27B3D"],
     "thumbnail": "https://i.postimg.cc/Gh8M6Gh8/toyota-supra-turbo-mark-iv-1994-altaya-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/mrCW4KLs/toyota-supra-turbo-mark-iv-1994-altaya-orange.png"
   },
@@ -2658,7 +2658,7 @@
     "carNumber": 8,
     "carDriver": "Fernando Alonso",
     "color": ["MULTI"],
-    "hex": ["#21273C", "#E70546", "#E6FEFF"],
+    "hex": ["#131315", "#9D0815", "#E6FEFF"],
     "thumbnail": "https://i.postimg.cc/9FwdqNLp/toyota-ts050-hybrid-2019-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/76vbGwZ1/toyota-ts050-hybrid-2019-altaya-multi.png"
   },
@@ -2672,7 +2672,7 @@
     "carNumber": 8,
     "carDriver": "Ott Tänak",
     "color": ["White"],
-    "hex": ["#E70546", "#21273C", "#E6FEFF"],
+    "hex": ["#BA000B", "#070708", "#E6FEFF"],
     "thumbnail": "https://i.postimg.cc/6qydcHtC/toyota-yaris-wrc-2019-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/CLJZv3cF/toyota-yaris-wrc-2019-altaya-white.png"
   },
@@ -2686,7 +2686,7 @@
     "carNumber": 7,
     "carDriver": "Kenneth Eriksson",
     "color": ["White"],
-    "hex": ["#39B3FF", "#D6EFFF"],
+    "hex": ["#2584D6", "#E3E5E6"],
     "thumbnail": "https://i.postimg.cc/0jbpntPS/volkswagen-golf-gti-16v-1987-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Dy5WC9x7/volkswagen-golf-gti-16v-1987-altaya-white.png"
   },
@@ -2700,7 +2700,7 @@
     "carNumber": 21,
     "carDriver": "Christian Abt",
     "color": ["MULTI"],
-    "hex": ["#1E6DFF", "#EA4662", "#D9F2FE"],
+    "hex": ["#172F8B", "#D61F14", "#D8DFE2"],
     "thumbnail": "https://i.postimg.cc/HnVQzSdX/volkswagen-passat-v8-star-2002-schuco-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/ncTsdy3c/volkswagen-passat-v8-star-2002-schuco-blue.png"
   },
@@ -2714,7 +2714,7 @@
     "carNumber": 1,
     "carDriver": "Sébastien Ogier",
     "color": ["Black"],
-    "hex": ["#0080FF", "#DBFCFD", "#314C81"],
+    "hex": ["#0252B3", "#E8ECF2", "#151629"],
     "thumbnail": "https://i.postimg.cc/SRJWdZkW/volkswagen-polo-r-wrc-2016-altaya-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/4NwK8DWf/volkswagen-polo-r-wrc-2016-altaya-black.png"
   },
@@ -2728,7 +2728,7 @@
     "carNumber": 1,
     "carDriver": "Sébastien Ogier",
     "color": ["White"],
-    "hex": ["#0752F5", "#D0EEFF"],
+    "hex": ["#1635AA", "#DDDEDE"],
     "thumbnail": "https://i.postimg.cc/NFSRz1j1/volkswagen-polo-wrc-2014-burago-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Hs3JSq6M/volkswagen-polo-wrc-2014-burago-white.png"
   },
@@ -2742,7 +2742,7 @@
     "carNumber": 20,
     "carDriver": "René Rast",
     "color": ["Gray"],
-    "hex": ["#B5D7FA"],
+    "hex": ["#C8CDDF"],
     "thumbnail": "https://i.postimg.cc/zfT4sX8q/volkswagen-scirocco-r-cup-zubehor-2011-spark-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/bJkb0Wxx/volkswagen-scirocco-r-cup-zubehor-2011-spark-gray.png"
   },
@@ -2754,7 +2754,7 @@
     "manufacturer": "Herpa",
     "category": "Premium",
     "color": ["Black"],
-    "hex": ["#0C0B11"],
+    "hex": ["#09080F"],
     "thumbnail": "https://i.postimg.cc/N0RZ3fYn/volkswagen-touareg-2015-herpa-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/mDCM3JYd/volkswagen-touareg-2015-herpa-black.png"
   }
