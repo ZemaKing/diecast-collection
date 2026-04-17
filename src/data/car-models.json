@@ -1026,7 +1026,7 @@
     "carNumber": 6,
     "carDriver": "Paolo Andreucci",
     "color": ["Blue"],
-    "hex": ["#D8F6FF", "#314EE0"],
+    "hex": ["#E5E8EE", "#161D72"],
     "thumbnail": "https://i.postimg.cc/wvFV0yNb/ford-focus-rs-wrc-2001-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/tJW3ZBb5/ford-focus-rs-wrc-2001-altaya-blue.png"
   },
@@ -1040,7 +1040,7 @@
     "carNumber": 4,
     "carDriver": "Mikki Hirvonen",
     "color": ["MULTI"],
-    "hex": ["#1A3A83", "#DAF4FF", "#9BDE0B"],
+    "hex": ["#263A66", "#DAF4FF", "#9BDE0B"],
     "thumbnail": "https://i.postimg.cc/V64RDrth/ford-focus-rs-wrc-2006-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/kGKQ6TCT/ford-focus-rs-wrc-2006-altaya-multi.png"
   },
@@ -1054,7 +1054,7 @@
     "carNumber": 3,
     "carDriver": "Mikki Hirvonen",
     "color": ["MULTI"],
-    "hex": ["#94475A", "#3B59AB", "#B1F245"],
+    "hex": ["#812123", "#262F77", "#B1F245"],
     "thumbnail": "https://i.postimg.cc/NMb4p9XZ/ford-focus-rs-wrc-2008-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/KjBPk0b9/ford-focus-rs-wrc-2008-altaya-multi.png"
   },
@@ -1068,7 +1068,7 @@
     "carNumber": 14,
     "carDriver": "Henning Solberg",
     "color": ["Orange"],
-    "hex": ["#FE8B4A"],
+    "hex": ["#C1490D"],
     "thumbnail": "https://i.postimg.cc/WbF9xgbt/ford-focus-rs-wrc-2008-altaya-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/kgVd1BL4/ford-focus-rs-wrc-2008-altaya-orange.png"
   },
@@ -1082,7 +1082,7 @@
     "carNumber": 7,
     "carDriver": "Markko Märtin",
     "color": ["White"],
-    "hex": ["#2E50F4", "#F4EF02", "#C9E9FF"],
+    "hex": ["#354D94", "#EFD300", "#EFF0EB"],
     "thumbnail": "https://i.postimg.cc/85wHtJWT/ford-focus-wrc-2004-solido-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/MZQbFpBz/ford-focus-wrc-2004-solido-white.png"
   },
@@ -1094,7 +1094,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#96B4D5", "#6B82A4"],
+    "hex": ["#949A9C", "#57585C"],
     "thumbnail": "https://i.postimg.cc/W3SnXFr2/ford-gt-2017-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/J7kc2zX1/ford-gt-2017-altaya-gray.png"
   },
@@ -1108,7 +1108,7 @@
     "carNumber": 68,
     "carDriver": "Helmut Kelleners",
     "color": ["White"],
-    "hex": ["#29282A", "#DF2D31", "#ECD591", "#F9F9F7"],
+    "hex": ["#29282A", "#BB2C3D", "#7F795C", "#F9F9F7"],
     "thumbnail": "https://i.postimg.cc/8PBQY11s/ford-gt-40-1969-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/WzLC9yCm/ford-gt-40-1969-altaya-white.png"
   },
@@ -1122,7 +1122,7 @@
     "carNumber": 11,
     "carDriver": "Alain Menu",
     "color": ["MULTI"],
-    "hex": ["#4769CC", "#E7D100"],
+    "hex": ["#2F286A", "#FCC800"],
     "thumbnail": "https://i.postimg.cc/qRzW2rcQ/ford-mondeo-zetec-2009-atlas-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/L6M08LW8/ford-mondeo-zetec-2009-atlas-multi.png"
   },
@@ -1134,7 +1134,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["White"],
-    "hex": ["#3C5CE5", "#D8F4FF"],
+    "hex": ["#1F267C", "#EAEBE1"],
     "thumbnail": "https://i.postimg.cc/FRGZDdcr/ford-mustang-shelby-gt350r-2016-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/c1nMbL3L/ford-mustang-shelby-gt350r-2016-altaya-white.png"
   },
@@ -1148,7 +1148,7 @@
     "carNumber": 19,
     "carDriver": "Sebastien Loeb",
     "color": ["Purple"],
-    "hex": ["#3169C4", "#FFDE00", "#6D5FDB"],
+    "hex": ["#373D5D", "#F4A900", "#542A6F"],
     "thumbnail": "https://i.postimg.cc/sXKcwQSf/ford-puma-rally-2022-altaya-purple-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/dQymxVCZ/ford-puma-rally-2022-altaya-purple.png"
   },
@@ -1162,7 +1162,7 @@
     "carNumber": 2,
     "carDriver": "Josep Maria Bardolet",
     "color": ["White"],
-    "hex": ["#F1DA1D", "#D2F4FF"],
+    "hex": ["#F1BE00", "#1E2F54", "#D0DCE7"],
     "thumbnail": "https://i.postimg.cc/C514thHV/ford-sierra-cosworth-4x4-1991-ixo-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/59CqR2zw/ford-sierra-cosworth-4x4-1991-ixo-white.png"
   },
@@ -1176,7 +1176,7 @@
     "carNumber": 8,
     "carDriver": "Didier Auriol",
     "color": ["White"],
-    "hex": ["#46A391", "#CEF0FF"],
+    "hex": ["#174929", "#EDEFE8"],
     "thumbnail": "https://i.postimg.cc/tJTzfqtb/ford-sierra-rs-cosworth-1988-ixo-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/X76cS6KB/ford-sierra-rs-cosworth-1988-ixo-white.png"
   },
@@ -1190,7 +1190,7 @@
     "carNumber": 17,
     "carDriver": "Keiichi Tsuchiya",
     "color": ["Gray"],
-    "hex": ["#710018", "#A9BFD5"],
+    "hex": ["#69041D", "#A1A6B2"],
     "thumbnail": "https://i.postimg.cc/SQ9nHqMH/honda-cr-z-2011-ebbro-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/hjfdXdhj/honda-cr-z-2011-ebbro-gray.png"
   },
@@ -1204,9 +1204,23 @@
     "carNumber": 11,
     "carDriver": "Freddy Loix",
     "color": ["Gray"],
-    "hex": ["#780726", "#ACC7EE"],
+    "hex": ["#8D111F", "#B8BAC8"],
     "thumbnail": "https://i.postimg.cc/MTNNDLtd/hyundai-accent-wrc-2003-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/BQGwnHz2/hyundai-accent-wrc-2003-altaya-gray.png"
+  },
+  {
+    "id": "hyundai-elantra-n-tcr-2021-ixo-blue",
+    "name": "Hyundai Elantra N TCR",
+    "year": 2021,
+    "brand": "Hyundai",
+    "manufacturer": "Ixo",
+    "category": "Racing",
+    "carNumber": 69,
+    "carDriver": "Jean‑Karl Verney",
+    "color": ["MULTI"],
+    "hex": ["#222841", "#C31513", "#7291E0"],
+    "thumbnail": "https://i.postimg.cc/pXh03zXL/hyundai-elantra-n-tcr-2021-ixo-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/fR3h2J1R/hyundai-elantra-n-tcr-2021-ixo-blue.png"
   },
   {
     "id": "hyundai-i20-coupe-wrc-2002-ixo-blue",
@@ -1218,7 +1232,7 @@
     "carNumber": 5,
     "carDriver": "Thierry Neuville",
     "color": ["Blue"],
-    "hex": ["#294182", "#FF345C", "#87C2FF"],
+    "hex": ["#23243A", "#EF3636", "#819BD9"],
     "thumbnail": "https://i.postimg.cc/C514thHS/hyundai-i20-coupe-wrc-2002-ixo-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Wbc6Lcmg/hyundai-i20-coupe-wrc-2002-ixo-blue.png"
   },
@@ -1235,20 +1249,6 @@
     "hex": ["#89B9FF", "#F4204E"],
     "thumbnail": "https://i.postimg.cc/Vv6FTfB1/hyundai-i30-n-tcr-2019-ixo-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wTYc8Y50/hyundai-i30-n-tcr-2019-ixo-blue.png"
-  },
-  {
-    "id": "hyundai-elantra-n-tcr-2021-ixo-blue",
-    "name": "Hyundai Elantra N TCR",
-    "year": 2021,
-    "brand": "Hyundai",
-    "manufacturer": "Ixo",
-    "category": "Racing",
-    "carNumber": 69,
-    "carDriver": "Jean‑Karl Verney",
-    "color": ["MULTI"],
-    "hex": ["#373B54", "#B71B0B", "#93A6D2"],
-    "thumbnail": "https://i.postimg.cc/pXh03zXL/hyundai-elantra-n-tcr-2021-ixo-blue-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/fR3h2J1R/hyundai-elantra-n-tcr-2021-ixo-blue.png"
   },
   {
     "id": "koenigsegg-regera-2016-altaya-gray",
