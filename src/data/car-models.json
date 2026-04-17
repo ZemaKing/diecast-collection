@@ -1246,7 +1246,7 @@
     "carNumber": 8,
     "carDriver": "Augusto Farfus Júnior",
     "color": ["MULTI"],
-    "hex": ["#89B9FF", "#F4204E"],
+    "hex": ["#839ECE", "#DC1E2A"],
     "thumbnail": "https://i.postimg.cc/Vv6FTfB1/hyundai-i30-n-tcr-2019-ixo-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wTYc8Y50/hyundai-i30-n-tcr-2019-ixo-blue.png"
   },
@@ -1258,7 +1258,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#78B3E3"],
+    "hex": ["#70818A"],
     "thumbnail": "https://i.postimg.cc/SNrnDtzH/koenigsegg-regera-2016-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/N0Rbnc72/koenigsegg-regera-2016-altaya-gray.png"
   },
@@ -1270,7 +1270,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#97B7D7"],
+    "hex": ["#9DA2AE"],
     "thumbnail": "https://i.postimg.cc/3w2zsJY5/lamborghini-gallardo-lp-570-4-squadra-corse-2013-ixo-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/43Kpymnj/lamborghini-gallardo-lp-570-4-squadra-corse-2013-ixo-gray.png"
   },
@@ -1282,7 +1282,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#AFCDEC"],
+    "hex": ["#8C97A1"],
     "thumbnail": "https://i.postimg.cc/HxHFdDkJ/lamborghini-reventon-2009-ixo-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Jhyj0GGM/lamborghini-reventon-2009-ixo-gray.png"
   },
@@ -1294,7 +1294,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#B42F47", "#232A39"],
+    "hex": ["#B92F49", "#2C2B32"],
     "thumbnail": "https://i.postimg.cc/PJxMcXz5/lamborghini-sesto-elemento-2010-ixo-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/4NRbkRvF/lamborghini-sesto-elemento-2010-ixo-gray.png"
   },
@@ -1306,7 +1306,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#90B3D3"],
+    "hex": ["#99A0BA"],
     "thumbnail": "https://i.postimg.cc/sXybsdgG/lamborghini-veneno-2013-ixo-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/hGJVvffj/lamborghini-veneno-2013-ixo-gray.png"
   },
@@ -1320,7 +1320,7 @@
     "carNumber": 6,
     "carDriver": "Henri Toivonen",
     "color": ["White"],
-    "hex": ["#22BCFA", "#E80D5A", "#D1FAFF"],
+    "hex": ["#3CA1EC", "#9F001C", "#D3DDE9"],
     "thumbnail": "https://i.postimg.cc/0jQC3kdN/lancia-delta-s4-1985-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/151ch10j/lancia-delta-s4-1985-altaya-white.png"
   },
@@ -1334,7 +1334,7 @@
     "carNumber": 4,
     "carDriver": "Markku Alén",
     "color": ["MULTI"],
-    "hex": ["#D12D5D", "#2F4661", "#BAE2F5"],
+    "hex": ["#AD0020", "#0C0B12", "#DBE7F4"],
     "thumbnail": "https://i.postimg.cc/0Q9nYdzw/lancia-stratos-hf-1978-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/V639k3xP/lancia-stratos-hf-1978-altaya-multi.png"
   },
@@ -1348,7 +1348,7 @@
     "carNumber": 33,
     "carDriver": "Paul Ricard",
     "color": ["Yellow"],
-    "hex": ["#202C3A", "#F7E700"],
+    "hex": ["#1E1E21", "#F0CD00"],
     "thumbnail": "https://i.postimg.cc/4N5YBFhr/maserati-granturismo-mc-gt3-2015-leo-models-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/W3jSLHXD/maserati-granturismo-mc-gt3-2015-leo-models-yellow.png"
   },
@@ -1362,7 +1362,7 @@
     "carNumber": 1,
     "carDriver": "Andrea Bertolini",
     "color": ["Black"],
-    "hex": ["#0F111E", "#00CDFB"],
+    "hex": ["#0E0E10", "#00AFB4"],
     "thumbnail": "https://i.postimg.cc/BnnXycTs/maserati-mc12-2004-burago-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Y0C3jL55/maserati-mc12-2004-burago-black.png"
   },
@@ -1376,7 +1376,7 @@
     "carNumber": 33,
     "carDriver": "Alfred Heger",
     "color": ["Black"],
-    "hex": ["#FFFFFF", "#F9BA0F", "#0A0F09"],
+    "hex": ["#D7DAD7", "#E68925", "#0A0F09"],
     "thumbnail": "https://i.postimg.cc/QMbJ6HR4/maserati-mc12-gt-1-2010-altaya-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Gh5NQSvS/maserati-mc12-gt-1-2010-altaya-black.png"
   },
@@ -1390,7 +1390,7 @@
     "carNumber": 20,
     "carDriver": "Win Percy",
     "color": ["White"],
-    "hex": ["#D53834", "#353736", "#FCFAF8"],
+    "hex": ["#8C1228", "#353736", "#D5D9E9"],
     "thumbnail": "https://i.postimg.cc/vmztPcp2/mazda-rx-7-1980-atlas-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/zXB6T1RY/mazda-rx-7-1980-atlas-white.png"
   },
@@ -1402,7 +1402,7 @@
     "manufacturer": "Altaya",
     "category": "Premium",
     "color": ["Orange"],
-    "hex": ["#EA671F"],
+    "hex": ["#CD5101"],
     "thumbnail": "https://i.postimg.cc/02MthD2K/mazda-rx-7-fd-1993-altaya-orange-thumbail.png",
     "imageUrl": "https://i.postimg.cc/T3yX7pB2/mazda-rx-7-fd-1993-altaya-orange.png"
   },
@@ -1414,7 +1414,7 @@
     "manufacturer": "Altaya",
     "category": "Premium",
     "color": ["Blue", "Black"],
-    "hex": ["#14181B", "#6BC4E4"],
+    "hex": ["#14181B", "#6FADEB"],
     "thumbnail": "https://i.postimg.cc/MKgYP8cQ/mazda-rx-8-1993-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/xdXbN6yy/mazda-rx-8-1993-altaya-blue.png"
   },
@@ -1426,23 +1426,9 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#BADDFE"],
+    "hex": ["#BCC7DE"],
     "thumbnail": "https://i.postimg.cc/k49Lq3gS/mclaren-720s-2017-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/7Lp02w2q/mclaren-720s-2017-altaya-gray.png"
-  },
-  {
-    "id": "mclaren-f1-gtr-1996-ixo-pink",
-    "name": "McLaren F1 GTR",
-    "year": 1996,
-    "brand": "McLaren",
-    "manufacturer": "Ixo",
-    "category": "Racing",
-    "carNumber": 8,
-    "carDriver": "Vincent Vosse",
-    "color": ["Pink"],
-    "hex": ["#3C465F", "#EE52D0"],
-    "thumbnail": "https://i.postimg.cc/8PxbKVFv/mclaren-f1-gtr-1996-ixo-pink-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/LsJZgxB3/mclaren-f1-gtr-1996-ixo-pink.png"
   },
   {
     "id": "mclaren-f1-gtr-2002-ixo-yellow",
@@ -1454,9 +1440,23 @@
     "carNumber": 76,
     "carDriver": "Naoki Hattori",
     "color": ["Yellow"],
-    "hex": ["#FF7500", "#1A1D68", "#EBDB09"],
+    "hex": ["#F36700", "#1A1D68", "#F1D100"],
     "thumbnail": "https://i.postimg.cc/BnDBRwDQ/mclaren-f1-gtr-2002-ixo-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/rp7R15Q0/mclaren-f1-gtr-2002-ixo-yellow.png"
+  },
+  {
+    "id": "mclaren-f1-gtr-1996-ixo-pink",
+    "name": "McLaren F1 GTR",
+    "year": 1996,
+    "brand": "McLaren",
+    "manufacturer": "Ixo",
+    "category": "Racing",
+    "carNumber": 8,
+    "carDriver": "Vincent Vosse",
+    "color": ["Pink"],
+    "hex": ["#030305", "#C6347C"],
+    "thumbnail": "https://i.postimg.cc/8PxbKVFv/mclaren-f1-gtr-1996-ixo-pink-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/LsJZgxB3/mclaren-f1-gtr-1996-ixo-pink.png"
   },
   {
     "id": "mclaren-p1-2013-altaya-orange",
@@ -1466,7 +1466,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Orange"],
-    "hex": ["#B43A34"],
+    "hex": ["#C9290E"],
     "thumbnail": "https://i.postimg.cc/W11hK6G2/mclaren-p1-2013-altaya-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/d3VBDTMJ/mclaren-p1-2013-altaya-orange.png"
   },
@@ -1480,21 +1480,9 @@
     "carNumber": 8,
     "carDriver": "Christian Vietoris",
     "color": ["Pink"],
-    "hex": ["#D6BAEF"],
+    "hex": ["#E6ADCE"],
     "thumbnail": "https://i.postimg.cc/C1Y9STxj/mercedes-benz-amg-c-63-2016-dtm-pink-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/bvKktpty/mercedes-benz-amg-c-63-2016-dtm-pink.png"
-  },
-  {
-    "id": "mercedes-benz-amg-gt-r-coupe-2016-altaya-green",
-    "name": "Mercedes-Benz AMG GT R Coupe",
-    "year": 2016,
-    "brand": "Mercedes-Benz",
-    "manufacturer": "Altaya",
-    "category": "Premium",
-    "color": ["Green"],
-    "hex": ["#647C95", "#52AB87"],
-    "thumbnail": "https://i.postimg.cc/httfwbLD/mercedes-benz-amg-gt-r-coupe-2016-altaya-green-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/zvGj3Rm8/mercedes-benz-amg-gt-r-coupe-2016-altaya-green.png"
   },
   {
     "id": "mercedes-benz-c-class-dtm-di-resta-amg-2010-edicola-white",
@@ -1506,9 +1494,21 @@
     "carDriver": "Paul Di Resta",
     "manufacturer": "Edicola",
     "color": ["White"],
-    "hex": ["#475B75", "#E2FDFF"],
+    "hex": ["#13171F", "#D9E5F0"],
     "thumbnail": "https://i.postimg.cc/xCYBnD1G/mercedes-benz-c-class-dtm-di-resta-amg-2010-edicola-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/PqBYwTwP/mercedes-benz-c-class-dtm-di-resta-amg-2010-edicola-white.png"
+  },
+  {
+    "id": "mercedes-benz-amg-gt-r-coupe-2016-altaya-green",
+    "name": "Mercedes-Benz AMG GT R Coupe",
+    "year": 2016,
+    "brand": "Mercedes-Benz",
+    "manufacturer": "Altaya",
+    "category": "Premium",
+    "color": ["Green"],
+    "hex": ["#474747", "#428F40"],
+    "thumbnail": "https://i.postimg.cc/httfwbLD/mercedes-benz-amg-gt-r-coupe-2016-altaya-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/zvGj3Rm8/mercedes-benz-amg-gt-r-coupe-2016-altaya-green.png"
   },
   {
     "id": "mercedes-benz-clk-dtm-2001-minichamps-black",
@@ -1520,7 +1520,7 @@
     "carNumber": 6,
     "carDriver": "Marcel Faessler",
     "color": ["Black"],
-    "hex": ["#1D1E23"],
+    "hex": ["#131419"],
     "thumbnail": "https://i.postimg.cc/XqVZ453s/mercedes-benz-clk-dtm-2001-minichamps-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/m2nr6JcJ/mercedes-benz-clk-dtm-2001-minichamps-black.png"
   },
@@ -1534,7 +1534,7 @@
     "carNumber": 2,
     "carDriver": "Bernd Schneider",
     "color": ["Gray"],
-    "hex": ["#1E51D6", "#323D51", "#9CB6D9"],
+    "hex": ["#0F2C86", "#20242C", "#929DAE"],
     "thumbnail": "https://i.postimg.cc/1zDbk5PY/mercedes-benz-clk-gtr-1998-maisto-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/pdgzFRFj/mercedes-benz-clk-gtr-1998-maisto-gray.png"
   },
@@ -1546,7 +1546,7 @@
     "manufacturer": "DeAgostini",
     "category": "Premium",
     "color": ["Black"],
-    "hex": ["#1D1E23"],
+    "hex": ["#121318"],
     "thumbnail": "https://i.postimg.cc/GtJXjtWv/mercedes-nenz-slr-mclaren-2004-deagostini-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/k54Hq47g/mercedes-nenz-slr-mclaren-2004-deagostini-black.png"
   },
@@ -1560,7 +1560,7 @@
     "carNumber": 37,
     "carDriver": "Dani Sordo",
     "color": ["Red"],
-    "hex": ["#D5F0FF", "#0244D9", "#E23562"],
+    "hex": ["#D5F0FF", "#0C3495", "#AA0023"],
     "thumbnail": "https://i.postimg.cc/QddHPkQC/mini-john-cooper-works-wrc-2012-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/0jyfrJgk/mini-john-cooper-works-wrc-2012-altaya-red.png"
   },
@@ -1572,7 +1572,7 @@
     "manufacturer": "Altaya",
     "category": "Racing",
     "color": ["Green"],
-    "hex": ["#3D556C", "#206AC9", "#7FE800"],
+    "hex": ["#3D556C", "#005A9C", "#7FE800"],
     "thumbnail": "https://i.postimg.cc/K8LDCsLK/mitsubishi-eclipse-1995-altaya-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/XvtBf9QL/mitsubishi-eclipse-1995-altaya-green.png"
   },
@@ -1586,7 +1586,7 @@
     "carNumber": 19,
     "carDriver": "Pentti Airikkala",
     "color": ["White"],
-    "hex": ["#D43A5D", "#2D42C1", "#D5F1FF"],
+    "hex": ["#A11F28", "#121C75", "#D5F1FF"],
     "thumbnail": "https://i.postimg.cc/NjTkZPT2/mitsubishi-galant-vr-4-1989-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/MGgf71dt/mitsubishi-galant-vr-4-1989-altaya-white.png"
   },
@@ -1600,7 +1600,7 @@
     "carNumber": 9,
     "carDriver": "Kenneth Eriksson",
     "color": ["White"],
-    "hex": ["#EC2A1C", "#2E6D3D", "#EEFCFE"],
+    "hex": ["#9C0318", "#143E27", "#EEFCFE"],
     "thumbnail": "https://i.postimg.cc/jqPBNMmf/mitsubishi-lancer-evolution-i-1994-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/dtdQhRmd/mitsubishi-lancer-evolution-i-1994-altaya-white.png"
   },
@@ -1614,7 +1614,7 @@
     "carNumber": 7,
     "carDriver": "Piergiorgio Bedini",
     "color": ["White"],
-    "hex": ["#DA3152", "#EEFCFE"],
+    "hex": ["#A90115", "#EEFCFE"],
     "thumbnail": "https://i.postimg.cc/jSN4BkNf/mitsubishi-lancer-evolution-iii-1996-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/cJPtRfX5/mitsubishi-lancer-evolution-iii-1996-altaya-white.png"
   },
@@ -1628,7 +1628,7 @@
     "carNumber": 1,
     "carDriver": "Tommi Mäkinen",
     "color": ["Red"],
-    "hex": ["#C6E5FF", "#EC023E"],
+    "hex": ["#D8DAEA", "#AB161F"],
     "thumbnail": "https://i.postimg.cc/Hk59FP59/mitsubishi-lancer-evolution-vi-1999-ixo-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Hx5cBjhP/mitsubishi-lancer-evolution-vi-1999-ixo-red.png"
   },
@@ -1642,7 +1642,7 @@
     "carNumber": 147,
     "carDriver": "Armindo Araujo",
     "color": ["White"],
-    "hex": ["#4FC4F7", "#E23156", "#30304A", "#CCECFF"],
+    "hex": ["#2092DE", "#C0051B", "#221F26", "#EDF0F2"],
     "thumbnail": "https://i.postimg.cc/W1rwxfrr/mitsubishi-lancer-evolution-ix-2009-atlas-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/ZqXv86wt/mitsubishi-lancer-evolution-ix-2009-atlas-white.png"
   },
@@ -1684,7 +1684,7 @@
     "carNumber": 10,
     "carDriver": "Gilles Panizzi",
     "color": ["Red"],
-    "hex": ["#45556D", "#A5C1E9", "#B20B29"],
+    "hex": ["#232429", "#A5AEB1", "#B20B29"],
     "thumbnail": "https://i.postimg.cc/Z53xXD3L/mitsubishi-lancer-wrc-2005-atlas-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/B6DLMtzv/mitsubishi-lancer-wrc-2005-atlas-red.png"
   },
@@ -1698,7 +1698,7 @@
     "carNumber": 206,
     "carDriver": "Jean‑Pierre Fontenay",
     "color": ["MULTI"],
-    "hex": ["#E0ECF8", "#FDE816", "#1C1E46", "#BCC2C7"],
+    "hex": ["#E0ECF8", "#FDE816", "#1C1E46", "#B51014"],
     "thumbnail": "https://i.postimg.cc/Gh8M6GhL/mitsubishi-pajero-montero-evo-1998-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/jSWrgLB4/mitsubishi-pajero-montero-evo-1998-altaya-multi.png"
   },
@@ -1712,7 +1712,7 @@
     "carNumber": 3,
     "carDriver": "Timo Salonen",
     "color": ["MULTI"],
-    "hex": ["#E13C4F", "#DCE7F0", "#1E5DA4"],
+    "hex": ["#B21A2D", "#D2DEEB", "#10388B"],
     "thumbnail": "https://i.postimg.cc/v8n4CMVp/nissan-240-rs-1984-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/859rMzrG/nissan-240-rs-1984-altaya-multi.png"
   },
@@ -1724,21 +1724,9 @@
     "manufacturer": "Altaya",
     "category": "Racing",
     "color": ["Gold"],
-    "hex": ["#F6E07B"],
+    "hex": ["#8A8907"],
     "thumbnail": "https://i.postimg.cc/BZFjRsKr/nissan-fairlady-z-2000-altaya-gold-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/63gGnpG5/nissan-fairlady-z-2000-altaya-gold.png"
-  },
-  {
-    "id": "nissan-gt-r-nismo-2017-altaya-white",
-    "name": "Nissan GT-R Nismo",
-    "year": 2017,
-    "brand": "Nissan",
-    "manufacturer": "Altaya",
-    "category": "Supercar",
-    "color": ["White"],
-    "hex": ["#A5C1E9"],
-    "thumbnail": "https://i.postimg.cc/vZZcjLrH/nissan-gt-r-nismo-2017-altaya-white-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/Y0C3jmcq/nissan-gt-r-nismo-2017-altaya-white.png"
   },
   {
     "id": "nissan-gt-r-lm-nismo-2015-ebbro-black",
@@ -1750,9 +1738,21 @@
     "carNumber": 23,
     "carDriver": "Max Chilton",
     "color": ["Black"],
-    "hex": ["#313035"],
+    "hex": ["#333335"],
     "thumbnail": "https://i.postimg.cc/Prp60Yr8/nissan-gt-r-lm-nismo-2015-ebbro-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/13gZCfbG/nissan-gt-r-lm-nismo-2015-ebbro-black.png"
+  },
+  {
+    "id": "nissan-gt-r-nismo-2017-altaya-white",
+    "name": "Nissan GT-R Nismo",
+    "year": 2017,
+    "brand": "Nissan",
+    "manufacturer": "Altaya",
+    "category": "Supercar",
+    "color": ["White"],
+    "hex": ["#DAE0E3"],
+    "thumbnail": "https://i.postimg.cc/vZZcjLrH/nissan-gt-r-nismo-2017-altaya-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Y0C3jmcq/nissan-gt-r-nismo-2017-altaya-white.png"
   },
   {
     "id": "nissan-gt-r-skyline-r32-1993-ebbro-green",
@@ -1764,7 +1764,7 @@
     "carNumber": 55,
     "carDriver": "Masahiro Hasemi",
     "color": ["Green"],
-    "hex": ["#3E8B4F"],
+    "hex": ["#006432"],
     "thumbnail": "https://i.postimg.cc/kXF3HnnX/nissan-gt-r-skyline-r32-1993-ebbro-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/J0VvTFvK/nissan-gt-r-skyline-r32-1993-ebbro-green.png"
   },
@@ -1776,7 +1776,7 @@
     "manufacturer": "Altaya",
     "category": "Racing",
     "color": ["Gray"],
-    "hex": ["#0666D8", "#93B1D3"],
+    "hex": ["#0D4391", "#747D84"],
     "thumbnail": "https://i.postimg.cc/bNTZ3Ftc/nissan-gt-r-skyline-r34-1999-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/TwGQM4C5/nissan-gt-r-skyline-r34-1999-altaya-gray.png"
   },
@@ -1790,7 +1790,7 @@
     "carNumber": 3,
     "carDriver": "Masahiko Kageyama",
     "color": ["White"],
-    "hex": ["#FAFAFD", "#FE0000"],
+    "hex": ["#BFCDCF", "#FF0004"],
     "thumbnail": "https://i.postimg.cc/Yq5X70hr/nissan-skyline-r33-1998-ebbro-white-thumbail.png",
     "imageUrl": "https://i.postimg.cc/mgcGXtKS/nissan-skyline-r33-1998-ebbro-white.png"
   },
@@ -1804,7 +1804,7 @@
     "carNumber": 15,
     "carDriver": "Michael Bartels",
     "color": ["Black"],
-    "hex": ["#1C2534", "#02CCEC"],
+    "hex": ["#16171C", "#15ABB2"],
     "thumbnail": "https://i.postimg.cc/k5WL0X9Z/opel-astra-v8-coupe-michael-bartels-2002-schuco-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/tgLWxpxW/opel-astra-v8-coupe-michael-bartels-2002-schuco-black.png"
   },
@@ -1818,7 +1818,7 @@
     "carNumber": 20,
     "carDriver": "Fabrizio Ormezzano",
     "color": ["White"],
-    "hex": ["#979648", "#D8ECFF"],
+    "hex": ["#E7BC00", "#E0E6E7"],
     "thumbnail": "https://i.postimg.cc/qvnxWZn1/opel-kadett-gt-e-1978-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wvJy03rM/opel-kadett-gt-e-1978-altaya-white.png"
   },
@@ -1832,7 +1832,7 @@
     "carNumber": 18,
     "carDriver": "Mauro Gherrero Hero",
     "color": ["White"],
-    "hex": ["#3A57EA", "#F72856", "#DFFEFF"],
+    "hex": ["#1C1A71", "#A20D13", "#DFFEFF"],
     "thumbnail": "https://i.postimg.cc/FHcVwncD/opel-manta-400-1986-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/mkscqBxg/opel-manta-400-1986-altaya-white.png"
   },
@@ -1844,7 +1844,7 @@
     "manufacturer": "Altaya",
     "category": "Retro",
     "color": ["Black"],
-    "hex": ["#A89163", "#0B0B14"],
+    "hex": ["#F1BF01", "#171719"],
     "thumbnail": "https://i.postimg.cc/kg8vLh81/opel-manta-a-black-magic-1975-altaya-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/gjWw5m9j/opel-manta-a-black-magic-1975-altaya-black.png"
   },
@@ -1858,7 +1858,7 @@
     "carNumber": 21,
     "carDriver": "Uwe Alzen",
     "color": ["Yellow"],
-    "hex": ["#E3DB27"],
+    "hex": ["#E4C600"],
     "thumbnail": "https://i.postimg.cc/rwWN7YWY/opel-vectra-stw-1997-onyx-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/7hkCcwv2/opel-vectra-stw-1997-onyx-yellow.png"
   },
@@ -1872,7 +1872,7 @@
     "carNumber": 6,
     "carDriver": "Soheil Ayari",
     "color": ["MULTI"],
-    "hex": ["#EBED00", "#E22347", "#C5E7FF", "#3261B6"],
+    "hex": ["#E5D300", "#C5292A", "#EFF6FA", "#213B86"],
     "thumbnail": "https://i.postimg.cc/xdsWk8m1/oreca-01-aim-2010-atlas-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/5NMk2LrB/oreca-01-aim-2010-atlas-multi.png"
   },
@@ -1884,7 +1884,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["White"],
-    "hex": ["#C8ECFF", "#28364C"],
+    "hex": ["#E1E2E4", "#111113"],
     "thumbnail": "https://i.postimg.cc/jdXDZk7r/pagani-zonda-cinque-2009-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/B6sN9VMK/pagani-zonda-cinque-2009-altaya-white.png"
   },
@@ -1898,7 +1898,7 @@
     "carNumber": 24,
     "carDriver": "Romain Hein",
     "color": ["MULTI"],
-    "hex": ["#2B3147", "#E53CDB"],
+    "hex": ["#05060B", "#C63494"],
     "thumbnail": "https://i.postimg.cc/jdXDZk7K/pescarolo-01-evo-judd-2010-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/PxhKsR2b/pescarolo-01-evo-judd-2010-altaya-multi.png"
   },
@@ -1912,7 +1912,7 @@
     "carNumber": 4,
     "carDriver": "Juha Kankkunen",
     "color": ["White"],
-    "hex": ["#A82140", "#232E57", "#2E81D4", "#DFFEFF"],
+    "hex": ["#BD222C", "#343744", "#006497", "#DFFEFF"],
     "thumbnail": "https://i.postimg.cc/R0BLmQQR/peugeot-205-turbo-16-e2-1986-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/fyN3FD43/peugeot-205-turbo-16-e2-1986-altaya-white.png"
   },
@@ -1926,23 +1926,9 @@
     "carNumber": 2,
     "carDriver": "Richard Burns",
     "color": ["Red"],
-    "hex": ["#DFE8F3", "#FF0D38"],
+    "hex": ["#D8D9E0", "#CD1817"],
     "thumbnail": "https://i.postimg.cc/q7TxrXXj/peugeot-206-wrc-2003-solido-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/j2bW9tVH/peugeot-206-wrc-2003-solido-red.png"
-  },
-  {
-    "id": "peugeot-207-s2000-2011-altaya-yellow",
-    "name": "Peugeot 207 S2000",
-    "year": 2011,
-    "brand": "Peugeot",
-    "manufacturer": "Altaya",
-    "category": "Rally",
-    "carNumber": 5,
-    "carDriver": "Thierry Neuville",
-    "color": ["Yellow"],
-    "hex": ["#EC294A", "#2F435A", "#F3F300"],
-    "thumbnail": "https://i.postimg.cc/CKgs0HHJ/peugeot-207-s2000-2011-altaya-yellow-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/qqTtY4fL/peugeot-207-s2000-2011-altaya-yellow.png"
   },
   {
     "id": "peugeot-207-s2000-2013-ixo-red",
@@ -1954,9 +1940,23 @@
     "carNumber": 2,
     "carDriver": "Nicolas Vouilloz",
     "color": ["Red"],
-    "hex": ["#CCECFF", "#FE004B"],
+    "hex": ["#EBEFF2", "#AE1823"],
     "thumbnail": "https://i.postimg.cc/tgjNbttM/peugeot-207-s2000-2013-ixo-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/3NTy6YML/peugeot-207-s2000-2013-ixo-red.png"
+  },
+  {
+    "id": "peugeot-207-s2000-2011-altaya-yellow",
+    "name": "Peugeot 207 S2000",
+    "year": 2011,
+    "brand": "Peugeot",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 5,
+    "carDriver": "Thierry Neuville",
+    "color": ["Yellow"],
+    "hex": ["#AE181D", "#1F1F21", "#E5C900"],
+    "thumbnail": "https://i.postimg.cc/CKgs0HHJ/peugeot-207-s2000-2011-altaya-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/qqTtY4fL/peugeot-207-s2000-2011-altaya-yellow.png"
   },
   {
     "id": "peugeot-306-maxi-1998-altaya-white",
@@ -1968,9 +1968,23 @@
     "carNumber": 16,
     "carDriver": "Gilles Panizzi",
     "color": ["White"],
-    "hex": ["#004FD7", "#FF3D2E", "#D1F4FF"],
+    "hex": ["#002C72", "#C72D20", "#CBD7E4"],
     "thumbnail": "https://i.postimg.cc/QM3JDkkz/peugeot-306-maxi-1998-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wMQtYZHh/peugeot-306-maxi-1998-altaya-white.png"
+  },
+  {
+    "id": "peugeot-307-wrc-2011-vitesse-white",
+    "name": "Peugeot 307 WRC",
+    "year": 2011,
+    "brand": "Peugeot",
+    "manufacturer": "Vitesse",
+    "category": "Rally",
+    "carNumber": 5,
+    "carDriver": "Stéphane Sarrazin",
+    "color": ["White"],
+    "hex": ["#004BA3", "#E7F1F6"],
+    "thumbnail": "https://i.postimg.cc/3JzZSHyD/peugeot-307-wrc-2011-vitesse-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/9fDqwLtd/peugeot-307-wrc-2011-vitesse-white.png"
   },
   {
     "id": "peugeot-307-wrc-2004-altaya-red",
@@ -1987,20 +2001,6 @@
     "imageUrl": "https://i.postimg.cc/1Xrg12PC/peugeot-307-wrc-2004-altaya-red.png"
   },
   {
-    "id": "peugeot-307-wrc-2011-vitesse-white",
-    "name": "Peugeot 307 WRC",
-    "year": 2011,
-    "brand": "Peugeot",
-    "manufacturer": "Vitesse",
-    "category": "Rally",
-    "carNumber": 5,
-    "carDriver": "Stéphane Sarrazin",
-    "color": ["White"],
-    "hex": ["#2979FF", "#D8F4FF"],
-    "thumbnail": "https://i.postimg.cc/3JzZSHyD/peugeot-307-wrc-2011-vitesse-white-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/9fDqwLtd/peugeot-307-wrc-2011-vitesse-white.png"
-  },
-  {
     "id": "peugeot-908-hdi-fap-2009-altaya-multi",
     "name": "Peugeot 908 HDI FAP",
     "year": 2009,
@@ -2010,7 +2010,7 @@
     "carNumber": 9,
     "carDriver": "Marc Gené",
     "color": ["MULTI"],
-    "hex": ["#206FD9", "#CFE3F7", "#95A8C2", "#0D0E14"],
+    "hex": ["#084996", "#D9E6E7", "#A3A09B", "#09090A"],
     "thumbnail": "https://i.postimg.cc/rs35PSw1/peugeot-908-hdi-fap-2009-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/vHX1PJ0f/peugeot-908-hdi-fap-2009-altaya-multi.png"
   },
