@@ -7,9 +7,8 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "otherCategories": ["Transport", "Construction", "Utility", "Off-Road", "Racing", "Retro"],
-    "carDriver": "špedtrans maribor",
     "color": ["White"],
-    "hex": ["#6BB77D", "#528B5D", "#EAF1F9"],
+    "hex": ["#1F7906", "#0C5125", "#D4E0EC"],
     "thumbnail": "https://i.postimg.cc/pVQDnTVG/iveco-turbostar-1984-deagostini-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/ZnPFbY0n/iveco-turbostar-1984-deagostini-white.png"
   }
