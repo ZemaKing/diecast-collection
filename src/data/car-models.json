@@ -23,7 +23,7 @@
     "carNumber": 27,
     "carDriver": "Gabriele Noberasco",
     "color": ["Green"],
-    "hex": ["#39C333", "#323F55"],
+    "hex": ["#469F18", "#1B1C21"],
     "thumbnail": "https://i.postimg.cc/BQgjMw17/abarth-124-rally-rgt-2017-altaya-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Twq7K6pg/abarth-124-rally-rgt-2017-altaya-green.png",
     "COMING_SOON": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
@@ -38,7 +38,7 @@
     "carNumber": 2,
     "carDriver": "Giandomenico Basso",
     "color": ["White"],
-    "hex": ["#FF003C", "#F0F8FB"],
+    "hex": ["#C00218", "#D9DFE4"],
     "thumbnail": "https://i.postimg.cc/QxbF0nWy/abarth-grande-punto-s2000-2009-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/CKbJ2gHw/abarth-grande-punto-s2000-2009-altaya-white.png"
   },
@@ -50,7 +50,7 @@
     "manufacturer": "Altaya",
     "category": "Racing",
     "color": ["Yellow"],
-    "hex": ["#F8B400", "#955349"],
+    "hex": ["#DB9C00", "#5F332B"],
     "thumbnail": "https://i.postimg.cc/QM6RBC7M/acura-nsx-2000-altaya-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/nctwhBWK/acura-nsx-2000-altaya-yellow.png"
   },
@@ -64,7 +64,7 @@
     "carNumber": 43,
     "carDriver": "Emmanuel Guigou",
     "color": ["Blue"],
-    "hex": ["#242626", "#CDDCE5", "#056B9F"],
+    "hex": ["#1E1F23", "#DCE6F2", "#3168B1"],
     "thumbnail": "https://i.postimg.cc/GpMZBtDt/alpine-a110-r-gt-2021-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/vHdSZfKt/alpine-a110-r-gt-2021-altaya-blue.png"
   },
@@ -78,7 +78,7 @@
     "carNumber": 2,
     "carDriver": "Guy Fréquelin",
     "color": ["Yellow"],
-    "hex": ["#B98A19", "#843B59", "#2C3344"],
+    "hex": ["#F3A200", "#831E33", "#131419"],
     "thumbnail": "https://i.postimg.cc/8zF0cHv5/alpine-a310-v6-1977-altara-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/JzWkH7DK/alpine-a310-v6-1977-altara-yellow.png"
   },
@@ -92,7 +92,7 @@
     "carDriver": "Stefan Mücke",
     "manufacturer": "Ixo",
     "color": ["MULTI"],
-    "hex": ["#FF8840", "#9FD6FF", "#667C91"],
+    "hex": ["#E36F19", "#BBD8F3", "#434345"],
     "thumbnail": "https://i.postimg.cc/9Q4n0p9z/aston-martin-amr-one-2011-ixo-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/htqdQ4zr/aston-martin-amr-one-2011-ixo-multi.png"
   },
@@ -106,7 +106,7 @@
     "carNumber": 9,
     "carDriver": "Pedro Lamy",
     "color": ["Green"],
-    "hex": ["#D8FF5A", "#4E8E9B"],
+    "hex": ["#E2F626", "#334C50"],
     "thumbnail": "https://i.postimg.cc/cJV4mJTN/aston-martin-dbr9-2006-altara-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/9QQd3x2h/aston-martin-dbr9-2006-altara-green.png"
   },
@@ -118,7 +118,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Gray"],
-    "hex": ["#607084"],
+    "hex": ["#616163"],
     "thumbnail": "https://i.postimg.cc/YSXJ40Fk/aston-martin-db11-2016-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/65N1pnPc/aston-martin-db11-2016-altaya-gray.png"
   },
@@ -132,7 +132,7 @@
     "carNumber": 9,
     "carDriver": "Jan Charouz",
     "color": ["Blue"],
-    "hex": ["#FF7E16", "#3A71F8", "#A4D7FE"],
+    "hex": ["#E86C00", "#1E2E86", "#C1D7EC"],
     "thumbnail": "https://i.postimg.cc/4xKSy5cm/aston-martin-lola-b09-60-2009-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/YCwWL2GR/aston-martin-lola-b09-60-2009-altaya-blue.png"
   },
@@ -144,7 +144,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Orange"],
-    "hex": ["#3A4E65", "#F78643"],
+    "hex": ["#100F14", "#D56500"],
     "thumbnail": "https://i.postimg.cc/VLRJDHCz/aston-martin-vulcan-2015-ixo-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/4d5PJQS8/aston-martin-vulcan-2015-ixo-orange.png"
   },
@@ -156,7 +156,7 @@
     "manufacturer": "Minichamps",
     "category": "Premium",
     "color": ["Gray"],
-    "hex": ["#364867"],
+    "hex": ["#23232D"],
     "thumbnail": "https://i.postimg.cc/QMcv2xhX/audi-a4-2007-minichamps-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/CLNG633w/audi-a4-2007-minichamps-gray.png"
   },
@@ -168,7 +168,7 @@
     "manufacturer": "iScale",
     "category": "Premium",
     "color": ["Gray"],
-    "hex": ["#68849E"],
+    "hex": ["#4D5463"],
     "thumbnail": "https://i.postimg.cc/yN02MYs6/audi-a6-c8-2018-iscale-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/FsZynMMF/audi-a6-c8-2018-iscale-gray.png"
   },
@@ -180,7 +180,7 @@
     "manufacturer": "iScale",
     "category": "Premium",
     "color": ["Gray"],
-    "hex": ["#657998"],
+    "hex": ["#404552"],
     "thumbnail": "https://i.postimg.cc/k5WL0X90/audi-a8-l-2017-iscale-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/7YV3QFFY/audi-a8-l-2017-iscale-gray.png"
   },
@@ -192,7 +192,7 @@
     "manufacturer": "iScale",
     "category": "Premium",
     "color": ["Gray"],
-    "hex": ["#8CB0D7"],
+    "hex": ["#696E7A"],
     "thumbnail": "https://i.postimg.cc/3w2zsJYJ/audi-q7-2015-iscale-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/zGGCmdNn/audi-q7-2015-iscale-gray.png"
   },
@@ -204,7 +204,7 @@
     "manufacturer": "Minichamps",
     "category": "Retro",
     "color": ["Gray"],
-    "hex": ["#94AFD1"],
+    "hex": ["#858B92"],
     "thumbnail": "https://i.postimg.cc/cJfPp40L/audi-quattro-1986-minichamps-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Vkkqy7wr/audi-quattro-1986-minichamps-gray.png"
   },
@@ -218,7 +218,7 @@
     "carNumber": 5,
     "carDriver": "Tom Kristensen",
     "color": ["MULTI"],
-    "hex": ["#FF3E55", "#3C5C77", "#C1EBFF"],
+    "hex": ["#DD1D2F", "#1C0C18", "#D8E7F8"],
     "thumbnail": "https://i.postimg.cc/sgBNxcW5/audi-r8-2004-altaya-multi-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wjcsXKLV/audi-r8-2004-altaya-multi.png"
   },
@@ -232,7 +232,7 @@
     "carNumber": 99,
     "carDriver": "Mike Rockenfeller",
     "color": ["Gray"],
-    "hex": ["#869BBE", "#992A4C"],
+    "hex": ["#858A97", "#981B29"],
     "thumbnail": "https://i.postimg.cc/vZ1NTznf/audi-r8-lms-2009-minichamps-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/pLYnfNzC/audi-r8-lms-2009-minichamps-gray.png"
   },
@@ -246,7 +246,7 @@
     "carNumber": 15,
     "carDriver": "Gianmaria Mondini",
     "color": ["Gray"],
-    "hex": ["#6585AF", "#FF4750"],
+    "hex": ["#3D424F", "#E73937"],
     "thumbnail": "https://i.postimg.cc/SKcHBNk0/audi-r10-tdi-2009-altaya-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/sggYFnzP/audi-r10-tdi-2009-altaya-gray.png"
   },
@@ -260,7 +260,7 @@
     "carNumber": 1,
     "carDriver": "Marcel Fässler",
     "color": ["White"],
-    "hex": ["#A1B6C9", "#AA294C", "#DDF6FF"],
+    "hex": ["#8E908F", "#A11C34", "#EDEFF8"],
     "thumbnail": "https://i.postimg.cc/MpcFHDB7/audi-r-18-e-tron-quattro-2012-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wjcsXKLW/audi-r-18-e-tron-quattro-2012-altaya-white.png"
   },
@@ -272,7 +272,7 @@
     "manufacturer": "Spark",
     "category": "Premium",
     "color": ["Red"],
-    "hex": ["#2E344A", "#D00738"],
+    "hex": ["#1E1E27", "#9D001E"],
     "thumbnail": "https://i.postimg.cc/SKcHBNkb/audi-rs-5-coupe-2017-spark-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/2SSQpHYh/audi-rs-5-coupe-2017-spark-red.png"
   },
@@ -298,7 +298,7 @@
     "manufacturer": "Herpa",
     "category": "Premium",
     "color": ["Red"],
-    "hex": ["#951337"],
+    "hex": ["#831017"],
     "thumbnail": "https://i.postimg.cc/q72WPM46/bmw-2-series-coupe-2014-herpa-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wj4h9hx2/bmw-2-series-coupe-2014-herpa-red.png"
   },
@@ -312,7 +312,7 @@
     "carNumber": 4,
     "carDriver": "Colin Turkington",
     "color": ["Orange"],
-    "hex": ["#FB8344"],
+    "hex": ["#E6640A"],
     "thumbnail": "https://i.postimg.cc/Bv2RrQ4K/bmw-320si-e90-2009-atlas-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/g2tvGvcg/bmw-320si-e90-2009-atlas-orange.png"
   },
@@ -324,7 +324,7 @@
     "manufacturer": "Herpa",
     "category": "Premium",
     "color": ["Blue"],
-    "hex": ["#2B52B1"],
+    "hex": ["#29407B"],
     "thumbnail": "https://i.postimg.cc/Bv2RrQ41/bmw-4-series-gran-coupe-f36-2014-herpa-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/CxrjwjMs/bmw-4-series-gran-coupe-f36-2014-herpa-blue.png"
   },
@@ -336,7 +336,7 @@
     "manufacturer": "Ixo",
     "category": "Retro",
     "color": ["Red"],
-    "hex": ["#D64936"],
+    "hex": ["#A00118"],
     "thumbnail": "https://i.postimg.cc/cCL6qcyD/bmw-m3-e30-1990-ixo-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/5ybLXvcz/bmw-m3-e30-1990-ixo-red.png"
   },
@@ -350,7 +350,7 @@
     "carNumber": 11,
     "carDriver": "Will Hoy",
     "color": ["Blue"],
-    "hex": ["#252F44", "#00B1FF"],
+    "hex": ["#17181C", "#0374B6"],
     "thumbnail": "https://i.postimg.cc/6p7mq0Zd/bmw-m3-e30-1991-atlas-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/4xbh6CVB/bmw-m3-e30-1991-atlas-blue.png"
   },
@@ -364,7 +364,7 @@
     "carNumber": 42,
     "carDriver": "Dirk Müller",
     "color": ["White"],
-    "hex": ["#D02945", "#294BAC", "#D6ECFD"],
+    "hex": ["#B6141B", "#1B2B7E", "#E1E5ED"],
     "thumbnail": "https://i.postimg.cc/1tfbDS0r/bmw-m3-gtr-v8-2004-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/WbPf1gy3/bmw-m3-gtr-v8-2004-altaya-white.png"
   },
@@ -378,7 +378,7 @@
     "carNumber": 16,
     "carDriver": "Timo Glock",
     "color": ["Yellow"],
-    "hex": ["#363B44", "#E2C100"],
+    "hex": ["#202123", "#EFC300"],
     "thumbnail": "https://i.postimg.cc/mg06HH3M/bmw-m4-f82-2016-dtm-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/bvySL69W/bmw-m4-f82-2016-dtm-yellow.png"
   },
@@ -392,7 +392,7 @@
     "carNumber": 101,
     "carDriver": "Mikkel Jensen",
     "color": ["Blue"],
-    "hex": ["#86AFEC", "#2A62F7"],
+    "hex": ["#80828E", "#263EA3"],
     "thumbnail": "https://i.postimg.cc/bJ84pcwv/bmw-m6-gtr-2020-dtm-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/VkZjzjLy/bmw-m6-gtr-2020-dtm-blue.png"
   },
@@ -442,7 +442,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Blue"],
-    "hex": ["#202C7F", "#44B5FF"],
+    "hex": ["#132163", "#35A2E8"],
     "thumbnail": "https://i.postimg.cc/hPrXp3dS/bugatti-chiron-2016-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/503gxSRG/bugatti-chiron-2016-altaya-blue.png"
   },
@@ -454,7 +454,7 @@
     "manufacturer": "Altaya",
     "category": "Supercar",
     "color": ["Black"],
-    "hex": ["#9E4A30", "#101019"],
+    "hex": ["#DB6105", "#131315"],
     "thumbnail": "https://i.postimg.cc/28w12XZj/bugatti-veyron-16-4-super-sport-2010-altaya-black-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/LXTDH3bQ/bugatti-veyron-16-4-super-sport-2010-altaya-black.png"
   },
@@ -466,7 +466,7 @@
     "manufacturer": "Altaya",
     "category": "Retro",
     "color": ["Blue"],
-    "hex": ["#BADFFF", "#006DF8"],
+    "hex": ["#C9D4E5", "#0E3C9B"],
     "thumbnail": "https://i.postimg.cc/FHH7qgyt/chevrolet-chevelle-ss-454-1970-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/k4csnvH9/chevrolet-chevelle-ss-454-1970-altaya-blue.png"
   },
@@ -478,7 +478,7 @@
     "manufacturer": "Ixo",
     "category": "Supercar",
     "color": ["Yellow"],
-    "hex": ["#FEFF1C"],
+    "hex": ["#EAE000"],
     "thumbnail": "https://i.postimg.cc/2jW1gmZ2/chevrolet-corvette-stingray-2020-ixo-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/FR7LYLzG/chevrolet-corvette-stingray-2020-ixo-yellow.png"
   },
@@ -492,7 +492,7 @@
     "carNumber": 2,
     "carDriver": "Jason Plato",
     "color": ["Blue"],
-    "hex": ["#C6E3FA", "#169CFF"],
+    "hex": ["#D3D8E4", "#0C59B1"],
     "thumbnail": "https://i.postimg.cc/c4mvX5n4/chevrolet-cruze-lt-btcc-2010-atlas-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/sXcmV4LV/chevrolet-cruze-lt-btcc-2010-atlas-blue.png"
   },
@@ -506,7 +506,7 @@
     "carNumber": 10,
     "carDriver": "Olivier Beretta",
     "color": ["Red"],
-    "hex": ["#B7DBFA", "#E22C44"],
+    "hex": ["#A4A8B5", "#A43130"],
     "thumbnail": "https://i.postimg.cc/3JBknbDL/chrysler-viper-gts-r-2004-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/8CLwYSBs/chrysler-viper-gts-r-2004-altaya-red.png"
   },
@@ -520,7 +520,7 @@
     "carNumber": 15,
     "carDriver": "Jean-Claude Andruet",
     "color": ["White"],
-    "hex": ["#DC2843", "#C9EBFF"],
+    "hex": ["#8F231F", "#E0E2E3"],
     "thumbnail": "https://i.postimg.cc/CxW6qqCf/citroen-bx-4tc-1986-ixo-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/13cNGxDh/citroen-bx-4tc-1986-ixo-white.png"
   },
@@ -548,7 +548,7 @@
     "carNumber": 1,
     "carDriver": "Sébastien Loeb",
     "color": ["Red"],
-    "hex": ["#495D75", "#DD2751"],
+    "hex": ["#1E1F23", "#B12527"],
     "thumbnail": "https://i.postimg.cc/x1WFzzGm/citroen-c4-sport-2007-solido-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/VkBbqyXP/citroen-c4-sport-2007-solido-red.png"
   },
@@ -576,7 +576,7 @@
     "carNumber": 100,
     "carDriver": "Daniel Elena",
     "color": ["Pink"],
-    "hex": ["#C3DDF7", "#D8468B"],
+    "hex": ["#E2E6E6", "#E8446A"],
     "thumbnail": "https://i.postimg.cc/t4Lmxxd5/citroen-ds3-r3-2011-altaya-pink-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/tgqnDrz4/citroen-ds3-r3-2011-altaya-pink.png"
   },
@@ -604,7 +604,7 @@
     "carNumber": 65,
     "carDriver": "Sébastien Loeb",
     "color": ["Yellow"],
-    "hex": ["#C33A67", "#EBD402"],
+    "hex": ["#910B1E", "#EBC000"],
     "thumbnail": "https://i.postimg.cc/cLV5nn7T/citroen-saxo-s1600-2002-altaya-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/s2jGKnJB/citroen-saxo-s1600-2002-altaya-yellow.png"
   },
@@ -618,7 +618,7 @@
     "carNumber": 7,
     "carDriver": "Jean-Claude Andruet",
     "color": ["White"],
-    "hex": ["#D4ECFF"],
+    "hex": ["#C8D4DE"],
     "thumbnail": "https://i.postimg.cc/4xrF99v8/citroen-visa-1000-pistes-1985-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/tgBZchr4/citroen-visa-1000-pistes-1985-altaya-white.png"
   },
@@ -632,7 +632,7 @@
     "carNumber": 1,
     "carDriver": "Sébastien Loeb",
     "color": ["Blue"],
-    "hex": ["#D3405D", "#3755D0"],
+    "hex": ["#A71B22", "#1A2376"],
     "thumbnail": "https://i.postimg.cc/vZpSVV7C/citroen-xsara-wrc-2006-altaya-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/wBwyrhWJ/citroen-xsara-wrc-2006-altaya-blue.png"
   },
@@ -646,7 +646,7 @@
     "carNumber": 2,
     "carDriver": "Philippe Bugalski",
     "color": ["Red"],
-    "hex": ["#D5E6FF", "#DE0045"],
+    "hex": ["#91081A"],
     "thumbnail": "https://i.postimg.cc/Jz9dkk39/citroen-zx-16v-1994-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/zfxbQndK/citroen-zx-16v-1994-altaya-red.png"
   },
@@ -660,7 +660,7 @@
     "carNumber": 4,
     "carDriver": "André Kumpen",
     "color": ["Green"],
-    "hex": ["#CBF0FF", "#0B0A0F", "#8A9635", "#51E8B0"],
+    "hex": ["#DEEAF5", "#28292E", "#E7D200", "#4CAC6B"],
     "thumbnail": "https://i.postimg.cc/GmmHNJFR/corvetter-c5r-fia-gt-rac-tourist-trophy-2007-altaya-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Y93RpzPt/corvetter-c5r-fia-gt-rac-tourist-trophy-2007-altaya-green.png"
   },
@@ -674,7 +674,7 @@
     "carNumber": 62,
     "carDriver": "Rauno Aaltonen",
     "color": ["Red"],
-    "hex": ["#07080A", "#971112"],
+    "hex": ["#151517", "#930C19"],
     "thumbnail": "https://i.postimg.cc/3rmzptV0/datsun-240z-1971-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/8PWk7dBv/datsun-240z-1971-altaya-red.png"
   },
@@ -686,7 +686,7 @@
     "manufacturer": "Solido",
     "category": "Retro",
     "color": ["Red"],
-    "hex": ["#E63639"],
+    "hex": ["#4A1321"],
     "thumbnail": "https://i.postimg.cc/Kj84X5S0/datsun-240z-rocket-b-1972-solido-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/T1fgKm8g/datsun-240z-rocket-b-1972-solido-red.png"
   },
@@ -700,7 +700,7 @@
     "carNumber": 14,
     "carDriver": "Harry Källström",
     "color": ["White"],
-    "hex": ["#D5FDFF", "#445B79"],
+    "hex": ["#DEE9F3", "#0D1117"],
     "thumbnail": "https://i.postimg.cc/7ZZfcM3w/datsun-violet-160j-1976-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/503gxSrb/datsun-violet-160j-1976-altaya-white.png"
   },
@@ -740,7 +740,7 @@
     "carNumber": 51,
     "carDriver": "Alessandro Pier Guidi",
     "color": ["Red"],
-    "hex": ["#CFE7F2", "#E4F41F", "#B3305D"],
+    "hex": ["#CDD2D3", "#E4F41F", "#801028"],
     "thumbnail": "https://i.postimg.cc/xdMpy1g5/ferrari-488-gte-2017-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/s2TQLpnn/ferrari-488-gte-2017-altaya-red.png"
   },
@@ -754,7 +754,7 @@
     "carNumber": 12,
     "carDriver": "Jacky Ickx",
     "color": ["Yellow"],
-    "hex": ["#ECD500"],
+    "hex": ["#EBC200"],
     "thumbnail": "https://i.postimg.cc/rpxZCwg7/ferrari-512s-1970-altaya-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/V65rPdTW/ferrari-512s-1970-altaya-yellow.png"
   },
@@ -780,7 +780,7 @@
     "manufacturer": "Altaya",
     "category": "Racing",
     "color": ["Red"],
-    "hex": ["#B5D7FE", "#C80043"],
+    "hex": ["#DBDDEA", "#870516"],
     "thumbnail": "https://i.postimg.cc/4xKSy5cy/ferrari-599-gtb-fiorano-panamerican-tour-2006-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/P5kwvfpY/ferrari-599-gtb-fiorano-panamerican-tour-2006-altaya-red.png"
   },
@@ -794,7 +794,7 @@
     "carNumber": 76,
     "carDriver": "Jean-Claude Andruet",
     "color": ["Blue"],
-    "hex": ["#E5E53B", "#2054A9"],
+    "hex": ["#F5E900", "#243165"],
     "thumbnail": "https://i.postimg.cc/Y9hTQ7Nx/ferrari-bb512lm-1981-edicola-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/kXdhgKHG/ferrari-bb512lm-1981-edicola-blue.png"
   },
@@ -832,7 +832,7 @@
     "manufacturer": "Atlas",
     "category": "Supercar",
     "color": ["Red"],
-    "hex": ["#20273B", "#F52146"],
+    "hex": ["#111217", "#AE191E"],
     "thumbnail": "https://i.postimg.cc/vBGhrL49/ferrari-laferrari-2013-atlas-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/gJfy2fCG/ferrari-laferrari-2013-atlas-red.png"
   },
@@ -844,7 +844,7 @@
     "manufacturer": "Altaya",
     "category": "Retro",
     "color": ["Red"],
-    "hex": ["#911034"],
+    "hex": ["#8E1B28"],
     "thumbnail": "https://i.postimg.cc/j5LByT6c/ferrari-mondial-quattrovalvole-1982-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/3JHbxmqw/ferrari-mondial-quattrovalvole-1982-altaya-red.png"
   },
@@ -858,7 +858,7 @@
     "carNumber": 1,
     "carDriver": "Markku Alén",
     "color": ["White"],
-    "hex": ["#38964F", "#F30524", "#FFFFFF"],
+    "hex": ["#01431E", "#CC1B39", "#FFFFFF"],
     "thumbnail": "https://i.postimg.cc/d1VmgJYm/fiat-131-abarth-1976-burago-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/m2DJ7GFf/fiat-131-abarth-1976-burago-white.png"
   },
@@ -872,7 +872,7 @@
     "carNumber": 52,
     "carDriver": "Andrea Dallavilla",
     "color": ["Red"],
-    "hex": ["#C3E7FF", "#CF234C"],
+    "hex": ["#DAD9E1", "#A21C24"],
     "thumbnail": "https://i.postimg.cc/TwT0VqKb/fiat-punto-s1600-2001-altaya-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/W3Qm1QBj/fiat-punto-s1600-2001-altaya-red.png"
   },
@@ -886,7 +886,7 @@
     "carNumber": 3,
     "carDriver": "Sergio Vallejo",
     "color": ["White"],
-    "hex": ["#FFE500", "#DFFFFE", "#3756A0"],
+    "hex": ["#E4BA00", "#CBDAE7", "#343A76"],
     "thumbnail": "https://i.postimg.cc/hjKsLbXp/fiat-punto-s1600-2002-altaya-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Fz3ydTvR/fiat-punto-s1600-2002-altaya-white.png"
   },
