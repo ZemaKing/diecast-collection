@@ -12,7 +12,7 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
-    "id": "fap-2226-mikser-1975-deagostini-yellow",
+    "id": "fap-2226-mikser-1976-deagostini-yellow",
     "name": "FAP 2226 Mikser",
     "year": 1976,
     "brand": "FAP",
@@ -20,6 +20,18 @@
     "category": "Construction",
     "color": ["Yellow"],
     "hex": ["#FEF053"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
+    "id": "fap-2229-1978-deagostini-yellow",
+    "name": "FAP 2229",
+    "year": 1978,
+    "brand": "FAP",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Yellow"],
+    "hex": ["#F3B548"],
     "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
