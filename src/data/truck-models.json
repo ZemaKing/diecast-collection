@@ -157,6 +157,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "star-25-1960-deagostini-gray",
+    "name": "Star 25",
+    "year": 1960,
+    "brand": "Star",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Gray"],
+    "hex": ["#B4C4C4"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "star-25-msh-2-1960-deagostini-blue",
     "name": "Star 25 MSH-2",
     "year": 1960,
