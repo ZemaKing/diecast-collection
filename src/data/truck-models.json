@@ -36,6 +36,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "fiat-190-nc-1974-deagostini-yellow",
+    "name": "Fiat 190 NC",
+    "year": 1974,
+    "brand": "Fiat",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Yellow"],
+    "hex": ["#EDD420"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "iveco-turbostar-1984-deagostini-white",
     "name": "Iveco TurboStar",
     "year": 1984,
