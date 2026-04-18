@@ -108,6 +108,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "man-f8-1967-deagostini-red",
+    "name": "MAN F8",
+    "year": 1967,
+    "brand": "MAN",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#AF1509"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "om-titano-1955-deagostini-red",
     "name": "OM Titano",
     "year": 1955,
