@@ -12,6 +12,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "fap-2226-mikser-1975-deagostini-yellow",
+    "name": "FAP 2226 Mikser",
+    "year": 1976,
+    "brand": "FAP",
+    "manufacturer": "DeAgostini",
+    "category": "Construction",
+    "color": ["Yellow"],
+    "hex": ["#FEF053"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "fiat-190-1974-deagostini-blue",
     "name": "Fiat 190",
     "year": 1974,
