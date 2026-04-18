@@ -240,6 +240,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "volvo-88-1965-deagostini-blue",
+    "name": "Volvo F88",
+    "year": 1965,
+    "brand": "Volvo",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#315178"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "zastava-640-1978-deagostini-blue",
     "name": "Zastava 640",
     "year": 1978,
