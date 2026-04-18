@@ -73,6 +73,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "star-266-1973-deagostini-yellow",
+    "name": "Star 266",
+    "year": 1973,
+    "brand": "Star",
+    "manufacturer": "DeAgostini",
+    "category": "Off-Road",
+    "color": ["Yellow"],
+    "hex": ["#FFC231"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "tatra-813-kolos-1967-deagostini-green",
     "name": "Tatra 813 Kolos",
     "year": 1967,
