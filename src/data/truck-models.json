@@ -54,7 +54,6 @@
     "brand": "Iveco",
     "manufacturer": "DeAgostini",
     "category": "Transport",
-    "otherCategories": ["Transport", "Construction", "Utility", "Off-Road", "Racing", "Retro"],
     "color": ["White"],
     "hex": ["#1F7906", "#0C5125", "#D4E0EC"],
     "thumbnail": "https://i.postimg.cc/pVQDnTVG/iveco-turbostar-1984-deagostini-white-thumbnail.png",
@@ -105,6 +104,18 @@
     "category": "Transport",
     "color": ["Yellow"],
     "hex": ["#ECC623"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
+    "id": "om-titano-1955-deagostini-red",
+    "name": "OM Titano",
+    "year": 1955,
+    "brand": "OM",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#C1240D"],
     "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
