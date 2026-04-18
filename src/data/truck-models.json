@@ -49,6 +49,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "škoda-liaz-706-rth-1957-deagostini-orange",
+    "name": "Škoda-Liaz 706 RTH",
+    "year": 1957,
+    "brand": "Škoda",
+    "manufacturer": "DeAgostini",
+    "category": "Construction",
+    "color": ["Orange"],
+    "hex": ["#FB6F31"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "star-25-msh-2-1960-deagostini-blue",
     "name": "Star 25 MSH-2",
     "year": 1960,
