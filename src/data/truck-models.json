@@ -96,6 +96,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "mercedes-benz-lp-334-1959-deagostini-blue",
+    "name": "Mercedes-Benz LP 334",
+    "year": 1959,
+    "brand": "Mercedes-Benz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#4084DF"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "mercedes-benz-ng-1936-1973-deagostini-yellow",
     "name": "Mercedes-Benz NG 1936",
     "year": 1973,
