@@ -1,5 +1,17 @@
 [
   {
+    "id": "fiat-190-1974-deagostini-blue",
+    "name": "Fiat 190",
+    "year": 1974,
+    "brand": "Fiat",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#0272E1"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "iveco-turbostar-1984-deagostini-white",
     "name": "Iveco TurboStar",
     "year": 1984,
