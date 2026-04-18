@@ -1,5 +1,17 @@
 [
   {
+    "id": "alfa-romeo-mille-1958-deagostini-red",
+    "name": "Alfa Romeo Mille",
+    "year": 1958,
+    "brand": "Alfa Romeo",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#C7102E"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "fiat-190-1974-deagostini-blue",
     "name": "Fiat 190",
     "year": 1974,
