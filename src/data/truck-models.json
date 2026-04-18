@@ -61,6 +61,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "jelcz-325-wuko-sm-101-1975-deagostini-red",
+    "name": "Jelcz 325 Wuko SM-101",
+    "year": 1975,
+    "brand": "Jelcz",
+    "manufacturer": "DeAgostini",
+    "category": "Utility",
+    "color": ["Red"],
+    "hex": ["#E8504A"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "magirus-mercur-120-1955-deagostini-blue",
     "name": "Magirus Mercur 120",
     "year": 1955,
