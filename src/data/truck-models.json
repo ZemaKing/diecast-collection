@@ -11,5 +11,29 @@
     "hex": ["#1F7906", "#0C5125", "#D4E0EC"],
     "thumbnail": "https://i.postimg.cc/pVQDnTVG/iveco-turbostar-1984-deagostini-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/ZnPFbY0n/iveco-turbostar-1984-deagostini-white.png"
+  },
+  {
+    "id": "magirus-mercur-120-1955-deagostini-blue",
+    "name": "Magirus Mercur 120",
+    "year": 1955,
+    "brand": "Magirus",
+    "manufacturer": "DeAgostini",
+    "category": "Utility",
+    "color": ["Blue"],
+    "hex": ["#265687"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
+    "id": "tatra-813-kolos-1967-deagostini-green",
+    "name": "Tatra 813 Kolos",
+    "year": 1967,
+    "brand": "Tatra",
+    "manufacturer": "DeAgostini",
+    "category": "Off-Road",
+    "color": ["Green"],
+    "hex": ["#495436"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   }
 ]
