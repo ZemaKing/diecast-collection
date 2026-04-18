@@ -264,6 +264,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "zastava-615-1962-deagostini-red",
+    "name": "Zastava 615",
+    "year": 1962,
+    "brand": "Zastava",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#B31C2D"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "zastava-640-1978-deagostini-blue",
     "name": "Zastava 640",
     "year": 1978,
