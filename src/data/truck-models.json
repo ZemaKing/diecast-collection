@@ -37,6 +37,18 @@
     "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
   },
   {
+    "id": "raba-l22-1958-deagostini-white",
+    "name": "Raba L22",
+    "year": 1958,
+    "brand": "Raba",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["White"],
+    "hex": ["#FAFAFC"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "star-25-msh-2-1960-deagostini-blue",
     "name": "Star 25 MSH-2",
     "year": 1960,
