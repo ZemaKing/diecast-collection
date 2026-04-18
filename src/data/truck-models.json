@@ -13,6 +13,18 @@
     "imageUrl": "https://i.postimg.cc/ZnPFbY0n/iveco-turbostar-1984-deagostini-white.png"
   },
   {
+    "id": "jelcz-315-1955-deagostini-green",
+    "name": "Jelcz 315",
+    "year": 1968,
+    "brand": "Jelcz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Green"],
+    "hex": ["#409D66"],
+    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+  },
+  {
     "id": "magirus-mercur-120-1955-deagostini-blue",
     "name": "Magirus Mercur 120",
     "year": 1955,
