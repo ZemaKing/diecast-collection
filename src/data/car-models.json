@@ -1,18 +1,5 @@
 [
   {
-    "id": "iveco-turbostar-1984-deagostini-white",
-    "name": "Iveco TurboStar",
-    "year": 1984,
-    "brand": "Iveco",
-    "manufacturer": "DeAgostini",
-    "category": "Transport",
-    "otherCategories": ["Transport", "Construction", "Utility", "Off-Road", "Racing", "Retro"],
-    "color": ["White"],
-    "hex": ["#1F7906", "#0C5125", "#D4E0EC"],
-    "thumbnail": "https://i.postimg.cc/pVQDnTVG/iveco-turbostar-1984-deagostini-white-thumbnail.png",
-    "imageUrl": "https://i.postimg.cc/ZnPFbY0n/iveco-turbostar-1984-deagostini-white.png"
-  },
-  {
     "id": "abarth-124-rally-rgt-2017-altaya-green",
     "name": "Abarth 124 Rally RGT",
     "year": 2017,

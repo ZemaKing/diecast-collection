@@ -6,13 +6,15 @@ import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {DetailsModal} from "./components/DetailsModal/DetailsModal.tsx";
 
 import carModels from "./data/car-models.json";
+import truckModels from "./data/truck-models.json";
 
 import type {Filters} from "./components/Sidebar/Sidebar.tsx";
 import type {DiecastModel} from "./types";
 
 import "./App.css";
 
-const models = carModels as DiecastModel[];
+// const models = carModels as DiecastModel[];
+const models = [...(carModels as DiecastModel[]), ...(truckModels as DiecastModel[])];
 
 export default function App() {
     const [showScrollTop, setShowScrollTop] = useState(false);

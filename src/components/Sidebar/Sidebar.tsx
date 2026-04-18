@@ -60,7 +60,7 @@ export function Sidebar({models, filteredCount, onFiltersChange, onClear}: Sideb
 
     return (
         <aside className="sidebar">
-            <img src="/logo.png" alt="ZemaKing logo" className="siteLogo"/>
+            <img src="/cars-logo.png" alt="ZemaKing logo" className="siteLogo"/>
 
             <div className="sidebarTopRow">
                 <div className="sidebarTitle">Filters</div>
