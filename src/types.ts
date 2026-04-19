@@ -13,3 +13,5 @@ export type DiecastModel = {
     imageUrl: string;
     scale?: string;
 };
+
+export type DiecastType = "cars" | "trucks";

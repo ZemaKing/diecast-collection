@@ -1,6 +1,7 @@
 import './Header.css';
 import {Instagram} from '../../icons/Instagram.tsx';
 import {Email} from '../../icons/Email.tsx';
+import {Link} from "react-router-dom";
 
 type Props = {
     title: string;
@@ -8,10 +9,12 @@ type Props = {
     rightSlot?: React.ReactNode;
 };
 
-export function Header({ title, count, rightSlot }: Props) {
+export function Header({title, count, rightSlot}: Props) {
     return (
         <header className="topHeader">
-            <div className="logo">{title}</div>
+            <div className="logo">
+                <Link className="backButton" to="/">{title}</Link>
+            </div>
 
             <div className="headerRight">
                 <div className="countPill countPillTotal">{count} models</div>

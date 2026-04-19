@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 
-import type {DiecastModel} from "../../types.ts";
+import type {DiecastModel, DiecastType} from "../../types.ts";
 
 import "./Sidebar.css";
 
@@ -19,6 +19,7 @@ export type Filters = {
 };
 
 type SidebarProps = {
+    type: DiecastType;
     models: DiecastModel[];
     filteredCount: number;
     onClear?: () => void;
@@ -38,7 +39,7 @@ function getFilterOptions(items: DiecastModel[]): FilterOptions {
     };
 }
 
-export function Sidebar({models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
+export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
     const options = useMemo(() => getFilterOptions(models), [models]);
 
     const [brand, setBrand] = useState<string>("All");
@@ -58,9 +59,11 @@ export function Sidebar({models, filteredCount, onFiltersChange, onClear}: Sideb
         onClear?.();
     };
 
+    const logoSrc = type === "cars" ? "/cars-logo.png" : "/trucks-logo.png";
+
     return (
         <aside className="sidebar">
-            <img src="/cars-logo.png" alt="ZemaKing logo" className="siteLogo"/>
+            <img src={logoSrc} alt="ZemaKing logo" className="siteLogo"/>
 
             <div className="sidebarTopRow">
                 <div className="sidebarTitle">Filters</div>

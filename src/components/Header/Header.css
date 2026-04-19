@@ -25,6 +25,24 @@
     filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.backButton {
+    background: #1e2532;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background 120ms ease, transform 120ms ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.backButton:hover {
+    background: #232c3d;
+    transform: translateY(-1px);
+}
+
 .headerRight {
     display: flex;
     gap: 12px;

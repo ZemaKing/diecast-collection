@@ -1,0 +1,136 @@
+.landingPage {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 30%),
+        var(--bg);
+    color: var(--text);
+}
+
+.landingHeader {
+    padding: 32px 16px 16px;
+}
+
+.landingHeader__inner {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.landingHero {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.landingEyebrow {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.landingTitle {
+    font-size: 32px;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.landingSubtitle {
+    margin: 0;
+    color: var(--muted);
+    max-width: 640px;
+}
+
+.landingMain {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.landingGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.landingCard {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--panel);
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    min-height: 260px;
+    transition: transform 160ms ease, border-color 160ms ease;
+    text-decoration: none;
+}
+
+.landingCard:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.landingCard__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.landingCard__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(8, 11, 18, 0.88) 0%,
+        rgba(8, 11, 18, 0.35) 55%,
+        rgba(8, 11, 18, 0.15) 100%
+    );
+}
+
+.landingCard__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 260px;
+    padding: 20px;
+}
+
+.landingCard__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.72);
+    margin-bottom: 8px;
+}
+
+.landingCard__title {
+    margin: 0;
+    font-size: 28px;
+    color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    .landingHeader {
+        padding: 40px 20px 20px;
+    }
+
+    .landingMain {
+        padding: 20px;
+    }
+
+    .landingGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .landingCard,
+    .landingCard__content {
+        min-height: 320px;
+    }
+}
