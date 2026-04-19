@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import "./collection-page.css";
 
 import { Header } from "../../components/Header/Header";
