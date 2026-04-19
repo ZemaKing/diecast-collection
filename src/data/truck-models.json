@@ -8,8 +8,8 @@
     "category": "Transport",
     "color": ["Red"],
     "hex": ["#C7102E"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/bwx1m7mq/alfa-romeo-mille-1958-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/alfa-romeo-mille-1958-deagostini-red.png"
   },
   {
     "id": "fap-2226-mikser-1976-deagostini-yellow",
@@ -20,8 +20,8 @@
     "category": "Construction",
     "color": ["Yellow"],
     "hex": ["#FEF053"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/CxGbc3cF/fap-2226-mikser-1976-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/fap-2226-mikser-1976-deagostini-yellow.png"
   },
   {
     "id": "fap-2229-1978-deagostini-yellow",
@@ -32,8 +32,8 @@
     "category": "Transport",
     "color": ["Yellow"],
     "hex": ["#F3B548"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/CxGbc3cB/fap-2229-1978-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/fap-2229-1978-deagostini-yellow.png"
   },
   {
     "id": "fiat-190-1974-deagostini-blue",
@@ -44,8 +44,8 @@
     "category": "Transport",
     "color": ["Blue"],
     "hex": ["#0272E1"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/Sx6cgBgX/fiat-190-1974-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/fiat-190-1974-deagostini-blue.png"
   },
   {
     "id": "fiat-190-nc-1974-deagostini-yellow",
@@ -56,8 +56,20 @@
     "category": "Transport",
     "color": ["Yellow"],
     "hex": ["#EDD420"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/P5W1SgSw/fiat-190-nc-1974-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/fiat-190-nc-1974-deagostini-yellow.png"
+  },
+  {
+    "id": "iveco-stralis-2007-newray-red",
+    "name": "Iveco Stralis",
+    "year": 2007,
+    "brand": "Iveco",
+    "manufacturer": "NewRay",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#D52C3E"],
+    "thumbnail": "https://i.postimg.cc/g2V3gCgk/iveco-stralis-2007-newray-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/iveco-stralis-2007-newray-red.png"
   },
   {
     "id": "iveco-turbostar-1984-deagostini-white",
@@ -80,8 +92,8 @@
     "category": "Transport",
     "color": ["Green"],
     "hex": ["#409D66"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/BnT2mrm6/jelcz-315-1968-deagostini-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/jelcz-315-1968-deagostini-green.png"
   },
   {
     "id": "jelcz-325-wuko-sm-101-1975-deagostini-red",
@@ -92,8 +104,8 @@
     "category": "Utility",
     "color": ["Red"],
     "hex": ["#E8504A"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/0yRpdkdh/jelcz-325-wuko-sm-101-1975-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/jelcz-325-wuko-sm-101-1975-deagostini-red.png"
   },
   {
     "id": "magirus-mercur-120-1955-deagostini-blue",
@@ -104,32 +116,8 @@
     "category": "Utility",
     "color": ["Blue"],
     "hex": ["#265687"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
-  },
-  {
-    "id": "mercedes-benz-lp-334-1959-deagostini-blue",
-    "name": "Mercedes-Benz LP 334",
-    "year": 1959,
-    "brand": "Mercedes-Benz",
-    "manufacturer": "DeAgostini",
-    "category": "Transport",
-    "color": ["Blue"],
-    "hex": ["#4084DF"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
-  },
-  {
-    "id": "mercedes-benz-ng-1936-1973-deagostini-yellow",
-    "name": "Mercedes-Benz NG 1936",
-    "year": 1973,
-    "brand": "Mercedes-Benz",
-    "manufacturer": "DeAgostini",
-    "category": "Transport",
-    "color": ["Yellow"],
-    "hex": ["#ECC623"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/RZ7wgkgh/magirus-mercur-120-1955-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/magirus-mercur-120-1955-deagostini-blue.png"
   },
   {
     "id": "man-f8-1967-deagostini-red",
@@ -140,8 +128,32 @@
     "category": "Transport",
     "color": ["Red"],
     "hex": ["#AF1509"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/kg3xFJvr/man-f8-1967-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/man-f8-1967-deagostini-red.png"
+  },
+  {
+    "id": "mercedes-benz-lp-334-1959-deagostini-blue",
+    "name": "Mercedes-Benz LP 334",
+    "year": 1959,
+    "brand": "Mercedes-Benz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#4084DF"],
+    "thumbnail": "https://i.postimg.cc/2SR4FkFs/mercedes-benz-lp-334-1959-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/mercedes-benz-lp-334-1959-deagostini-blue.png"
+  },
+  {
+    "id": "mercedes-benz-ng-1936-1973-deagostini-yellow",
+    "name": "Mercedes-Benz NG 1936",
+    "year": 1973,
+    "brand": "Mercedes-Benz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Yellow"],
+    "hex": ["#ECC623"],
+    "thumbnail": "https://i.postimg.cc/8zQhBpBq/mercedes-benz-ng-1936-1973-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/mercedes-benz-ng-1936-1973-deagostini-yellow.png"
   },
   {
     "id": "om-titano-1955-deagostini-red",
@@ -152,8 +164,8 @@
     "category": "Transport",
     "color": ["Red"],
     "hex": ["#C1240D"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/RZ5cQSLz/om-titano-1955-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/om-titano-1955-deagostini-red.png"
   },
   {
     "id": "raba-f26-1964-deagostini-green",
@@ -164,8 +176,8 @@
     "category": "Transport",
     "color": ["Green"],
     "hex": ["#99C098"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/RZ7wgkgq/raba-f26-1964-deagostini-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/raba-f26-1964-deagostini-green.png"
   },
   {
     "id": "raba-h9-1964-deagostini-green",
@@ -176,8 +188,8 @@
     "category": "Transport",
     "color": ["Green"],
     "hex": ["#A3E6C2"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/Bn9xcSB0/raba-h9-1964-deagostini-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/raba-h9-1964-deagostini-green.png"
   },
   {
     "id": "raba-l22-1958-deagostini-white",
@@ -188,8 +200,8 @@
     "category": "Transport",
     "color": ["White"],
     "hex": ["#FAFAFC"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/GmwkJLxR/raba-l22-1958-deagostini-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/GmwkJLxR/raba-l22-1958-deagostini-white.png"
   },
   {
     "id": "škoda-liaz-706-rth-1957-deagostini-orange",
@@ -200,8 +212,8 @@
     "category": "Construction",
     "color": ["Orange"],
     "hex": ["#FB6F31"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/g2FvqzHd/skoda-liaz-706-rth-1957-deagostini-orange-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/g2FvqzHd/skoda-liaz-706-rth-1957-deagostini-orange.png"
   },
   {
     "id": "star-20-w14-1948-deagostini-blue",
@@ -212,8 +224,8 @@
     "category": "Transport",
     "color": ["Blue"],
     "hex": ["#2A5D8E"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/2SR4Fk7C/star-20-w14-1948-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/2SR4Fk7C/star-20-w14-1948-deagostini-blue.png"
   },
   {
     "id": "star-25-1960-deagostini-gray",
@@ -224,8 +236,8 @@
     "category": "Transport",
     "color": ["Gray"],
     "hex": ["#B4C4C4"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/K8SnrGDx/star-25-1960-deagostini-gray-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/K8SnrGDx/star-25-1960-deagostini-gray.png"
   },
   {
     "id": "star-25-msh-2-1960-deagostini-blue",
@@ -236,8 +248,8 @@
     "category": "Utility",
     "color": ["Blue"],
     "hex": ["#9FEBF3"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/dVP8msjq/star-25-msh-2-1960-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/dVP8msjq/star-25-msh-2-1960-deagostini-blue.png"
   },
   {
     "id": "star-266-1973-deagostini-yellow",
@@ -248,8 +260,8 @@
     "category": "Off-Road",
     "color": ["Yellow"],
     "hex": ["#FFC231"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/DwkqdvPv/star-266-1973-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/DwkqdvPv/star-266-1973-deagostini-yellow.png"
   },
   {
     "id": "tatra-813-kolos-1967-deagostini-green",
@@ -260,8 +272,8 @@
     "category": "Off-Road",
     "color": ["Green"],
     "hex": ["#495436"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/qvs21P1z/tatra-813-kolos-1967-deagostini-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/qvs21P1z/tatra-813-kolos-1967-deagostini-green.png"
   },
   {
     "id": "volvo-88-1965-deagostini-blue",
@@ -272,8 +284,8 @@
     "category": "Transport",
     "color": ["Blue"],
     "hex": ["#315178"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/qvV8XJx7/volvo-88-1965-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/qvV8XJx7/volvo-88-1965-deagostini-blue.png"
   },
   {
     "id": "zastava-615-1962-deagostini-red",
@@ -284,8 +296,8 @@
     "category": "Transport",
     "color": ["Red"],
     "hex": ["#B31C2D"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/Bn9xcSBn/zastava-615-1962-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Bn9xcSBn/zastava-615-1962-deagostini-red.png"
   },
   {
     "id": "zastava-640-1978-deagostini-blue",
@@ -296,8 +308,8 @@
     "category": "Transport",
     "color": ["Blue"],
     "hex": ["#1B3596"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/FHy0TMTY/zastava-640-1978-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FHy0TMTY/zastava-640-1978-deagostini-blue.png"
   },
   {
     "id": "zastava-euro-zeta-1987-deagostini-yellow",
@@ -308,8 +320,8 @@
     "category": "Transport",
     "color": ["Yellow"],
     "hex": ["#DCAC00"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/VkQjBfWL/zastava-euro-zeta-1987-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/VkQjBfWL/zastava-euro-zeta-1987-deagostini-yellow.png"
   },
   {
     "id": "zastava-turbo-rival-1985-deagostini-white",
@@ -320,8 +332,8 @@
     "category": "Transport",
     "color": ["White"],
     "hex": ["#E9ECE5"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/jSHyMpMY/zastava-turbo-rival-1985-deagostini-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/jSHyMpMY/zastava-turbo-rival-1985-deagostini-white.png"
   },
   {
     "id": "zil-157-d470-1958-deagostini-orange",
@@ -332,7 +344,7 @@
     "category": "Off-Road",
     "color": ["Orange"],
     "hex": ["#DD772F"],
-    "thumbnail": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png",
-    "imageUrl": "https://i.postimg.cc/FRw0Rg6P/comming-soon.png"
+    "thumbnail": "https://i.postimg.cc/Nj6Rd3dB/zil-157-d470-1958-deagostini-orange-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Nj6Rd3dB/zil-157-d470-1958-deagostini-orange.png"
   }
 ]
