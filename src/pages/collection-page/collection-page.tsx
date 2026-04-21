@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
@@ -60,6 +60,10 @@ export function CollectionPage({ type }: CollectionPageProps) {
         });
     }, [models, filters]);
 
+    const getModelById = useCallback((id: string): DiecastModel | undefined => {
+        return models.find((m) => String(m.id) === id);
+    }, [models]);
+
     useEffect(() => {
         setSelectedModel(null);
         setFilters({});
@@ -78,17 +82,55 @@ export function CollectionPage({ type }: CollectionPageProps) {
         };
     }, []);
 
-    const openModal = (model: DiecastModel) => {
+    const openModal = useCallback((model: DiecastModel) => {
         setSelectedModel(model);
-    };
+        const url = new URL(window.location.href);
+        url.searchParams.set("model", String(model.id));
+        window.history.pushState({}, '', url.pathname + url.search);
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setSelectedModel(null);
-    };
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("model")) {
+            url.searchParams.delete("model");
+            window.history.pushState({}, '', url.pathname + url.search);
+        }
+    }, []);
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
+
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        const modelId = url.searchParams.get("model");
+        if (modelId && models.length > 0) {
+            const model = getModelById(modelId);
+            if (model && (!selectedModel || selectedModel.id !== model.id)) {
+                setSelectedModel(model);
+            }
+        }
+    }, [models, getModelById, selectedModel]);
+
+    useEffect(() => {
+        const onPopState = () => {
+            const url = new URL(window.location.href);
+            const modelId = url.searchParams.get("model");
+            if (modelId) {
+                const model = getModelById(modelId);
+                if (model) {
+                    setSelectedModel(model);
+                } else {
+                    setSelectedModel(null);
+                }
+            } else {
+                setSelectedModel(null);
+            }
+        };
+        window.addEventListener("popstate", onPopState);
+        return () => window.removeEventListener("popstate", onPopState);
+    }, [getModelById]);
 
     return (
         <div className="layout">
