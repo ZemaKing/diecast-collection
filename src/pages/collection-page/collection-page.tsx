@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 import "./collection-page.css";
 
-import { Header } from "../../components/Header/Header";
-import { Sidebar } from "../../components/Sidebar/Sidebar";
-import { ModelCard } from "../../components/ModelCard/ModelCard";
-import { DetailsModal } from "../../components/DetailsModal/DetailsModal";
+import {Header} from "../../components/Header/Header";
+import {Sidebar} from "../../components/Sidebar/Sidebar";
+import {ModelCard} from "../../components/ModelCard/ModelCard";
+import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
 import carModelsData from "../../data/car-models.json";
 import truckModelsData from "../../data/truck-models.json";
@@ -20,8 +20,6 @@ export function CollectionPage({ type }: CollectionPageProps) {
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    console.warn('Filters: ', filters);
-
     const models = useMemo(() => {
         return type === "cars" ? carModelsData as DiecastModel[] : truckModelsData as DiecastModel[];
     }, [type]);
@@ -30,7 +28,6 @@ export function CollectionPage({ type }: CollectionPageProps) {
         return models.filter((model: DiecastModel) => {
             if (filters && typeof filters === "object") {
                 const currentFilters = filters as Record<string, string[]>;
-                // Helper to check if filter is 'All' or empty
                 const isAll = (arr?: string[]) => !arr || arr.length === 0 || arr.includes("All");
 
                 if (!isAll(currentFilters.brand) && !currentFilters.brand.includes(model.brand)) {
