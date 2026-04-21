@@ -1,8 +1,9 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
-import {Sidebar} from "../../components/Sidebar/Sidebar";
+import {Sidebar, type Filters} from "../../components/Sidebar/Sidebar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
@@ -15,59 +16,52 @@ type CollectionPageProps = {
     type: DiecastType;
 };
 
-export function CollectionPage({ type }: CollectionPageProps) {
-    const [filters, setFilters] = useState({});
+const DEFAULT_FILTERS: Filters = {
+    brand: "All",
+    manufacturer: "All",
+    category: "All",
+    color: "All",
+};
+
+export function CollectionPage({type}: CollectionPageProps) {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     const models = useMemo(() => {
-        return type === "cars" ? carModelsData as DiecastModel[] : truckModelsData as DiecastModel[];
+        return type === "cars"
+            ? carModelsData as DiecastModel[]
+            : truckModelsData as DiecastModel[];
     }, [type]);
 
     const filteredModels = useMemo(() => {
-        return models.filter((model: DiecastModel) => {
-            if (filters && typeof filters === "object") {
-                const currentFilters = filters as Record<string, string[]>;
-                const isAll = (arr?: string[]) => !arr || arr.length === 0 || arr.includes("All");
+        return models.filter((model) => {
+            const brandMatch =
+                filters.brand === "All" || model.brand === filters.brand;
 
-                if (!isAll(currentFilters.brand) && !currentFilters.brand.includes(model.brand)) {
-                    return false;
-                }
+            const manufacturerMatch =
+                filters.manufacturer === "All" || model.manufacturer === filters.manufacturer;
 
-                if (!isAll(currentFilters.manufacturer) && !currentFilters.manufacturer.includes(model.manufacturer)) {
-                    return false;
-                }
+            const categoryMatch =
+                filters.category === "All" || model.category === filters.category;
 
-                if (!isAll(currentFilters.category) && !currentFilters.category.includes(model.category)) {
-                    return false;
-                }
+            const modelColors = Array.isArray(model.color) ? model.color : [model.color];
+            const colorMatch =
+                filters.color === "All" || modelColors.includes(filters.color);
 
-                const colorFilterArr = Array.isArray(currentFilters.color)
-                  ? currentFilters.color
-                  : currentFilters.color
-                    ? [currentFilters.color]
-                    : [];
-
-                if (!isAll(colorFilterArr)) {
-                    const modelColors = Array.isArray(model.color) ? model.color : [model.color];
-                    if (!colorFilterArr.some((color) => modelColors.includes(color))) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return brandMatch && manufacturerMatch && categoryMatch && colorMatch;
         });
     }, [models, filters]);
 
     const getModelById = useCallback((id: string): DiecastModel | undefined => {
-        return models.find((m) => String(m.id) === id);
+        return models.find((m) => String(m.id) === String(id));
     }, [models]);
 
     useEffect(() => {
         setSelectedModel(null);
-        setFilters({});
-        window.scrollTo({ top: 0, behavior: "auto" });
+        window.scrollTo({top: 0, behavior: "auto"});
     }, [type]);
 
     useEffect(() => {
@@ -84,65 +78,54 @@ export function CollectionPage({ type }: CollectionPageProps) {
 
     const openModal = useCallback((model: DiecastModel) => {
         setSelectedModel(model);
-        const url = new URL(window.location.href);
-        url.searchParams.set("model", String(model.id));
-        window.history.pushState({}, '', url.pathname + url.search);
-    }, []);
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set("model", String(model.id));
+        setSearchParams(nextSearchParams, {replace: false});
+    }, [searchParams, setSearchParams]);
 
     const closeModal = useCallback(() => {
         setSelectedModel(null);
-        const url = new URL(window.location.href);
-        if (url.searchParams.has("model")) {
-            url.searchParams.delete("model");
-            window.history.pushState({}, '', url.pathname + url.search);
-        }
-    }, []);
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete("model");
+        setSearchParams(nextSearchParams, {replace: false});
+    }, [searchParams, setSearchParams]);
 
     const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({top: 0, behavior: "smooth"});
     };
 
     useEffect(() => {
-        const url = new URL(window.location.href);
-        const modelId = url.searchParams.get("model");
-        if (modelId && models.length > 0) {
-            const model = getModelById(modelId);
-            if (model && (!selectedModel || selectedModel.id !== model.id)) {
-                setTimeout(() => {
-                    const card = document.getElementById(model.id);
-                    if (card) {
-                        card.scrollIntoView({behavior: "smooth", block: "center"});
-                        const onScrollEnd = () => {
-                            setSelectedModel(model);
-                            window.removeEventListener('scrollend', onScrollEnd);
-                        };
-                        window.addEventListener('scrollend', onScrollEnd);
-                    } else {
-                        setSelectedModel(model);
-                    }
-                }, 300);
-            }
-        }
-    }, [models, getModelById, selectedModel]);
+        const modelId = searchParams.get("model");
 
-    useEffect(() => {
-        const onPopState = () => {
-            const url = new URL(window.location.href);
-            const modelId = url.searchParams.get("model");
-            if (modelId) {
-                const model = getModelById(modelId);
-                if (model) {
-                    setSelectedModel(model);
-                } else {
-                    setSelectedModel(null);
-                }
-            } else {
-                setSelectedModel(null);
-            }
-        };
-        window.addEventListener("popstate", onPopState);
-        return () => window.removeEventListener("popstate", onPopState);
-    }, [getModelById]);
+        if (!modelId) {
+            setSelectedModel(null);
+            return;
+        }
+
+        const model = getModelById(modelId);
+
+        if (!model) {
+            setSelectedModel(null);
+            return;
+        }
+
+        if (selectedModel?.id === model.id) {
+            return;
+        }
+
+        const card = document.getElementById(String(model.id));
+
+        if (card) {
+            setTimeout(() => {
+                card.scrollIntoView({behavior: "smooth", block: "center"});
+                setSelectedModel(model);
+            }, 300);
+        } else {
+            setSelectedModel(model);
+        }
+    }, [searchParams, getModelById, selectedModel]);
 
     return (
         <div className="layout">
