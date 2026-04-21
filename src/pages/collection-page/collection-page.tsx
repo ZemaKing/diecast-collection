@@ -20,6 +20,8 @@ export function CollectionPage({ type }: CollectionPageProps) {
     const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
+    console.warn('Filters: ', filters);
+
     const models = useMemo(() => {
         return type === "cars" ? carModelsData as DiecastModel[] : truckModelsData as DiecastModel[];
     }, [type]);
@@ -28,37 +30,32 @@ export function CollectionPage({ type }: CollectionPageProps) {
         return models.filter((model: DiecastModel) => {
             if (filters && typeof filters === "object") {
                 const currentFilters = filters as Record<string, string[]>;
+                // Helper to check if filter is 'All' or empty
+                const isAll = (arr?: string[]) => !arr || arr.length === 0 || arr.includes("All");
 
-                if (
-                    currentFilters.brand?.length &&
-                    !currentFilters.brand.includes(model.brand)
-                ) {
+                if (!isAll(currentFilters.brand) && !currentFilters.brand.includes(model.brand)) {
                     return false;
                 }
 
-                if (
-                    currentFilters.manufacturer?.length &&
-                    !currentFilters.manufacturer.includes(model.manufacturer)
-                ) {
+                if (!isAll(currentFilters.manufacturer) && !currentFilters.manufacturer.includes(model.manufacturer)) {
                     return false;
                 }
 
-                if (
-                    currentFilters.category?.length &&
-                    !currentFilters.category.includes(model.category)
-                ) {
+                if (!isAll(currentFilters.category) && !currentFilters.category.includes(model.category)) {
                     return false;
                 }
 
-                if (
-                    currentFilters.color?.length &&
-                    !currentFilters.color.some((color) =>
-                        Array.isArray(model.color)
-                            ? model.color.includes(color)
-                            : model.color === color
-                    )
-                ) {
-                    return false;
+                const colorFilterArr = Array.isArray(currentFilters.color)
+                  ? currentFilters.color
+                  : currentFilters.color
+                    ? [currentFilters.color]
+                    : [];
+
+                if (!isAll(colorFilterArr)) {
+                    const modelColors = Array.isArray(model.color) ? model.color : [model.color];
+                    if (!colorFilterArr.some((color) => modelColors.includes(color))) {
+                        return false;
+                    }
                 }
             }
 
