@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import "./collection-page.css";
 
@@ -27,8 +27,10 @@ export function CollectionPage({type}: CollectionPageProps) {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-    const [selectedModel, setSelectedModel] = useState<DiecastModel | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const lastOpenedModelIdRef = useRef<string | null>(null);
 
     const models = useMemo(() => {
         return type === "cars"
@@ -59,8 +61,19 @@ export function CollectionPage({type}: CollectionPageProps) {
         return models.find((m) => String(m.id) === String(id));
     }, [models]);
 
+    const modelId = searchParams.get("model");
+
+    const modelFromUrl = useMemo(() => {
+        if (!modelId) {
+            return null;
+        }
+
+        return getModelById(modelId) ?? null;
+    }, [modelId, getModelById]);
+
     useEffect(() => {
-        setSelectedModel(null);
+        setIsModalOpen(false);
+        lastOpenedModelIdRef.current = null;
         window.scrollTo({top: 0, behavior: "auto"});
     }, [type]);
 
@@ -77,15 +90,14 @@ export function CollectionPage({type}: CollectionPageProps) {
     }, []);
 
     const openModal = useCallback((model: DiecastModel) => {
-        setSelectedModel(model);
-
         const nextSearchParams = new URLSearchParams(searchParams);
         nextSearchParams.set("model", String(model.id));
         setSearchParams(nextSearchParams, {replace: false});
     }, [searchParams, setSearchParams]);
 
     const closeModal = useCallback(() => {
-        setSelectedModel(null);
+        setIsModalOpen(false);
+        lastOpenedModelIdRef.current = null;
 
         const nextSearchParams = new URLSearchParams(searchParams);
         nextSearchParams.delete("model");
@@ -97,39 +109,45 @@ export function CollectionPage({type}: CollectionPageProps) {
     };
 
     useEffect(() => {
-        const modelId = searchParams.get("model");
-
-        if (!modelId) {
-            setSelectedModel(null);
+        if (!modelId || !modelFromUrl) {
+            setIsModalOpen(false);
+            lastOpenedModelIdRef.current = null;
             return;
         }
 
-        const model = getModelById(modelId);
-
-        if (!model) {
-            setSelectedModel(null);
+        if (lastOpenedModelIdRef.current === modelId) {
             return;
         }
 
-        if (selectedModel?.id === model.id) {
+        const card = document.getElementById(String(modelFromUrl.id));
+
+        if (!card) {
+            setIsModalOpen(true);
+            lastOpenedModelIdRef.current = modelId;
             return;
         }
 
-        const card = document.getElementById(String(model.id));
+        const timeoutId = window.setTimeout(() => {
+            card.scrollIntoView({behavior: "smooth", block: "center"});
 
-        if (card) {
-            setTimeout(() => {
-                card.scrollIntoView({behavior: "smooth", block: "center"});
-                setSelectedModel(model);
-            }, 300);
-        } else {
-            setSelectedModel(model);
-        }
-    }, [searchParams, getModelById, selectedModel]);
+            const openTimeoutId = window.setTimeout(() => {
+                setIsModalOpen(true);
+                lastOpenedModelIdRef.current = modelId;
+            }, 450);
+
+            return () => {
+                window.clearTimeout(openTimeoutId);
+            };
+        }, 150);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [modelId, modelFromUrl, filteredModels]);
 
     return (
         <div className="layout">
-            <Header title="ZemaKing Diecast Collection" count={models.length} />
+            <Header title="ZemaKing Diecast Collection" count={models.length}/>
 
             <div className="content">
                 <Sidebar
@@ -144,15 +162,19 @@ export function CollectionPage({type}: CollectionPageProps) {
                         <div className="contentEmpty">No models match the selected filters.</div>
                     ) : (
                         <div className="modelGrid">
-                            {filteredModels.map((m: DiecastModel) => (
-                                <ModelCard key={m.id} model={m} onClick={() => openModal(m)} />
+                            {filteredModels.map((m) => (
+                                <ModelCard
+                                    key={m.id}
+                                    model={m}
+                                    onClick={() => openModal(m)}
+                                />
                             ))}
                         </div>
                     )}
 
                     <DetailsModal
-                        model={selectedModel}
-                        isOpen={!!selectedModel}
+                        model={modelFromUrl}
+                        isOpen={!!modelFromUrl && isModalOpen}
                         onClose={closeModal}
                     />
                 </main>
