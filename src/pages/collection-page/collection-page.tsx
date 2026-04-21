@@ -108,7 +108,19 @@ export function CollectionPage({ type }: CollectionPageProps) {
         if (modelId && models.length > 0) {
             const model = getModelById(modelId);
             if (model && (!selectedModel || selectedModel.id !== model.id)) {
-                setSelectedModel(model);
+                setTimeout(() => {
+                    const card = document.getElementById(model.id);
+                    if (card) {
+                        card.scrollIntoView({behavior: "smooth", block: "center"});
+                        const onScrollEnd = () => {
+                            setSelectedModel(model);
+                            window.removeEventListener('scrollend', onScrollEnd);
+                        };
+                        window.addEventListener('scrollend', onScrollEnd);
+                    } else {
+                        setSelectedModel(model);
+                    }
+                }, 300);
             }
         }
     }, [models, getModelById, selectedModel]);

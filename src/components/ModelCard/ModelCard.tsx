@@ -12,7 +12,7 @@ type ModelCardProps = {
 
 export function ModelCard({ model, onClick }: ModelCardProps) {
     return (
-        <div className="card">
+        <div className="card" id={model.id}>
             <div className="thumb">
                 <img
                     src={model.thumbnail}
