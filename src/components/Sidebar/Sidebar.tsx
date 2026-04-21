@@ -1,4 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 
 import type {DiecastModel, DiecastType} from "../../types.ts";
 
@@ -26,6 +27,8 @@ type SidebarProps = {
     onFiltersChange: (filters: Filters) => void;
 };
 
+const ALL_VALUE = "All";
+
 function uniqSorted(values: string[]) {
     return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
@@ -39,23 +42,51 @@ function getFilterOptions(items: DiecastModel[]): FilterOptions {
     };
 }
 
+function getParamValue(searchParams: URLSearchParams, key: keyof Filters): string {
+    return searchParams.get(key) || ALL_VALUE;
+}
+
 export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
     const options = useMemo(() => getFilterOptions(models), [models]);
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const [brand, setBrand] = useState<string>("All");
-    const [manufacturer, setManufacturer] = useState<string>("All");
-    const [category, setCategory] = useState<string>("All");
-    const [color, setColor] = useState<string>("All");
+    const [brand, setBrand] = useState<string>(() => getParamValue(searchParams, "brand"));
+    const [manufacturer, setManufacturer] = useState<string>(() => getParamValue(searchParams, "manufacturer"));
+    const [category, setCategory] = useState<string>(() => getParamValue(searchParams, "category"));
+    const [color, setColor] = useState<string>(() => getParamValue(searchParams, "color"));
 
     useEffect(() => {
-        onFiltersChange({brand, manufacturer, category, color});
-    }, [brand, manufacturer, category, color, onFiltersChange]);
+        setBrand(getParamValue(searchParams, "brand"));
+        setManufacturer(getParamValue(searchParams, "manufacturer"));
+        setCategory(getParamValue(searchParams, "category"));
+        setColor(getParamValue(searchParams, "color"));
+    }, [searchParams]);
+
+    useEffect(() => {
+        const filters = {brand, manufacturer, category, color};
+
+        onFiltersChange(filters);
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+
+        (Object.entries(filters) as [keyof Filters, string][]).forEach(([key, value]) => {
+            if (value === ALL_VALUE) {
+                nextSearchParams.delete(key);
+            } else {
+                nextSearchParams.set(key, value);
+            }
+        });
+
+        if (nextSearchParams.toString() !== searchParams.toString()) {
+            setSearchParams(nextSearchParams, {replace: true});
+        }
+    }, [brand, manufacturer, category, color, onFiltersChange, searchParams, setSearchParams]);
 
     const clearFilters = () => {
-        setBrand("All");
-        setManufacturer("All");
-        setCategory("All");
-        setColor("All");
+        setBrand(ALL_VALUE);
+        setManufacturer(ALL_VALUE);
+        setCategory(ALL_VALUE);
+        setColor(ALL_VALUE);
         onClear?.();
     };
 
@@ -74,7 +105,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
                 <label className="field">
                     <span className="fieldLabel">Brand</span>
                     <select value={brand} onChange={(e) => setBrand(e.target.value)}>
-                        <option value="All">All</option>
+                        <option value={ALL_VALUE}>All</option>
                         {options.brands.map(brand => (
                             <option key={brand} value={brand}>{brand}</option>
                         ))}
@@ -84,7 +115,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
                 <label className="field">
                     <span className="fieldLabel">Manufacturer</span>
                     <select value={manufacturer} onChange={(e) => setManufacturer(e.target.value)}>
-                        <option value="All">All</option>
+                        <option value={ALL_VALUE}>All</option>
                         {options.manufacturers.map(manufacturer => (
                             <option key={manufacturer} value={manufacturer}>{manufacturer}</option>
                         ))}
@@ -94,7 +125,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
                 <label className="field">
                     <span className="fieldLabel">Category</span>
                     <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                        <option value="All">All</option>
+                        <option value={ALL_VALUE}>All</option>
                         {options.categories.map(category => (
                             <option key={category} value={category}>{category}</option>
                         ))}
@@ -104,7 +135,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
                 <label className="field">
                     <span className="fieldLabel">Color</span>
                     <select value={color} onChange={(e) => setColor(e.target.value)}>
-                        <option value="All">All</option>
+                        <option value={ALL_VALUE}>All</option>
                         {options.colors.map(color => (
                             <option key={color} value={color}>{color}</option>
                         ))}
