@@ -7,7 +7,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#C7102E"],
+    "hex": ["#980223"],
     "thumbnail": "https://i.postimg.cc/vTYBBFK4/alfa-romeo-mille-1958-deagostini-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/FR1SWvTz/alfa-romeo-mille-1958-deagostini-red.png"
   },
@@ -19,7 +19,7 @@
     "manufacturer": "DeAgostini",
     "category": "Construction",
     "color": ["Yellow"],
-    "hex": ["#FEF053"],
+    "hex": ["#D6D207"],
     "thumbnail": "https://i.postimg.cc/L59XXKWg/fap-2226-mikser-1976-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/xCqmxQ6L/fap-2226-mikser-1976-deagostini-yellow.png"
   },
@@ -31,7 +31,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Yellow"],
-    "hex": ["#F3B548"],
+    "hex": ["#EFC500"],
     "thumbnail": "https://i.postimg.cc/5ystQKcX/fap-2229-1978-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/1t4FCSv0/fap-2229-1978-deagostini-yellow.png"
   },
@@ -43,7 +43,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#0272E1"],
+    "hex": ["#013BB2"],
     "thumbnail": "https://i.postimg.cc/2y05L9pq/fiat-190-1974-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/QtV74Dfk/fiat-190-1974-deagostini-blue.png"
   },
@@ -55,7 +55,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Yellow"],
-    "hex": ["#EDD420"],
+    "hex": ["#B9AC00"],
     "thumbnail": "https://i.postimg.cc/zvxfH2mg/fiat-190-nc-1974-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/C1d8P0cN/fiat-190-nc-1974-deagostini-yellow.png"
   },
@@ -67,7 +67,7 @@
     "manufacturer": "NewRay",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#D52C3E"],
+    "hex": ["#CF193C"],
     "thumbnail": "https://i.postimg.cc/5ystQKcz/iveco-stralis-2007-newray-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/XJhCtPPQ/iveco-stralis-2007-newray-red.png"
   },
@@ -79,7 +79,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["White"],
-    "hex": ["#1F7906", "#0C5125", "#D4E0EC"],
+    "hex": ["#1F7906", "#0C5125", "#EFFFFE"],
     "thumbnail": "https://i.postimg.cc/gjg0Lt9K/iveco-turbostar-1984-deagostini-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/nz5DNWWw/iveco-turbostar-1984-deagostini-white.png"
   },
@@ -91,7 +91,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Green"],
-    "hex": ["#409D66"],
+    "hex": ["#01975B"],
     "thumbnail": "https://i.postimg.cc/8cZCfX8H/jelcz-315-1968-deagostini-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/76c2jRRt/jelcz-315-1968-deagostini-green.png"
   },
@@ -103,7 +103,7 @@
     "manufacturer": "DeAgostini",
     "category": "Utility",
     "color": ["Red"],
-    "hex": ["#E8504A"],
+    "hex": ["#D33548"],
     "thumbnail": "https://i.postimg.cc/wMwBR4Kw/jelcz-325-wuko-sm-101-1975-deagostini-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/TwSDBss7/jelcz-325-wuko-sm-101-1975-deagostini-red.png"
   },
@@ -115,7 +115,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#E05152"],
+    "hex": ["#A43051"],
     "thumbnail": "https://i.postimg.cc/JhXtYQJB/kamaz-5320-1976-deagostini-red.png",
     "imageUrl": "https://i.postimg.cc/1z7MMsp7/kamaz-5320-1976-deagostini-red.png"
   },
@@ -127,7 +127,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#265687"],
+    "hex": ["#2853B2"],
     "thumbnail": "https://i.postimg.cc/5tzjKmvC/magirus-mercur-120-1955-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/LX71GW7S/magirus-mercur-120-1955-deagostini-blue.png"
   },
@@ -139,7 +139,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#AF1509"],
+    "hex": ["#E6263B"],
     "thumbnail": "https://i.postimg.cc/QtrC2Wkx/man-f8-1967-deagostini-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/x8zzQRrB/man-f8-1967-deagostini-red.png"
   },
@@ -151,7 +151,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#4084DF"],
+    "hex": ["#3676F0"],
     "thumbnail": "https://i.postimg.cc/1zF47K6F/mercedes-benz-lp-334-1959-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/gjZZpD9C/mercedes-benz-lp-334-1959-deagostini-blue.png"
   },
@@ -163,7 +163,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Yellow"],
-    "hex": ["#ECC623"],
+    "hex": ["#E2F154"],
     "thumbnail": "https://i.postimg.cc/DZK09bdr/mercedes-benz-ng-1936-1973-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/j277TX0V/mercedes-benz-ng-1936-1973-deagostini-yellow.png"
   },
@@ -175,7 +175,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#C1240D"],
+    "hex": ["#710919"],
     "thumbnail": "https://i.postimg.cc/50MyhFqq/om-titano-1955-deagostini-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/Hnyym2DC/om-titano-1955-deagostini-red.png"
   },
@@ -187,7 +187,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Green"],
-    "hex": ["#99C098"],
+    "hex": ["#528D71"],
     "thumbnail": "https://i.postimg.cc/wvdMCscQ/raba-f26-1964-deagostini-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/4y99G5kf/raba-f26-1964-deagostini-green.png"
   },
@@ -199,7 +199,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Green"],
-    "hex": ["#A3E6C2"],
+    "hex": ["#47A69D"],
     "thumbnail": "https://i.postimg.cc/d1m3wt46/raba-h9-1964-deagostini-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/rpVx4xWJ/raba-h9-1964-deagostini-green.png"
   },
@@ -211,7 +211,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["White"],
-    "hex": ["#FAFAFC"],
+    "hex": ["#DCF4FC"],
     "thumbnail": "https://i.postimg.cc/nzYrpc0d/raba-l22-1958-deagostini-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/GpLGDGYj/raba-l22-1958-deagostini-white.png"
   },
@@ -223,7 +223,7 @@
     "manufacturer": "DeAgostini",
     "category": "Construction",
     "color": ["Orange"],
-    "hex": ["#FB6F31"],
+    "hex": ["#BD5C1C"],
     "thumbnail": "https://i.postimg.cc/Hx4ndsBB/skoda-liaz-706-rth-1957-deagostini-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/jjxPfPNQ/skoda-liaz-706-rth-1957-deagostini-orange.png"
   },
@@ -235,7 +235,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#2A5D8E"],
+    "hex": ["#385CA5"],
     "thumbnail": "https://i.postimg.cc/26Fyr829/star-20-w14-1948-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/d0srCrd8/star-20-w14-1948-deagostini-blue.png"
   },
@@ -247,7 +247,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Gray"],
-    "hex": ["#B4C4C4"],
+    "hex": ["#A1BAE8"],
     "thumbnail": "https://i.postimg.cc/mDNkB2mG/star-25-1960-deagostini-gray-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/jjxPfPNm/star-25-1960-deagostini-gray.png"
   },
@@ -259,7 +259,7 @@
     "manufacturer": "DeAgostini",
     "category": "Utility",
     "color": ["Blue"],
-    "hex": ["#9FEBF3"],
+    "hex": ["#63CEFE"],
     "thumbnail": "https://i.postimg.cc/d1m3wt5Y/star-25-msh-2-1960-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/GpLGDGYZ/star-25-msh-2-1960-deagostini-blue.png"
   },
@@ -271,7 +271,7 @@
     "manufacturer": "DeAgostini",
     "category": "Off-Road",
     "color": ["Yellow"],
-    "hex": ["#FFC231"],
+    "hex": ["#FFD400"],
     "thumbnail": "https://i.postimg.cc/Ss7RkNgq/star-266-1973-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/QM81711L/star-266-1973-deagostini-yellow.png"
   },
@@ -283,7 +283,7 @@
     "manufacturer": "DeAgostini",
     "category": "Off-Road",
     "color": ["Green"],
-    "hex": ["#495436"],
+    "hex": ["#709587"],
     "thumbnail": "https://i.postimg.cc/d1m3wt5F/tatra-813-kolos-1967-deagostini-green-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/jjxPfPP0/tatra-813-kolos-1967-deagostini-green.png"
   },
@@ -295,7 +295,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#315178"],
+    "hex": ["#3062AC"],
     "thumbnail": "https://i.postimg.cc/90mMM5n6/volvo-88-1965-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/jjMN424Y/volvo-88-1965-deagostini-blue.png"
   },
@@ -307,7 +307,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Red"],
-    "hex": ["#B31C2D"],
+    "hex": ["#962A3E"],
     "thumbnail": "https://i.postimg.cc/mkLDDfnf/zastava-615-1962-deagostini-red-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/bvmb9r9h/zastava-615-1962-deagostini-red.png"
   },
@@ -319,7 +319,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Blue"],
-    "hex": ["#1B3596"],
+    "hex": ["#2E5CC3"],
     "thumbnail": "https://i.postimg.cc/PJXxxs7j/zastava-640-1978-deagostini-blue-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/N0dTkFkB/zastava-640-1978-deagostini-blue.png"
   },
@@ -331,7 +331,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["Yellow"],
-    "hex": ["#DCAC00"],
+    "hex": ["#F6D600"],
     "thumbnail": "https://i.postimg.cc/WzN33Lyj/zastava-euro-zeta-1987-deagostini-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/8CZWmcmV/zastava-euro-zeta-1987-deagostini-yellow.png"
   },
@@ -343,7 +343,7 @@
     "manufacturer": "DeAgostini",
     "category": "Transport",
     "color": ["White"],
-    "hex": ["#E9ECE5"],
+    "hex": ["#D5E1F9"],
     "thumbnail": "https://i.postimg.cc/8cp55QYj/zastava-turbo-rival-1985-deagostini-white-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/zfxWFvFb/zastava-turbo-rival-1985-deagostini-white.png"
   },
@@ -355,7 +355,7 @@
     "manufacturer": "DeAgostini",
     "category": "Off-Road",
     "color": ["Orange"],
-    "hex": ["#DD772F"],
+    "hex": ["#F57407"],
     "thumbnail": "https://i.postimg.cc/x8fCCDZd/zil-157-d470-1958-deagostini-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/XJX5HWsj/zil-157-d470-1958-deagostini-orange.png"
   }
