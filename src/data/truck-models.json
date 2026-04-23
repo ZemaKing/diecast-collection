@@ -108,6 +108,18 @@
     "imageUrl": "https://i.postimg.cc/xTTdwWjP/jelcz-325-wuko-sm-101-1975-deagostini-red.png"
   },
   {
+    "id": "kamaz-5320-1976-deagostini-red",
+    "name": "Kamaz 5320",
+    "year": 1976,
+    "brand": "Kamaz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Red"],
+    "hex": ["#E05152"],
+    "thumbnail": "https://i.postimg.cc/vmgsfpZ7/coming-soon-truck.png",
+    "imageUrl": "https://i.postimg.cc/vmgsfpZ7/coming-soon-truck.png"
+  },
+  {
     "id": "magirus-mercur-120-1955-deagostini-blue",
     "name": "Magirus Mercur 120",
     "year": 1955,
