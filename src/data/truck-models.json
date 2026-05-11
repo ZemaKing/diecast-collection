@@ -12,6 +12,18 @@
     "imageUrl": "https://i.postimg.cc/FR1SWvTz/alfa-romeo-mille-1958-deagostini-red.png"
   },
   {
+    "id": "fap-1414-1987-deagostini-blue",
+    "name": "FAP 1414",
+    "year": 1987,
+    "brand": "FAP",
+    "manufacturer": "DeAgostini",
+    "category": "Utility",
+    "color": ["Blue"],
+    "hex": ["#57B6FE"],
+    "thumbnail": "https://i.postimg.cc/ryBsRm07/fap-1414-1987-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/FsSvMVKK/fap-1414-1987-deagostini-blue.png"
+  },
+  {
     "id": "fap-2226-mikser-1976-deagostini-yellow",
     "name": "FAP 2226 Mikser",
     "year": 1976,
