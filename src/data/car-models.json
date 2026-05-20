@@ -1085,6 +1085,20 @@
     "imageUrl": "https://i.postimg.cc/J7kc2zX1/ford-gt-2017-altaya-gray.png"
   },
   {
+    "id": "ford-gt-67-2017-ixo-multi",
+    "name": "Ford GT",
+    "year": 2017,
+    "brand": "Ford",
+    "manufacturer": "Ixo",
+    "category": "Racing",
+    "carNumber": 67,
+    "carDriver": "Andy Priaulx",
+    "color": ["MULTI"],
+    "hex": ["#BC1729", "#DEEBF8", "#005FCB"],
+    "thumbnail": "https://i.postimg.cc/Qd2dmGhg/ford-gt-67-2017-ixo-multi-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/RVm1PyVn/ford-gt-67-2017-ixo-multi.png"
+  },
+  {
     "id": "ford-gt-40-1969-altaya-white",
     "name": "Ford GT 40",
     "year": 1969,
@@ -1703,6 +1717,18 @@
     "imageUrl": "https://i.postimg.cc/859rMzrG/nissan-240-rs-1984-altaya-multi.png"
   },
   {
+    "id": "nissan-240-sx-1995-altaya-red",
+    "name": "Nissan 240 SX",
+    "year": 1995,
+    "brand": "Nissan",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "color": ["Red"],
+    "hex": ["#901332"],
+    "thumbnail": "https://i.postimg.cc/Gm8pvhw5/nissan-240-sx-1995-altaya-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Yq7NXZq4/nissan-240-sx-1995-altaya-red.png"
+  },
+  {
     "id": "nissan-fairlady-z-2000-altaya-gold",
     "name": "Nissan Fairlady Z (Z33)",
     "year": 2002,
@@ -2259,6 +2285,20 @@
     "hex": ["#0C319A", "#F4D500"],
     "thumbnail": "https://i.postimg.cc/rs8JnSJk/renault-clio-s1600-2004-altaya-yellow-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/0jd4rkt6/renault-clio-s1600-2004-altaya-yellow.png"
+  },
+  {
+    "id": "saleen-s7-2009-altaya-white",
+    "name": "Saleen S7",
+    "year": 2009,
+    "brand": "Saleen",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carNumber": 11,
+    "carDriver": "Luke Hines",
+    "color": ["White"],
+    "hex": ["#CFD4DE"],
+    "thumbnail": "https://i.postimg.cc/W1B18LT6/saleen-s7-2009-altaya-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/sDzPnqDQ/saleen-s7-2009-altaya-white.png"
   },
   {
     "id": "seat-124-fl-1800-1977-altaya-yellow",
