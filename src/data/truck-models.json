@@ -120,6 +120,18 @@
     "imageUrl": "https://i.postimg.cc/TwSDBss7/jelcz-325-wuko-sm-101-1975-deagostini-red.png"
   },
   {
+    "id": "jelcz-640-1973-deagostini-yellow",
+    "name": "Jelcz 640",
+    "year": 1973,
+    "brand": "Jelcz",
+    "manufacturer": "DeAgostini",
+    "category": "Construction",
+    "color": ["Yellow"],
+    "hex": ["#FBD100"],
+    "thumbnail": "https://i.postimg.cc/6qMVW0Vj/jelcz-640-1973-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/NMhpSpbk/jelcz-640-1973-deagostini-yellow.png"
+  },
+  {
     "id": "kamaz-5320-1976-deagostini-red",
     "name": "Kamaz 5320",
     "year": 1976,
