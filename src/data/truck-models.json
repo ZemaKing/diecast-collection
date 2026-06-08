@@ -300,6 +300,18 @@
     "imageUrl": "https://i.postimg.cc/QM81711L/star-266-1973-deagostini-yellow.png"
   },
   {
+    "id": "tam-190-1979-deagostini-blue",
+    "name": "TAM 190",
+    "year": 1979,
+    "brand": "TAM",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#388BC7"],
+    "thumbnail": "https://i.postimg.cc/vmgsfpZ7/coming-soon-truck.png",
+    "imageUrl": "https://i.postimg.cc/vmgsfpZ7/coming-soon-truck.png"
+  },
+  {
     "id": "tatra-813-kolos-1967-deagostini-green",
     "name": "Tatra 813 Kolos",
     "year": 1967,
