@@ -1577,6 +1577,18 @@
     "imageUrl": "https://i.postimg.cc/XvtBf9QL/mitsubishi-eclipse-1995-altaya-green.png"
   },
   {
+    "id": "mitsubishi-eclipse-spyder-gts-2003-altaya-purple",
+    "name": "Mitsubishi Eclipse Spyder GTS",
+    "year": 2003,
+    "brand": "Mitsubishi",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "color": ["Purple"],
+    "hex": ["#1A1A1A", "#4B2E83"],
+    "thumbnail": "https://i.postimg.cc/65Drs0HB/mitsubishi-eclipse-spyder-gts-2003-altaya-purple-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/gj7v2qmj/mitsubishi-eclipse-spyder-gts-2003-altaya-purple.png"
+  },
+  {
     "id": "mitsubishi-galant-vr-4-1989-altaya-white",
     "name": "Mitsubishi Galant VR-4",
     "year": 1989,
