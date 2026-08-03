@@ -156,6 +156,18 @@
     "imageUrl": "https://i.postimg.cc/LX71GW7S/magirus-mercur-120-1955-deagostini-blue.png"
   },
   {
+    "id": "man-f8-1978-deagostini-green",
+    "name": "MAN F8",
+    "year": 1978,
+    "brand": "MAN",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Green"],
+    "hex": ["#3F8B4C"],
+    "thumbnail": "https://i.postimg.cc/R04Fr6KH/man-f8-1978-deagostini-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Xqpq2RFm/man-f8-1978-deagostini-green.png"
+  },
+  {
     "id": "man-f8-1967-deagostini-red",
     "name": "MAN F8",
     "year": 1967,
