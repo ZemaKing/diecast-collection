@@ -252,6 +252,18 @@
     "imageUrl": "https://i.postimg.cc/GpLGDGYj/raba-l22-1958-deagostini-white.png"
   },
   {
+    "id": "renault-r340-1986-deagostini-white",
+    "name": "Renault R340",
+    "year": 1986,
+    "brand": "Renault",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["White"],
+    "hex": ["#E9E9E9"],
+    "thumbnail": "https://i.postimg.cc/MHPPwQnQ/renault-r340-1986-deagostini-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/9fZn90kV/renault-r340-1986-deagostini-white.png"
+  },
+  {
     "id": "škoda-liaz-706-rth-1957-deagostini-orange",
     "name": "Škoda-Liaz 706 RTH",
     "year": 1957,
