@@ -324,6 +324,18 @@
     "imageUrl": "https://i.postimg.cc/jjxPfPP0/tatra-813-kolos-1967-deagostini-green.png"
   },
   {
+    "id": "torpedo-srt-1970-deagostini-blue",
+    "name": "Torpedo SRT",
+    "year": 1970,
+    "brand": "Torpedo",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#1D6FB5"],
+    "thumbnail": "https://i.postimg.cc/SNrG98d3/torpedo-srt-1970-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/vBVzxN2q/torpedo-srt-1970-deagostini-blue.png"
+  },
+  {
     "id": "volvo-88-1965-deagostini-blue",
     "name": "Volvo F88",
     "year": 1965,
