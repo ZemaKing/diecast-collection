@@ -406,5 +406,17 @@
     "hex": ["#F57407"],
     "thumbnail": "https://i.postimg.cc/x8fCCDZd/zil-157-d470-1958-deagostini-orange-thumbnail.png",
     "imageUrl": "https://i.postimg.cc/XJX5HWsj/zil-157-d470-1958-deagostini-orange.png"
+  },
+  {
+    "id": "zubr-a80-1961-deagostini-blue",
+    "name": "Żubr A80",
+    "year": 1961,
+    "brand": "Żubr",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Blue"],
+    "hex": ["#3D74B8"],
+    "thumbnail": "https://i.postimg.cc/L5Z8pzXY/zubr-a80-1961-deagostini-blue-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/J09tDpgh/zubr-a80-1961-deagostini-blue.png"
   }
 ]
