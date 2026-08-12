@@ -1512,6 +1512,20 @@
     "imageUrl": "https://i.postimg.cc/d3VBDTMJ/mclaren-p1-2013-altaya-orange.png"
   },
   {
+    "id": "mercedes-benz-450-slc-5-0-1979-altaya-silver",
+    "name": "Mercedes-Benz 450 SLC 5.0",
+    "year": 1979,
+    "brand": "Mercedes-Benz",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 8,
+    "carDriver": "Björn Waldegård",
+    "color": ["Silver", "Black"],
+    "hex": ["#B8B8B3", "#1C1C1C"],
+    "thumbnail": "https://i.postimg.cc/02tpG7kS/mercedes-benz-450-slc-5-0-1979-altaya-silver-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/VkGDN3r9/mercedes-benz-450-slc-5-0-1979-altaya-silver.png"
+  },
+  {
     "id": "mercedes-benz-amg-c-63-2016-dtm-pink",
     "name": "Mercedes-Benz AMG C 63",
     "year": 2016,
