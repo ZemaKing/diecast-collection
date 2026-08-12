@@ -1645,6 +1645,19 @@
     "imageUrl": "https://i.postimg.cc/Hx5cBjhP/mitsubishi-lancer-evolution-vi-1999-ixo-red.png"
   },
   {
+    "id": "mitsubishi-lancer-evolution-vii-2002-altaya-yellow",
+    "name": "Mitsubishi Lancer Evolution VII",
+    "year": 2002,
+    "brand": "Mitsubishi",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carDriver": "Brian O'Conner",
+    "color": ["Yellow"],
+    "hex": ["#A69B2D"],
+    "thumbnail": "https://i.postimg.cc/fTHx7Yz0/mitsubishi-lancer-evolution-vii-2002-altaya-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/DwjBztJ6/mitsubishi-lancer-evolution-vii-2002-altaya-yellow.png"
+  },
+  {
     "id": "mitsubishi-lancer-evolution-ix-2009-atlas-white",
     "name": "Mitsubishi Lancer Evolution IX",
     "year": 2009,
