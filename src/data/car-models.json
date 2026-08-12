@@ -731,6 +731,20 @@
     "imageUrl": "https://i.postimg.cc/VNKrhj7j/ferrari-308-gtb-1982-altaya-white.png"
   },
   {
+    "id": "ferrari-458-italia-gt3-2015-burago-multi",
+    "name": "Ferrari 458 Italia GT3",
+    "year": 2015,
+    "brand": "Ferrari",
+    "manufacturer": "Burago",
+    "category": "Racing",
+    "carNumber": 64,
+    "carDriver": "Andrea Bertolini",
+    "color": ["MULTI"],
+    "hex": ["#16874A", "#F2D51B", "#B8242F", "#214D82"],
+    "thumbnail": "https://i.postimg.cc/vZc50DTg/ferrari-458-italia-gt3-2015-burago-multi-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/SxTDKw2G/ferrari-458-italia-gt3-2015-burago-multi.png"
+  },
+  {
     "id": "ferrari-488-gte-2017-altaya-red",
     "name": "Ferrari 488 GTE",
     "year": 2017,
