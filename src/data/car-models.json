@@ -29,6 +29,20 @@
     "imageUrl": "https://i.postimg.cc/CKbJ2gHw/abarth-grande-punto-s2000-2009-altaya-white.png"
   },
   {
+    "id": "acura-integra-gsr-1996-altaya-red",
+    "name": "Acura Integra GS-R",
+    "year": 1996,
+    "brand": "Acura",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carNumber": 12,
+    "carDriver": "Edwin",
+    "color": ["Red", "Yellow", "White"],
+    "hex": ["#9E2024", "#F4C515", "#F2F2EE"],
+    "thumbnail": "https://i.postimg.cc/VL7j9XfB/acura-integra-gsr-1996-fast-furious-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/P532qBpV/acura-integra-gsr-1996-fast-furious-red.png"
+  },
+  {
     "id": "acura-nsx-2000-altaya-yellow",
     "name": "Acura NSX",
     "year": 2000,
