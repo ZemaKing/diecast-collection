@@ -1223,6 +1223,19 @@
     "imageUrl": "https://i.postimg.cc/hjfdXdhj/honda-cr-z-2011-ebbro-gray.png"
   },
   {
+    "id": "honda-s2000-2000-altaya-pink",
+    "name": "Honda S2000",
+    "year": 2000,
+    "brand": "Honda",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carDriver": "Suki",
+    "color": ["Pink"],
+    "hex": ["#C52D79", "#F0A3C5"],
+    "thumbnail": "https://i.postimg.cc/tCrhdFqx/honda-s2000-2000-altaya-pink-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/vZq3mpgX/honda-s2000-2000-altaya-pink.png"
+  },
+  {
     "id": "hyundai-accent-wrc-2003-altaya-gray",
     "name": "Hyundai Accent WRC",
     "year": 2003,
