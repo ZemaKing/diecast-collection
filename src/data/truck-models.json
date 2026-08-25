@@ -24,6 +24,18 @@
     "imageUrl": "https://i.postimg.cc/FsSvMVKK/fap-1414-1987-deagostini-blue.png"
   },
   {
+    "id": "fap-1414-1988-deagostini-yellow",
+    "name": "FAP 1414",
+    "year": 1988,
+    "brand": "FAP",
+    "manufacturer": "DeAgostini",
+    "category": "Utility",
+    "color": ["Yellow"],
+    "hex": ["#DE8A00"],
+    "thumbnail": "https://i.postimg.cc/hPfZLSDF/fap-1414-1988-deagostini-orange-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/tg0cRLH0/fap-1414-1988-deagostini-orange.png"
+  },
+  {
     "id": "fap-2226-mikser-1976-deagostini-yellow",
     "name": "FAP 2226 Mikser",
     "year": 1976,
