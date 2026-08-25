@@ -717,6 +717,20 @@
     "imageUrl": "https://i.postimg.cc/YSQ8PHfS/dodge-charger-r-t-1970-altaya-black.png"
   },
   {
+    "id": "ferrari-296-gt3-2023-burago-red",
+    "name": "Ferrari 296 GT3",
+    "year": 2023,
+    "brand": "Ferrari",
+    "manufacturer": "Burago",
+    "category": "GT3",
+    "carNumber": 71,
+    "carDriver": "Antonio Fuoco",
+    "color": ["Red", "Yellow"],
+    "hex": ["#FFD21E", "#D71920"],
+    "thumbnail": "https://i.postimg.cc/K8YGr3K2/ferrari-296-gt3-2023-burago-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/T3kPZJ8g/ferrari-296-gt3-2023-burago-red.png"
+  },
+  {
     "id": "ferrari-308-gtb-1982-altaya-white",
     "name": "Ferrari 308 GTB",
     "year": 1982,
