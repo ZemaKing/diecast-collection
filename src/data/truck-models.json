@@ -132,6 +132,18 @@
     "imageUrl": "https://i.postimg.cc/TwSDBss7/jelcz-325-wuko-sm-101-1975-deagostini-red.png"
   },
   {
+    "id": "jelcz-415-1986-deagostini-yellow",
+    "name": "Jelcz 415",
+    "year": 1986,
+    "brand": "Jelcz",
+    "manufacturer": "DeAgostini",
+    "category": "Transport",
+    "color": ["Yellow"],
+    "hex": ["#EAC85A"],
+    "thumbnail": "https://i.postimg.cc/1zQ9hxP0/jelcz-415-1986-deagostini-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/1Xj9Lf5c/jelcz-415-1986-deagostini-yellow.png"
+  },
+  {
     "id": "jelcz-640-1973-deagostini-yellow",
     "name": "Jelcz 640",
     "year": 1973,
@@ -437,7 +449,7 @@
     "year": 1958,
     "brand": "ZIL",
     "manufacturer": "DeAgostini",
-    "category": "Off-Road",
+    "category": "Utility",
     "color": ["Orange"],
     "hex": ["#F57407"],
     "thumbnail": "https://i.postimg.cc/x8fCCDZd/zil-157-d470-1958-deagostini-orange-thumbnail.png",
