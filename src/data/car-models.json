@@ -637,6 +637,20 @@
     "imageUrl": "https://i.postimg.cc/tgBZchr4/citroen-visa-1000-pistes-1985-altaya-white.png"
   },
   {
+    "id": "citroen-xsara-kit-car-2001-altaya-red",
+    "name": "Citroën Xsara Kit Car",
+    "year": 2001,
+    "brand": "Citroën",
+    "manufacturer": "Altaya",
+    "category": "Rally",
+    "carNumber": 1,
+    "carDriver": "Sébastien Loeb",
+    "color": ["Red", "White"],
+    "hex": ["#F2F2F2", "#9D1120"],
+    "thumbnail": "https://i.postimg.cc/Hxt0RN0H/citroen-xsara-kit-car-2001-altaya-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/BQfsMwYB/citroen-xsara-kit-car-2001-altaya-red.png"
+  },
+  {
     "id": "citroen-xsara-wrc-2006-altaya-blue",
     "name": "Citroën Xsara WRC",
     "year": 2006,
