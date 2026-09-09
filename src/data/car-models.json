@@ -2982,6 +2982,20 @@
     "imageUrl": "https://i.postimg.cc/Dy5WC9x7/volkswagen-golf-gti-16v-1987-altaya-white.png"
   },
   {
+    "id": "volkswagen-jetta-a3-1995-deagostini-white",
+    "name": "Volkswagen Jetta A3",
+    "year": 1995,
+    "brand": "Volkswagen",
+    "manufacturer": "DeAgostini",
+    "category": "Racing",
+    "carNumber": 4,
+    "carDriver": "Jesse",
+    "color": ["White", "Blue"],
+    "hex": ["#F2F2F2", "#2A6EBB"],
+    "thumbnail": "https://i.postimg.cc/cHc72z7R/volkswagen-jetta-a3-1995-deagostini-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/SNL457Hp/volkswagen-jetta-a3-1995-deagostini-white.png"
+  },
+  {
     "id": "volkswagen-passat-v8-star-2002-schuco-blue",
     "name": "Volkswagen Passat V8 Star",
     "year": 2002,
