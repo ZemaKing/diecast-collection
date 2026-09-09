@@ -733,6 +733,18 @@
     "imageUrl": "https://i.postimg.cc/503gxSrb/datsun-violet-160j-1976-altaya-white.png"
   },
   {
+    "id": "dodge-challenger-r-t-440-1970-altaya-yellow",
+    "name": "Dodge Challenger R/T 440",
+    "year": 1970,
+    "brand": "Dodge",
+    "manufacturer": "Altaya",
+    "category": "Retro",
+    "color": ["Yellow", "Black"],
+    "hex": ["#F2C11D", "#151515"],
+    "thumbnail": "https://i.postimg.cc/cHc72z7S/dodge-challenger-r-t-440-1970-altaya-yellow-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/tCGy2mSd/dodge-challenger-r-t-440-1970-altaya-yellow.png"
+  },
+  {
     "id": "dodge-charger-r-t-1970-altaya-black",
     "name": "Dodge Charger R/T",
     "year": 1970,
