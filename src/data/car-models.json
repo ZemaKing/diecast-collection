@@ -1570,6 +1570,19 @@
     "imageUrl": "https://i.postimg.cc/T3yX7pB2/mazda-rx-7-fd-1993-altaya-orange.png"
   },
   {
+    "id": "mazda-rx-7-fd-1993-deagostini-red",
+    "name": "Mazda RX-7 FD",
+    "year": 1993,
+    "brand": "Mazda",
+    "manufacturer": "DeAgostini",
+    "category": "Racing",
+    "carNumber": 3,
+    "color": ["Red", "White"],
+    "hex": ["#E8E8E8", "#C0272D"],
+    "thumbnail": "https://i.postimg.cc/ydThtGh3/mazda-rx-7-fd-1993-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/9FP2StK8/mazda-rx-7-fd-1993-deagostini-red.png"
+  },
+  {
     "id": "mazda-rx-8-1993-altaya-blue",
     "name": "Mazda RX-8",
     "year": 1993,
