@@ -1848,6 +1848,18 @@
     "imageUrl": "https://i.postimg.cc/DwjBztJ6/mitsubishi-lancer-evolution-vii-2002-altaya-yellow.png"
   },
   {
+    "id": "mitsubishi-lancer-evolution-ix-2006-deagostini-red",
+    "name": "Mitsubishi Lancer Evolution IX",
+    "year": 2006,
+    "brand": "Mitsubishi",
+    "manufacturer": "DeAgostini",
+    "category": "Racing",
+    "color": ["Red"],
+    "hex": ["#1A1A1A", "#F2F2F2", "#C0272D"],
+    "thumbnail": "https://i.postimg.cc/ZRLP2QPB/mitsubishi-lancer-evolution-ix-2006-deagostini-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/yYhK5Xtb/mitsubishi-lancer-evolution-ix-2006-deagostini-red.png"
+  },
+  {
     "id": "mitsubishi-lancer-evolution-ix-2009-atlas-white",
     "name": "Mitsubishi Lancer Evolution IX",
     "year": 2009,
