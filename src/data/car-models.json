@@ -757,12 +757,24 @@
     "imageUrl": "https://i.postimg.cc/YSQ8PHfS/dodge-charger-r-t-1970-altaya-black.png"
   },
   {
+    "id": "dodge-charger-srt-hellcat-2019-deagostini-black",
+    "name": "Dodge Charger SRT Hellcat",
+    "year": 2019,
+    "brand": "Dodge",
+    "manufacturer": "DeAgostini",
+    "category": "Racing",
+    "color": ["Black", "Gold"],
+    "hex": ["#0F0F0F"],
+    "thumbnail": "https://i.postimg.cc/pTBQ4SQt/dodge-charger-srt-hellcat-2019-deagostini-black-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Dy3FBYjq/dodge-charger-srt-hellcat-2019-deagostini-black.png"
+  },
+  {
     "id": "ferrari-296-gt3-2023-burago-red",
     "name": "Ferrari 296 GT3",
     "year": 2023,
     "brand": "Ferrari",
     "manufacturer": "Burago",
-    "category": "GT3",
+    "category": "Racing",
     "carNumber": 71,
     "carDriver": "Antonio Fuoco",
     "color": ["Red", "Yellow"],
