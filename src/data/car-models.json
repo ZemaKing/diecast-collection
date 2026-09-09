@@ -1372,6 +1372,20 @@
     "imageUrl": "https://i.postimg.cc/wTYc8Y50/hyundai-i30-n-tcr-2019-ixo-blue.png"
   },
   {
+    "id": "jaguar-xjr-12-24-houres-du-mans-1991-altaya-pink",
+    "name": "Jaguar XJR-12",
+    "year": 1991,
+    "brand": "Jaguar",
+    "manufacturer": "Altaya",
+    "category": "Racing",
+    "carNumber": 35,
+    "carDriver": "Davy Jones",
+    "color": ["Pink"],
+    "hex": ["#151515", "#C81E7A"],
+    "thumbnail": "https://i.postimg.cc/MTY0NL0T/jaguar-xjr-12-24-houres-du-mans-1991-altaya-pink-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/MK0w4bN7/jaguar-xjr-12-24-houres-du-mans-1991-altaya-pink.png"
+  },
+  {
     "id": "koenigsegg-regera-2016-altaya-gray",
     "name": "Koenigsegg Regera",
     "year": 2016,
