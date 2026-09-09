@@ -825,6 +825,20 @@
     "imageUrl": "https://i.postimg.cc/s2TQLpnn/ferrari-488-gte-2017-altaya-red.png"
   },
   {
+    "id": "ferrari-499p-2023-burago-red",
+    "name": "Ferrari 499P",
+    "year": 2023,
+    "brand": "Ferrari",
+    "manufacturer": "Burago",
+    "category": "Racing",
+    "carNumber": 50,
+    "carDriver": "Antonio Fuoco",
+    "color": ["Red", "Yellow"],
+    "hex": ["#FFD21E", "#D71920"],
+    "thumbnail": "https://i.postimg.cc/ydThtGhN/ferrari-499p-2023-burago-red-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/yYhK5Xt0/ferrari-499p-2023-burago-red.png"
+  },
+  {
     "id": "ferrari-512s-1970-altaya-yellow",
     "name": "Ferrari 512S",
     "year": 1970,
