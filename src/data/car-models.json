@@ -2916,6 +2916,18 @@
     "imageUrl": "https://i.postimg.cc/CM3JxBpG/toyota-gr-yaris-2023-burago-black.png"
   },
   {
+    "id": "toyota-supra-mark-iv-1994-deagostini-orange",
+    "name": "Toyota Supra Mark IV",
+    "year": 1994,
+    "brand": "Toyota",
+    "manufacturer": "DeAgostini",
+    "category": "Racing",
+    "color": ["Orange"],
+    "hex": ["#E67300"],
+    "thumbnail": "https://i.postimg.cc/qRGcSFc8/toyota-supra-mark-iv-1994-deagostini-orange-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/RV1m8Q2x/toyota-supra-mark-iv-1994-deagostini-orange.png"
+  },
+  {
     "id": "toyota-supra-turbo-mark-iv-1994-altaya-orange",
     "name": "Toyota Supra Turbo Mark IV",
     "year": 1994,
