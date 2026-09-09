@@ -1422,6 +1422,20 @@
     "imageUrl": "https://i.postimg.cc/Jhyj0GGM/lamborghini-reventon-2009-ixo-gray.png"
   },
   {
+    "id": "lamborghini-sc63-2023-burago-green",
+    "name": "Lamborghini SC63",
+    "year": 2023,
+    "brand": "Lamborghini",
+    "manufacturer": "Burago",
+    "category": "Racing",
+    "carNumber": 63,
+    "carDriver": "Edoardo Mortara",
+    "color": ["Green", "Black"],
+    "hex": ["#1A1A1A", "#4CAF32"],
+    "thumbnail": "https://i.postimg.cc/1tK02d04/lamborghini-sc63-2023-burago-green-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/65VKSLgV/lamborghini-sc63-2023-burago-green.png"
+  },
+  {
     "id": "lamborghini-sesto-elemento-2010-ixo-gray",
     "name": "Lamborghini Sesto Elemento",
     "year": 2010,
