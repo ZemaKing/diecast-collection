@@ -137,6 +137,20 @@
     "imageUrl": "https://i.postimg.cc/YCwWL2GR/aston-martin-lola-b09-60-2009-altaya-blue.png"
   },
   {
+    "id": "aston-martin-v12-vantage-gt3-2013-ebbro-multi",
+    "name": "Aston Martin V12 Vantage GT3",
+    "year": 2013,
+    "brand": "Aston Martin",
+    "manufacturer": "EBBRO",
+    "category": "Racing",
+    "carNumber": 50,
+    "carDriver": "Masaki Kano",
+    "color": ["MULTI"],
+    "hex": ["#1E6B3C", "#E8720C", "#F2F2F2"],
+    "thumbnail": "https://i.postimg.cc/ZRLP2QPT/aston-martin-v12-vantage-gt3-2013-ebbro-multi-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/Prnh2F3z/aston-martin-v12-vantage-gt3-2013-ebbro-green.png"
+  },
+  {
     "id": "aston-martin-vulcan-2015-ixo-orange",
     "name": "Aston Martin Vulcan",
     "year": 2015,
