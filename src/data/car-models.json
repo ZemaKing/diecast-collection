@@ -1488,6 +1488,20 @@
     "imageUrl": "https://i.postimg.cc/V639k3xP/lancia-stratos-hf-1978-altaya-multi.png"
   },
   {
+    "id": "lexus-lfa-code-x-2015-ebbro-white",
+    "name": "Lexus LFA Code X",
+    "year": 2015,
+    "brand": "Lexus",
+    "manufacturer": "EBBRO",
+    "category": "Racing",
+    "carNumber": 53,
+    "carDriver": "Masahiko Kageyama",
+    "color": ["White", "Black"],
+    "hex": ["#1A1A1A", "#EDEDED"],
+    "thumbnail": "https://i.postimg.cc/cHc72z7C/lexus-lfa-code-x-2015-ebbro-white-thumbnail.png",
+    "imageUrl": "https://i.postimg.cc/02Gv3dF0/lexus-lfa-code-x-2015-ebbro-white.png"
+  },
+  {
     "id": "maserati-granturismo-mc-gt3-2015-leo-models-yellow",
     "name": "Maserati GranTurismo MC GT3",
     "year": 2015,
