@@ -30,51 +30,97 @@
     object-position: center;
 }
 
+.thumbTopRow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px;
+    width: 100%;
+}
+
+.manufacturerBadge {
+    display: flex;
+    align-items: center;
+}
+
+.manufacturerBadge img {
+    height: 24px;
+    width: auto;
+    max-width: 110px;
+    display: block;
+    object-fit: contain;
+}
+
+.scaleBadge {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    padding: 3px 10px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .carDetails {
     position: absolute;
     bottom: 0;
     left: 0;
     display: flex;
     justify-content: space-between;
-    padding: 6px 12px;
+    align-items: flex-end;
+    padding: 10px;
     width: 100%;
 }
 
-.carNumber {
-    color: var(--muted);
-    display: block;
-    font-size: 13px;
-    font-style: italic;
+.carNumberBadge {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    padding: 3px 10px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.carNumberWrapper {
-    color: var(--muted);
+.carDriverBadge {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    padding: 3px 10px 3px 6px;
+    color: var(--text);
     display: flex;
-    font-size: 13px;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
     font-style: italic;
-}
-
-.carNumberLogo {
-    width: 16px !important;
-    height: 16px !important;
-    margin-right: 6px;
-    padding: 0.5px;
-    vertical-align: middle;
-}
-
-.carDriver {
-    color: var(--muted);
-    display: flex;
-    font-size: 13px;
-    font-style: italic;
+    white-space: nowrap;
 }
 
 .carDriverLogo {
-    width: 12px !important;
+    width: 18px !important;
     height: 18px !important;
-    margin-right: 6px;
-    padding: 0.5px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    padding: 3px;
     vertical-align: middle;
+}
+
+.countryFlag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1;
+    background: var(--surface-3);
 }
 
 .cardTitle {
@@ -103,20 +149,20 @@
 
 @media (min-width: 1280px) {
     .carDetails {
-        padding: 2px 8px;
+        padding: 8px;
     }
 
-    .carNumber {
-        font-size: 12px;
+    .carNumberBadge {
+        font-size: 11px;
     }
 
-    .carDriver {
-        font-size: 12px;
+    .carDriverBadge {
+        font-size: 11px;
     }
 
     .carDriverLogo {
-        width: 13px !important;
+        width: 16px !important;
         height: 16px !important;
-        padding: 0.5px;
+        padding: 3px;
     }
 }

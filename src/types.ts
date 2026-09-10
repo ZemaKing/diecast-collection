@@ -7,6 +7,7 @@ export type DiecastModel = {
     category: "Rally" | "Racing" | "Supercar" | "Premium";
     carNumber?: number;
     carDriver?: string;
+    driverCountry?: string;
     color: string[];
     hex?: string[];
     thumbnail: string;

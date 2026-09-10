@@ -10,6 +10,11 @@ type ModelCardProps = {
     onClick: () => void;
 };
 
+const countryCodeToFlagEmoji = (countryCode: string) =>
+    countryCode
+        .toUpperCase()
+        .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
+
 export function ModelCard({ model, onClick }: ModelCardProps) {
     return (
         <div className="card" id={model.id}>
@@ -22,18 +27,27 @@ export function ModelCard({ model, onClick }: ModelCardProps) {
                     decoding="async"
                 />
 
+                <div className="thumbTopRow">
+                    <div className="manufacturerBadge">
+                        <img src={`/manufacturers/${model.manufacturer}.svg`} alt={model.manufacturer} />
+                    </div>
+
+                    <div className="scaleBadge">{model.scale ?? "1:43"}</div>
+                </div>
+
                 {(model.carNumber !== undefined || !!model.carDriver) && (
                     <div className="carDetails">
                         {model.carNumber !== undefined && (
-                            <div className="carNumber">
-                                <div className="carNumberWrapper">№ {model.carNumber}</div>
-                            </div>
+                            <div className="carNumberBadge">#{model.carNumber}</div>
                         )}
 
                         {model.carDriver && (
-                            <div className="carDriver">
-                                <img className="carDriverLogo" src="/wheel.svg" alt="wheel" />
-                                {model.carDriver}
+                            <div className="carDriverBadge">
+                                <img className="carDriverLogo" src="/wheel.svg" alt="driver" />
+                                <span>{model.carDriver}</span>
+                                {model.driverCountry && (
+                                    <span className="countryFlag">{countryCodeToFlagEmoji(model.driverCountry)}</span>
+                                )}
                             </div>
                         )}
                     </div>
