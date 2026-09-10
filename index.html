@@ -8,6 +8,19 @@
 	<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title>ZemaKing Diecast Collection</title>
+	<script>
+		(function () {
+			try {
+				var stored = localStorage.getItem("zk-theme");
+				var theme = stored === "light" || stored === "dark"
+					? stored
+					: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+				document.documentElement.dataset.theme = theme;
+			} catch (e) {
+				document.documentElement.dataset.theme = "dark";
+			}
+		})();
+	</script>
 </head>
 <body>
 <div id="root"></div>

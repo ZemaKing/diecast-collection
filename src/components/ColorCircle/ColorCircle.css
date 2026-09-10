@@ -1,5 +1,5 @@
 .circle {
-    border: 1px solid #121A27;
+    border: 1px solid var(--panel);
     border-radius: 50%;
     width: 24px;
     height: 24px;

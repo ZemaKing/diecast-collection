@@ -16,6 +16,13 @@
     margin: 0 auto;
 }
 
+.landingHeaderRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
 .landingHero {
     display: flex;
     flex-direction: column;

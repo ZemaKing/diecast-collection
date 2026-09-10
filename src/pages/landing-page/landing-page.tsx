@@ -1,17 +1,21 @@
 import { Link } from "react-router-dom";
 import "./landing-page.css";
+import {ThemeToggle} from "../../components/ThemeToggle/ThemeToggle.tsx";
 
 export function LandingPage() {
     return (
         <div className="landingPage">
             <header className="landingHeader">
                 <div className="landingHeader__inner">
-                    <div className="landingHero">
-                        <div className="landingEyebrow">ZemaKing Diecast Collection</div>
-                        <h1 className="landingTitle">Choose your collection</h1>
-                        <p className="landingSubtitle">
-                            Select the collection you want to explore.
-                        </p>
+                    <div className="landingHeaderRow">
+                        <div className="landingHero">
+                            <div className="landingEyebrow">ZemaKing Diecast Collection</div>
+                            <h1 className="landingTitle">Choose your collection</h1>
+                            <p className="landingSubtitle">
+                                Select the collection you want to explore.
+                            </p>
+                        </div>
+                        <ThemeToggle/>
                     </div>
                 </div>
             </header>

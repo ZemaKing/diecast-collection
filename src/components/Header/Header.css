@@ -1,5 +1,5 @@
 .topHeader {
-    background: #0F1622;
+    background: var(--panel2);
     border-bottom: 1px solid var(--border);
     display: flex;
     flex-wrap: wrap;
@@ -26,10 +26,10 @@
 }
 
 .backButton {
-    background: #1e2532;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    color: #ffffff;
+    color: var(--text);
     cursor: pointer;
     padding: 8px 12px;
     transition: background 120ms ease, transform 120ms ease;
@@ -39,7 +39,7 @@
 }
 
 .backButton:hover {
-    background: #232c3d;
+    background: var(--panel-alt-hover);
     transform: translateY(-1px);
 }
 
@@ -50,8 +50,8 @@
 }
 
 .countPillTotal {
-    border: 1px solid rgba(212, 175, 55, 0.7) !important;
-    color: rgba(212, 175, 55, 0.7) !important;
+    border: 1px solid var(--pill-accent) !important;
+    color: var(--pill-accent) !important;
 }
 
 .linkPill {
@@ -61,13 +61,13 @@
     width: 28px;
     height: 20px;
     border-radius: 50%;
-    color: #ffc400;
+    color: var(--pill-accent);
     transition: all 0.2s ease;
     padding: 3px !important;
 }
 
 .linkPill:hover {
-    background: rgba(255, 196, 0, 0.1);
+    background: var(--pill-accent-hover-bg);
     transform: translateY(-1px);
 }
 

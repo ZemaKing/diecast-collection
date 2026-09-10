@@ -1,0 +1,12 @@
+.themeToggle {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.themeToggle svg {
+    width: 14px;
+    height: 14px;
+}

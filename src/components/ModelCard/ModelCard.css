@@ -1,12 +1,12 @@
 .card {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px;
 }
 
 .thumb {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 12px;
     cursor: pointer;
@@ -19,7 +19,7 @@
 }
 
 .thumb:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--surface-3);
 }
 
 .thumb img {

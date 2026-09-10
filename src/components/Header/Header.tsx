@@ -2,6 +2,7 @@ import './Header.css';
 import {Instagram} from '../../icons/Instagram.tsx';
 import {Email} from '../../icons/Email.tsx';
 import {Link} from "react-router-dom";
+import {ThemeToggle} from "../ThemeToggle/ThemeToggle.tsx";
 
 type Props = {
     title: string;
@@ -19,6 +20,7 @@ export function Header({title, count, rightSlot}: Props) {
             <div className="headerRight">
                 <div className="countPill countPillTotal">{count} models</div>
                 {rightSlot}
+                <ThemeToggle/>
               <div className="countPill countPillTotal">
                 <a
                   className="linkPill"
