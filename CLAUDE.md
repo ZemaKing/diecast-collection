@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Redesign in progress
+
+A phased redesign + Supabase migration is under way. **Read `ROADMAP.md` first** (findings in `docs/AUDIT.md`; mockups in `diecast-details/`). Implement **one phase at a time**, report per the workflow rules in the roadmap, update its checkboxes, then stop and wait for approval. Trucks are being retired (not migrated). Sections below describe the *current* JSON-based architecture and will be rewritten in Phases 11, 25 and 36.
+
 ## What this is
 
 A React + TypeScript + Vite single-page app that showcases a personal diecast model collection ("ZemaKing Diecast Collection"), split into two galleries: Cars and Trucks. There is no backend — all model data lives in static JSON files and all images are hosted externally on postimg.cc.
