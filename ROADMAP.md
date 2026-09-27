@@ -44,7 +44,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 3 | Design Foundation (tokens) | ✅ Done | Approve phase; review font + light theme |
 | 4 | Supabase Schema Design | 🟡 Awaiting approval | Approve `docs/SCHEMA.md` (§12); answer D15 (DTM) |
 | 5 | Supabase Project & Client Integration | ✅ Done | Reset DB password; disable sign-ups |
-| 6 | Migrations & RLS | ⬜ | Run `db push`, create owner user |
+| 6 | Migrations & RLS | ✅ Done | — |
 | 7 | JSON → Supabase Import Tool | ⬜ | Service-role key in `.env.local` (local only) |
 | 8 | Migration Verification | ⬜ | Sign off on report |
 | 9 | Data Access Layer | ⬜ | — |
@@ -210,28 +210,28 @@ Client + env + error normalization in place; app UI unchanged; no secrets commit
 
 ---
 
-## Phase 6 — Database Migrations & RLS
+## Phase 6 — Database Migrations & RLS ✅
 
 ### Goal
 Create the schema and lock it down.
 
 ### Tasks
-- [ ] `supabase/migrations/*`: schema per approved Phase 4 doc, `updated_at` trigger, seed lookups (categories)
-- [ ] `is_admin()` (`SECURITY DEFINER`, reads `admin_users`); disable public sign-ups in Supabase Auth
-- [ ] RLS **enabled on every table**. Public: `SELECT` on published rows / lookups only. Admin: full CRUD. `model_private_notes`, drafts, `admin_users`: admin only
-- [ ] `scripts/verify-rls.mjs` — runs as anon and as a non-admin authenticated user and asserts denials
-- [ ] Generate `database.types.ts`
+- [x] `supabase/migrations/*`: schema per approved Phase 4 doc, `updated_at` trigger, seed lookups (categories) *(3 files in schema `diecast`, incl. the `model_summaries` view with `security_invoker`. Applied by the owner in the dashboard SQL editor, not `db push`; see `docs/SUPABASE-SETUP.md`)*
+- [x] `is_admin()` (`SECURITY DEFINER`, reads `admin_users`); disable public sign-ups in Supabase Auth *(sign-ups disabled in the dashboard; owner confirmed 2026-09-27)*
+- [x] RLS **enabled on every table**. Public: `SELECT` on published rows / lookups only. Admin: full CRUD. `model_private_notes`, drafts, `admin_users`: admin only *(plus: anon has no grant at all on the two private tables; `admin_users` isn't writable through the API even by admins)*
+- [x] `scripts/verify-rls.mjs` — runs as anon and as a non-admin authenticated user and asserts denials *(`npm run verify:rls`, 63 checks, incl. admin CRUD, with self-cleaning fixtures)*
+- [x] Generate `database.types.ts` *(hand-written in generator format since the CLI isn't linked; `npm run verify:types` checks all 13 relations against the live DB, plus compile-time tests)*
 
 ### Verification
-- [ ] Anon: can read published models; **cannot** insert/update/delete anywhere; cannot see drafts, private notes or `admin_users`
-- [ ] Authenticated non-admin: same as anon
-- [ ] Admin: can CRUD
-- [ ] `supabase db push` on a clean project reproduces the schema from migrations alone
+- [x] Anon: can read published models; **cannot** insert/update/delete anywhere; cannot see drafts, private notes or `admin_users`
+- [x] Authenticated non-admin: same as anon
+- [x] Admin: can CRUD
+- [ ] `supabase db push` on a clean project reproduces the schema from migrations alone *(**not yet proven**: the owner chose to skip the local Docker run. The files did apply cleanly, in order, to an empty project. A repeat run on the Phase 35 test project closes this)*
 
 ### Definition of Done
 RLS enabled on all tables, verification script green, migrations reproducible.
 
-**Manual:** run `supabase db push`; create the owner user; insert the owner into `admin_users`.
+**Manual:** run `supabase db push`; create the owner user; insert the owner into `admin_users`. *(Done via SQL editor 2026-09-27: 3 migrations applied, `diecast` exposed, owner + non-admin test user created, owner in `admin_users`.)*
 
 ---
 

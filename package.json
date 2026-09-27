@@ -17,6 +17,8 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:push": "supabase db push",
+    "verify:types": "node --env-file-if-exists=.env.local scripts/verify-types.mjs",
+    "verify:rls": "node --env-file-if-exists=.env.local scripts/verify-rls.mjs",
     "db:types": "supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
     "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"
   },
