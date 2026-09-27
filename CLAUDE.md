@@ -25,6 +25,8 @@ A React + TypeScript + Vite single-page app that showcases a personal diecast mo
 
 **Env**: `.env.example` lists variables; copy to `.env.local` (git-ignored). `import.meta.env` is typed in `src/vite-env.d.ts`. Only `VITE_*` vars reach the browser — never put secrets there.
 
+**Supabase** (see `docs/SUPABASE-SETUP.md`, schema in `docs/SCHEMA.md`): dedicated project `zemaking-diecast-car-collection`; **all DB objects live in the `diecast` schema, not `public`**. Single client in `src/lib/supabase.ts` (validates env via `src/lib/env.ts`, which rejects secret/service_role keys); normalize every Supabase/fetch error with `toAppError()` from `src/lib/errors.ts`. Only `src/lib` and `src/services` may import `@supabase/supabase-js`. `src/lib/database.types.ts` is generated (`npm run db:types`) — never hand-edit. `npm run supabase:check` tests the connection; `postbuild` fails the build if a secret key is in `dist/`. The UI does not read Supabase yet (JSON until Phase 10).
+
 ## Architecture
 
 **Routing** (`src/main.tsx`, `src/App.tsx`): `BrowserRouter` wraps a small `Routes` table — `/` is the landing page, `/cars` and `/trucks` both render `CollectionPage` with a `type` prop (`"cars" | "trucks"`), anything else redirects to `/`.

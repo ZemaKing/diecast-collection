@@ -12,7 +12,8 @@ Inputs: [`docs/AUDIT.md`](AUDIT.md) (findings D1–D14), the three mockups in `d
 2. **Normalize only what is filtered, counted or browsed.** Brands, manufacturers, categories, colors, drivers and tags get tables, because they need facet counts, browse pages or logos. Free-text attributes (team, event, series, location) stay as columns. Promote a column to a table only when a real need appears.
 3. **RLS is row-level, not column-level.** Anything private lives in its own table (`model_private_notes`) and never shares a row with public data.
 4. **Nothing is fabricated.** New fields (description, features, tags, condition, location…) are nullable or empty for the 227 imported rows, and the UI renders them conditionally.
-5. **Read path = one summary list.** Per the architecture in ROADMAP, the app loads all published models once and filters, searches and sorts client-side. The schema is optimized for that single query (the `model_summaries` view), not for server-side search.
+5. **Everything lives in the `diecast` Postgres schema, not `public`** (decided in Phase 5; see `docs/SUPABASE-SETUP.md`). The project is dedicated to this app, but a named schema makes a future move (`pg_dump --schema=diecast`) or sharing trivial. It must be listed under **Data API → Exposed schemas**, and needs explicit `grant usage` to `anon` / `authenticated` (RLS still decides row access).
+6. **Read path = one summary list.** Per the architecture in ROADMAP, the app loads all published models once and filters, searches and sorts client-side. The schema is optimized for that single query (the `model_summaries` view), not for server-side search.
 
 ## 2. Owner decisions (2026-09-27)
 
@@ -183,7 +184,7 @@ Import: one row per model (position 0, `is_primary = true`, both postimg URLs) �
 
 | Object | Definition | Purpose |
 | --- | --- | --- |
-| `is_admin()` | `returns boolean language sql stable security definer set search_path = ''` → `exists (select 1 from public.admin_users where user_id = auth.uid())` | Single gate used by every admin policy |
+| `is_admin()` | `returns boolean language sql stable security definer set search_path = ''` → `exists (select 1 from diecast.admin_users where user_id = auth.uid())` | Single gate used by every admin policy |
 | `set_updated_at()` | trigger `before update` on every table with `updated_at` | |
 | `is_hex_palette(text[])` | immutable SQL function used by the `livery_hex` CHECK | Array-element CHECKs can't use subqueries directly |
 | `model_summaries` (view, **`security_invoker = true`** so RLS applies) | One row per model, with: slug, name, year, scale, is_racing, car_number, `livery_hex`, added_at, is_published; brand/manufacturer/category **slug + name** (+ logo paths); driver name; `color_slugs text[]` in position order; primary image thumb + full (resolved columns); condition/location | The single query behind `getModels()` (Phase 9). Keeps the client free of N+1 joins |
@@ -322,18 +323,23 @@ Public sign-ups are disabled in Supabase Auth. `SUPABASE_SERVICE_ROLE_KEY` is us
 ## 11. Proposed DDL sketch (reference for Phase 6, not a migration)
 
 ```sql
-create extension if not exists pgcrypto;  -- gen_random_uuid (built in on PG13+, kept for clarity)
+create schema if not exists diecast;
+-- Schema-level access only; row access is decided by RLS policies (Phase 6).
+grant usage on schema diecast to anon, authenticated, service_role;
+alter default privileges in schema diecast grant select on tables to anon, authenticated;
+alter default privileges in schema diecast grant all on tables to service_role;
+-- authenticated also gets insert/update/delete on tables, gated by is_admin() policies.
 
-create function public.set_updated_at() returns trigger language plpgsql as $$
+create function diecast.set_updated_at() returns trigger language plpgsql as $$
 begin new.updated_at = now(); return new; end $$;
 
-create function public.is_hex_palette(p text[]) returns boolean
+create function diecast.is_hex_palette(p text[]) returns boolean
 language sql immutable as $$
   select coalesce(array_length(p, 1), 0) <= 8
      and not exists (select 1 from unnest(p) h where h !~ '^#[0-9A-F]{6}$')
 $$;
 
-create table public.brands (
+create table diecast.brands (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
   name text not null check (char_length(btrim(name)) between 1 and 80),
@@ -341,23 +347,23 @@ create table public.brands (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index brands_name_lower_key on public.brands (lower(name));
+create unique index brands_name_lower_key on diecast.brands (lower(name));
 -- manufacturers: identical shape. categories: + sort_order. colors: + hex, sort_order.
 -- drivers: + country_code char(2) check (country_code ~ '^[A-Z]{2}$'). tags: slug + name.
 
-create table public.models (
+create table diecast.models (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' and char_length(slug) <= 80),
   name text not null check (char_length(btrim(name)) between 1 and 120),
   year smallint not null check (year between 1885 and 2100),
-  brand_id uuid not null references public.brands on delete restrict,
-  manufacturer_id uuid not null references public.manufacturers on delete restrict,
-  category_id uuid not null references public.categories on delete restrict,
+  brand_id uuid not null references diecast.brands on delete restrict,
+  manufacturer_id uuid not null references diecast.manufacturers on delete restrict,
+  category_id uuid not null references diecast.categories on delete restrict,
   scale text not null default '1:43' check (scale ~ '^1:[0-9]{1,3}$'),
-  livery_hex text[] not null default '{}' check (public.is_hex_palette(livery_hex)),
+  livery_hex text[] not null default '{}' check (diecast.is_hex_palette(livery_hex)),
   is_racing boolean not null default false,
   car_number text check (car_number ~ '^[0-9A-Z]{1,4}$'),
-  driver_id uuid references public.drivers on delete restrict,
+  driver_id uuid references diecast.drivers on delete restrict,
   team text check (char_length(team) <= 120),
   event text check (char_length(event) <= 120),
   series text check (char_length(series) <= 120),
@@ -371,9 +377,9 @@ create table public.models (
   updated_at timestamptz not null default now()
 );
 
-create table public.model_images (
+create table diecast.model_images (
   id uuid primary key default gen_random_uuid(),
-  model_id uuid not null references public.models on delete cascade,
+  model_id uuid not null references diecast.models on delete cascade,
   position smallint not null check (position >= 0),
   is_primary boolean not null default false,
   storage_path text, thumb_storage_path text,
@@ -386,22 +392,22 @@ create table public.model_images (
   unique (model_id, position),
   check (storage_path is not null or external_url is not null)
 );
-create unique index model_images_one_primary on public.model_images (model_id) where is_primary;
+create unique index model_images_one_primary on diecast.model_images (model_id) where is_primary;
 
-create table public.model_private_notes (
-  model_id uuid primary key references public.models on delete cascade,
+create table diecast.model_private_notes (
+  model_id uuid primary key references diecast.models on delete cascade,
   notes text not null check (char_length(notes) <= 10000),
   updated_at timestamptz not null default now()
 );
 
-create table public.admin_users (
+create table diecast.admin_users (
   user_id uuid primary key references auth.users on delete cascade,
   created_at timestamptz not null default now()
 );
 
-create function public.is_admin() returns boolean
+create function diecast.is_admin() returns boolean
 language sql stable security definer set search_path = '' as $$
-  select exists (select 1 from public.admin_users where user_id = (select auth.uid()))
+  select exists (select 1 from diecast.admin_users where user_id = (select auth.uid()))
 $$;
 ```
 

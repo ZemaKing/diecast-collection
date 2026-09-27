@@ -43,7 +43,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 2 | Test & Tooling Baseline | ✅ Done | Approve phase |
 | 3 | Design Foundation (tokens) | ✅ Done | Approve phase; review font + light theme |
 | 4 | Supabase Schema Design | 🟡 Awaiting approval | Approve `docs/SCHEMA.md` (§12); answer D15 (DTM) |
-| 5 | Supabase Project & Client Integration | ⬜ | Create Supabase project, provide URL + anon key |
+| 5 | Supabase Project & Client Integration | ✅ Done | Reset DB password; disable sign-ups |
 | 6 | Migrations & RLS | ⬜ | Run `db push`, create owner user |
 | 7 | JSON → Supabase Import Tool | ⬜ | Service-role key in `.env.local` (local only) |
 | 8 | Migration Verification | ⬜ | Sign off on report |
@@ -187,23 +187,23 @@ Approved schema document; no code or DB changes.
 
 ---
 
-## Phase 5 — Supabase Project & Client Integration
+## Phase 5 — Supabase Project & Client Integration ✅
 
 ### Goal
 Connect the app to Supabase without changing any UI.
 
 ### Tasks
-- [ ] Owner creates the Supabase project (region near users); note the free-tier **inactivity pause** risk (revisit in Phase 37)
-- [ ] Add `@supabase/supabase-js`; single client in `src/lib/supabase.ts` using `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (publishable key)
-- [ ] `.env.example`; `.env.local` git-ignored (already covered by `*.local`); startup check that fails loudly if env is missing
-- [ ] Supabase CLI setup (`supabase/` folder, `config.toml`); decide hosted-only vs local Docker for dev
-- [ ] Type generation script → `src/lib/database.types.ts` (after Phase 6 has tables)
-- [ ] `AppError` type + `toAppError()` normalizer (network vs Postgres vs auth)
-- [ ] Dev-only connectivity check
+- [x] Owner creates the Supabase project (region near users); note the free-tier **inactivity pause** risk (revisit in Phase 37) *(`zemaking-diecast-car-collection`, ref `gduqlrdjbhiftwzamtoe`, in the owner's second Supabase account because the main account's 2 free slots are used by recipes and games. All objects go in schema `diecast`)*
+- [x] Add `@supabase/supabase-js`; single client in `src/lib/supabase.ts` using `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (publishable key)
+- [x] `.env.example`; `.env.local` git-ignored (already covered by `*.local`); startup check that fails loudly if env is missing *(`parseSupabaseEnv` throws `EnvError` on import of the client and also rejects secret/service_role keys; the dev server warns in the console. It isn't a hard app failure yet because the UI doesn't use Supabase until Phase 10)*
+- [x] Supabase CLI setup (`supabase/` folder, `config.toml`); decide hosted-only vs local Docker for dev *(hosted for dev/prod; local Docker optional for migration testing; sign-ups disabled in config)*
+- [x] Type generation script → `src/lib/database.types.ts` (after Phase 6 has tables) *(`npm run db:types`; placeholder file until then)*
+- [x] `AppError` type + `toAppError()` normalizer (network vs Postgres vs auth)
+- [x] Dev-only connectivity check *(console check in dev + `npm run supabase:check`)*
 
 ### Verification
-- [ ] Client connects (simple `select 1`-style call) from dev server
-- [ ] Production build contains no `service_role` string and no non-`VITE_` secrets
+- [x] Client connects (simple `select 1`-style call) from dev server *(`/auth/v1/health` with the anon key: `npm run supabase:check` ✓ and dev console `[supabase] connected`. There are no tables yet for a real select; Phase 6 adds one)*
+- [x] Production build contains no `service_role` string and no non-`VITE_` secrets *(enforced on every build by `postbuild` → `scripts/check-bundle-secrets.mjs`)*
 
 ### Definition of Done
 Client + env + error normalization in place; app UI unchanged; no secrets committed.
@@ -875,6 +875,6 @@ Owner go/no-go recorded; site stable on Supabase.
 | 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? Breadcrumb "model line" level — wanted? | Ph 19 / 20 |
 | 8 | ~~Corvette / scale~~ → **merge Corvette into Chevrolet**; **all 227 are 1:43** (Phase 4) | Ph 4 / 7 |
 | 9 | ~~npm or pnpm~~ → **npm** (decided in Phase 2) | Ph 2 |
-| 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? | Ph 5 / 37 |
+| 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? *Project is on the free plan (second account); decide before launch* | Ph 5 / 37 |
 | 11 | Assets: header logo (SVG preferred), hero background image | Ph 12, 17 |
 | 12 | **D15**: manufacturer "DTM" (3 BMW/Mercedes models) is a race series, not a model maker. Keep, or give the real manufacturers? | Ph 7 |
