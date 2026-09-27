@@ -7,11 +7,42 @@
     padding: 14px;
 }
 
-.siteLogo {
-    display: block;
-    margin: auto;
-    width: 100%;
-    max-width: 500px;
+.siteBrand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border-subtle);
+}
+
+.siteBrandIcon {
+    flex: none;
+    width: var(--space-3xl);
+    height: var(--space-3xl);
+}
+
+.siteBrandText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: var(--leading-tight);
+}
+
+.siteBrandName {
+    color: var(--color-accent-text);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+}
+
+.siteBrandTagline {
+    margin-top: var(--space-2xs);
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
 }
 
 .sidebarTopRow {

@@ -52,11 +52,15 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
         onClear?.();
     };
 
-    const logoSrc = type === "cars" ? "/cars-logo.png" : "/trucks-logo.png";
-
     return (
         <aside className="sidebar">
-            <img src={logoSrc} alt="ZemaKing logo" className="siteLogo"/>
+            <div className="siteBrand">
+                <img src="/favicon.svg" alt="" className="siteBrandIcon" width={48} height={48}/>
+                <div className="siteBrandText">
+                    <span className="siteBrandName">ZemaKing</span>
+                    <span className="siteBrandTagline">Diecast {type === "cars" ? "Car" : "Truck"} Collection</span>
+                </div>
+            </div>
 
             <div className="sidebarTopRow">
                 <div className="sidebarTitle">Filters</div>
