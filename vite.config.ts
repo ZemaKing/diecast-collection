@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    // Needed so `?raw` CSS imports return real content (token guard tests in src/styles).
+    css: true,
     include: ['src/**/*.test.{ts,tsx}'],
   },
 })

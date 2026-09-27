@@ -2,7 +2,7 @@
 
 Audit findings: [`docs/AUDIT.md`](docs/AUDIT.md). Visual source of truth: [`diecast-details/`](diecast-details/) (Desktop mockups; Tablet/Mobile references still to be supplied — see [Open decisions](#open-decisions--inputs-needed)).
 
-There was no earlier roadmap in this repo, so numbering starts at 1. **Phases 1–2 are complete; Phase 3 is next, pending approval.**
+There was no earlier roadmap in this repo, so numbering starts at 1. **Phases 1–3 are complete; Phase 4 is next, pending approval.**
 
 ---
 
@@ -41,7 +41,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | --- | --- | --- | --- |
 | 1 | Current Application Audit | ✅ Done | Approve roadmap |
 | 2 | Test & Tooling Baseline | ✅ Done | Approve phase |
-| 3 | Design Foundation (tokens) | ⬜ | — |
+| 3 | Design Foundation (tokens) | ✅ Done | Approve phase; review font + light theme |
 | 4 | Supabase Schema Design | ⬜ | Answers to schema decisions |
 | 5 | Supabase Project & Client Integration | ⬜ | Create Supabase project, provide URL + anon key |
 | 6 | Migrations & RLS | ⬜ | Run `db push`, create owner user |
@@ -131,24 +131,24 @@ Establish a safety net *before* logic is replaced or migrated.
 
 ---
 
-## Phase 3 — Design Foundation
+## Phase 3 — Design Foundation ✅
 
 ### Goal
 Centralize all redesign values so no component hard-codes them.
 
 ### Tasks
-- [ ] Extend `src/styles/styles.css` tokens (don't restart): navy/charcoal surfaces, **gold accent** (sampled from mockups), text tiers, borders/hairlines, radii, elevation/shadows, spacing scale, type scale, motion durations/easing
-- [ ] Interaction-state tokens: hover, focus ring, active, selected, disabled
-- [ ] Category color tokens `--cat-rally|racing|supercar|premium|retro` (+ fallback) replacing the TSX map; keep them keyed by category **slug**
-- [ ] Breakpoints as one documented source: `mobile < 640`, `tablet 640–1023`, `desktop ≥ 1024`, `wide ≥ 1600` (CSS can't `var()` in `@media`, so add `src/styles/breakpoints.ts` + a comment block, and use them consistently)
-- [ ] Decide typography (Jost vs mockup face) by comparing against mockup; keep `font-display: swap`
-- [ ] Keep light theme functional with the new token names (no light mockup exists — derived, flagged)
-- [ ] Small token reference page/section in `docs/` (or a dev-only route) showing every token
+- [x] Extend `src/styles/styles.css` tokens (don't restart): navy/charcoal surfaces, **gold accent** (sampled from mockups), text tiers, borders/hairlines, radii, elevation/shadows, spacing scale, type scale, motion durations/easing *(colors pixel-sampled from `Mockup Overall.png`. Legacy names kept as aliases, so the existing UI already uses the new palette)*
+- [x] Interaction-state tokens: hover, focus ring, active, selected, disabled *(plus a global `:focus-visible` ring)*
+- [x] Category color tokens `--cat-rally|racing|supercar|premium|retro` (+ fallback) replacing the TSX map; keep them keyed by category **slug** *(`categorySlug()`; legacy truck slugs kept until Phase 11)*
+- [x] Breakpoints as one documented source: `mobile < 640`, `tablet 640–1023`, `desktop ≥ 1024`, `wide ≥ 1600` (CSS can't `var()` in `@media`, so add `src/styles/breakpoints.ts` + a comment block, and use them consistently) *(sync enforced by test. Legacy 600/768/1280/1500/1800 queries are converted when those components are rebuilt)*
+- [x] Decide typography (Jost vs mockup face) by comparing against mockup; keep `font-display: swap` *(**Nunito Sans**. The mockup has a double-story a, straight M and Avenir-like proportions, and Jost doesn't match)*
+- [x] Keep light theme functional with the new token names (no light mockup exists — derived, flagged)
+- [x] Small token reference page/section in `docs/` (or a dev-only route) showing every token *(`docs/DESIGN-TOKENS.md` + dev-only `/dev/tokens`, excluded from prod bundle)*
 
 ### Verification
-- [ ] Toggle dark/light: no unstyled or unreadable existing screen
-- [ ] `grep` shows no *new* hard-coded hex/px in components
-- [ ] Contrast of gold-on-navy and each category color on dark surface measured and recorded (≥ 4.5:1 for text or documented exception)
+- [x] Toggle dark/light: no unstyled or unreadable existing screen *(`/`, `/cars`, modal, `/dev/tokens` checked in both themes; no horizontal overflow at 360/768/1280)*
+- [x] `grep` shows no *new* hard-coded hex/px in components *(now a ratchet test: `src/styles/tokens.test.ts`)*
+- [x] Contrast of gold-on-navy and each category color on dark surface measured and recorded (≥ 4.5:1 for text or documented exception) *(table in `docs/DESIGN-TOKENS.md`, enforced for both themes by `src/styles/contrast.test.ts`. Racing/Supercar nudged brighter than the mockup to pass)*
 
 ### Definition of Done
 Tokens exist for every value class above; existing pages look unchanged/acceptable; contrast table recorded.
@@ -868,7 +868,7 @@ Owner go/no-go recorded; site stable on Supabase.
 | --- | --- | --- |
 | 1 | **Tablet & Mobile mockups**: the supplied images only include small insets of the collection page. Please provide full-page Tablet and Mobile references (collection, filter sheet, details, add/edit), ideally as separate images per device | Ph 14 (filter sheet), 31, 32 |
 | 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? | Ph 22, 23, 24 |
-| 3 | **Light theme**: keep (derived from tokens, no mockup) or dark-only? | Ph 3 |
+| 3 | **Light theme**: keep (derived from tokens, no mockup) or dark-only? *Phase 3 kept it, with derived values that pass contrast. Confirm, or say dark-only* | Ph 3 |
 | 4 | Confirm **trucks are excluded** from Supabase (archive JSON only) | Ph 4 / 11 |
 | 5 | Which "My Collection" fields are **public** (condition, location, added, notes)? Private notes are a separate admin-only table regardless | Ph 4 |
 | 6 | Description editor: rich text (WYSIWYG) vs plain/markdown-lite | Ph 26 |

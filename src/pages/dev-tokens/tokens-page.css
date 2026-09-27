@@ -1,0 +1,194 @@
+.tkPage {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-xl) var(--container-gutter) var(--space-4xl);
+    font-size: var(--text-md);
+}
+
+.tkHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.tkEyebrow,
+.tkEyebrowSample {
+    margin: 0;
+    color: var(--color-accent-text);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+}
+
+.tkTitle {
+    margin: var(--space-xs) 0;
+    font-size: var(--text-display);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+}
+
+.tkMeta,
+.tkValue {
+    color: var(--color-text-muted);
+}
+
+.tkSection {
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-xl);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.tkSectionTitle {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+}
+
+.tkGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-md);
+}
+
+.tkSwatch,
+.tkCat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+    font-size: var(--text-xs);
+}
+
+.tkSwatch code,
+.tkCat code {
+    overflow-wrap: anywhere;
+}
+
+.tkChip {
+    height: var(--space-3xl);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.tkPass {
+    color: var(--color-success);
+}
+
+.tkFail {
+    color: var(--color-danger);
+}
+
+.tkRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.tkTypeRow,
+.tkBarRow {
+    display: grid;
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    gap: var(--space-lg);
+    align-items: center;
+    padding: var(--space-xs) 0;
+    font-size: var(--text-xs);
+}
+
+.tkTypeRow span {
+    overflow-wrap: anywhere;
+    line-height: var(--leading-tight);
+}
+
+.tkBar {
+    height: var(--space-md);
+    background: var(--color-accent);
+    border-radius: var(--radius-xs);
+}
+
+.tkBox {
+    display: grid;
+    place-items: center;
+    width: 120px;
+    height: 72px;
+    padding: var(--space-xs);
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border);
+    font-size: var(--text-2xs);
+}
+
+.tkButton {
+    min-height: var(--tap-target);
+    padding: 0 var(--space-lg);
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.tkButton:hover,
+.tkButton--hover {
+    background-image: linear-gradient(var(--state-hover), var(--state-hover));
+}
+
+.tkButton:active,
+.tkButton--active {
+    background-image: linear-gradient(var(--state-active), var(--state-active));
+}
+
+.tkButton--selected {
+    background: var(--state-selected-bg);
+    border-color: var(--state-selected-border);
+    color: var(--color-accent-text);
+}
+
+.tkButton--focus {
+    box-shadow: var(--focus-ring);
+}
+
+.tkButton:disabled {
+    opacity: var(--state-disabled-opacity);
+    cursor: not-allowed;
+}
+
+.tkButton--primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+}
+
+.tkButton--primary:hover {
+    background: var(--color-accent-hover);
+}
+
+.tkTable {
+    border-collapse: collapse;
+    font-size: var(--text-xs);
+}
+
+.tkTable td {
+    padding: var(--space-xs) var(--space-lg) var(--space-xs) 0;
+    border-bottom: var(--border-width) solid var(--color-border-subtle);
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 639.98px) {
+    .tkHeader {
+        flex-direction: column;
+    }
+
+    .tkSection {
+        padding: var(--space-lg);
+    }
+}

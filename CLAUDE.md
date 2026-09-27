@@ -32,7 +32,7 @@ A React + TypeScript + Vite single-page app that showcases a personal diecast mo
 **Data model** (`src/types.ts`, `src/data/*.json`): Each collection is a flat JSON array of `DiecastModel` typed as `car-models.json` / `truck-models.json`, imported directly and cast with `as DiecastModel[]` — there is no runtime validation, so malformed entries fail silently or only surface as UI bugs.
 - `id` is a slug of the form `{brand}-{model}-{year}-{manufacturer}-{color}`, used both as React key and as the DOM element id that deep-linking scrolls to (see below).
 - `color`/`hex` are arrays because some models have multi-color liveries (rendered as a conic-gradient by `ColorCircle`).
-- **Known inconsistency**: `DiecastModel.category` in `types.ts` only lists `"Rally" | "Racing" | "Supercar" | "Premium"`, but the JSON data and `CategoryLabel.tsx`'s local `Category` type also use `"Retro" | "Transport" | "Construction" | "Utility" | "Off-Road"`. Since data is force-cast, TypeScript won't catch new category values — when adding a model with a new category, update both `types.ts` and the `CATEGORY_COLOR` map in `CategoryLabel.tsx`.
+- **Known inconsistency**: `DiecastModel.category` in `types.ts` only lists `"Rally" | "Racing" | "Supercar" | "Premium"`, but the JSON data also uses `"Retro" | "Transport" | "Construction" | "Utility" | "Off-Road"`. Since data is force-cast, TypeScript won't catch new category values — when adding a model with a new category, update `types.ts` and add `--cat-<slug>` tokens (dark + light) in `styles.css`.
 
 **Pure logic** (`src/utils/`): `collection-filters.ts` (filter predicate, `uniqSorted`, filter options, lookup by id), `url-params.ts` (filters ↔ query params, `?model=` add/remove — all return new `URLSearchParams`, never mutate), `color.ts` (hex → flat color / conic-gradient). Components call these; keep new logic here, not inline, so it stays testable.
 
@@ -46,6 +46,10 @@ A React + TypeScript + Vite single-page app that showcases a personal diecast mo
 - If the user says images will be added later ("leave images to me" / "add mock links"), use placeholder URLs in the existing `i.postimg.cc/<id>/<slug>-thumbnail.png` / `i.postimg.cc/<id>/<slug>.png` format (e.g. `i.postimg.cc/MOCKMOCK/...`) so the entry matches the shape of real entries and is easy to find-and-replace later.
 - If no SVG exists yet at `public/brands/{brand}.svg` for a new brand, flag this to the user rather than silently leaving a broken image.
 
-**Styling**: plain CSS per-component (no CSS modules/Tailwind/styled-components) — each component/page has a co-located `.css` file imported directly, plus a shared `src/styles/styles.css` for globals.
+**Styling**: plain CSS per-component (no CSS modules/Tailwind/styled-components) — each component/page has a co-located `.css` file imported directly, plus a shared `src/styles/styles.css` that holds **all design tokens** (see `docs/DESIGN-TOKENS.md`; live reference at `/dev/tokens` on the dev server).
+- Use semantic tokens only (`var(--color-surface)`, `var(--space-lg)`, `var(--text-sm)`, …) — never hard-code colors/sizes. Tests fail on undefined `var(--x)` references and on new hard-coded colors outside `styles.css`. Legacy names (`--bg`, `--panel`, `--muted`…) are aliases for old components; don't use them in new code.
+- Category colors are `--cat-<slug>` tokens; `CategoryLabel` resolves them via `categoryColorVar()` (`src/utils/category.ts`). A new category needs a `--cat-<slug>` in both the dark (`:root`) and light blocks — a test checks this against the data.
+- Breakpoints: mobile < 640, tablet 640–1023, desktop ≥ 1024, wide ≥ 1600 — literal in CSS, mirrored in `src/styles/breakpoints.ts`.
+- Font is Nunito Sans (`--font-sans`, loaded in `index.html`).
 
 **Deployment**: Vercel (`vercel.json` rewrites all paths to `/` to support client-side routing on refresh/deep links).
