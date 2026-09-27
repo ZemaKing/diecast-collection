@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Env files (only the example is committed)
+.env
+.env.*
+!.env.example
+
+# npm is the package manager — don't commit other lockfiles
+pnpm-lock.yaml
+yarn.lock
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

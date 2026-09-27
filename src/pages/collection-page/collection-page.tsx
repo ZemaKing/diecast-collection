@@ -3,7 +3,7 @@ import {useSearchParams} from "react-router-dom";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
-import {Sidebar, type Filters} from "../../components/Sidebar/Sidebar";
+import {Sidebar} from "../../components/Sidebar/Sidebar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
@@ -11,16 +11,11 @@ import carModelsData from "../../data/car-models.json";
 import truckModelsData from "../../data/truck-models.json";
 
 import type {DiecastModel, DiecastType} from "../../types.ts";
+import {DEFAULT_FILTERS, filterModels, findModelById, type Filters} from "../../utils/collection-filters.ts";
+import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
 
 type CollectionPageProps = {
     type: DiecastType;
-};
-
-const DEFAULT_FILTERS: Filters = {
-    brand: "All",
-    manufacturer: "All",
-    category: "All",
-    color: "All",
 };
 
 export function CollectionPage({type}: CollectionPageProps) {
@@ -38,27 +33,10 @@ export function CollectionPage({type}: CollectionPageProps) {
             : truckModelsData as DiecastModel[];
     }, [type]);
 
-    const filteredModels = useMemo(() => {
-        return models.filter((model) => {
-            const brandMatch =
-                filters.brand === "All" || model.brand === filters.brand;
-
-            const manufacturerMatch =
-                filters.manufacturer === "All" || model.manufacturer === filters.manufacturer;
-
-            const categoryMatch =
-                filters.category === "All" || model.category === filters.category;
-
-            const modelColors = Array.isArray(model.color) ? model.color : [model.color];
-            const colorMatch =
-                filters.color === "All" || modelColors.includes(filters.color);
-
-            return brandMatch && manufacturerMatch && categoryMatch && colorMatch;
-        });
-    }, [models, filters]);
+    const filteredModels = useMemo(() => filterModels(models, filters), [models, filters]);
 
     const getModelById = useCallback((id: string): DiecastModel | undefined => {
-        return models.find((m) => String(m.id) === String(id));
+        return findModelById(models, id);
     }, [models]);
 
     const modelId = searchParams.get("model");
@@ -71,7 +49,9 @@ export function CollectionPage({type}: CollectionPageProps) {
         return getModelById(modelId) ?? null;
     }, [modelId, getModelById]);
 
+    // Legacy modal/deep-link state; replaced by the details page in ROADMAP Phase 19.
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsModalOpen(false);
         lastOpenedModelIdRef.current = null;
         window.scrollTo({top: 0, behavior: "auto"});
@@ -90,18 +70,14 @@ export function CollectionPage({type}: CollectionPageProps) {
     }, []);
 
     const openModal = useCallback((model: DiecastModel) => {
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.set("model", String(model.id));
-        setSearchParams(nextSearchParams, {replace: false});
+        setSearchParams(withModelParam(searchParams, model.id), {replace: false});
     }, [searchParams, setSearchParams]);
 
     const closeModal = useCallback(() => {
         setIsModalOpen(false);
         lastOpenedModelIdRef.current = null;
 
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete("model");
-        setSearchParams(nextSearchParams, {replace: false});
+        setSearchParams(withoutModelParam(searchParams), {replace: false});
     }, [searchParams, setSearchParams]);
 
     const scrollToTop = () => {
@@ -110,6 +86,8 @@ export function CollectionPage({type}: CollectionPageProps) {
 
     useEffect(() => {
         if (!modelId || !modelFromUrl) {
+            // Legacy scroll-then-open logic; removed in ROADMAP Phase 19.
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsModalOpen(false);
             lastOpenedModelIdRef.current = null;
             return;

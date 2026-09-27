@@ -12,12 +12,18 @@ A React + TypeScript + Vite single-page app that showcases a personal diecast mo
 
 ## Commands
 
+**Package manager: npm only** (`package-lock.json` is the lockfile; `packageManager` is pinned in `package.json`). Don't use pnpm/yarn — their lockfiles are git-ignored. Use `npm ci` for a clean install.
+
 - `npm run dev` — start Vite dev server (opens browser automatically)
 - `npm run build` — type-check (`tsc -b`) then production build via Vite
+- `npm run typecheck` — type-check only (`tsc -b`; both tsconfigs are `noEmit`)
 - `npm run lint` — run ESLint over the whole repo
+- `npm test` — run the Vitest suite once (`npm run test:watch` for watch mode)
 - `npm run preview` — preview the production build locally
 
-There is no test suite/runner configured in this repo.
+**Tests**: Vitest (jsdom environment, configured in `vite.config.ts`), files are `src/**/*.test.{ts,tsx}` co-located with the code. Current suites are *characterization tests* for the pure logic in `src/utils/` (filtering, URL params, color swatches), asserting against the real `car-models.json` — so **adding a car changes some expected counts** in `src/utils/collection-filters.test.ts`; update them deliberately.
+
+**Env**: `.env.example` lists variables; copy to `.env.local` (git-ignored). `import.meta.env` is typed in `src/vite-env.d.ts`. Only `VITE_*` vars reach the browser — never put secrets there.
 
 ## Architecture
 
@@ -27,6 +33,8 @@ There is no test suite/runner configured in this repo.
 - `id` is a slug of the form `{brand}-{model}-{year}-{manufacturer}-{color}`, used both as React key and as the DOM element id that deep-linking scrolls to (see below).
 - `color`/`hex` are arrays because some models have multi-color liveries (rendered as a conic-gradient by `ColorCircle`).
 - **Known inconsistency**: `DiecastModel.category` in `types.ts` only lists `"Rally" | "Racing" | "Supercar" | "Premium"`, but the JSON data and `CategoryLabel.tsx`'s local `Category` type also use `"Retro" | "Transport" | "Construction" | "Utility" | "Off-Road"`. Since data is force-cast, TypeScript won't catch new category values — when adding a model with a new category, update both `types.ts` and the `CATEGORY_COLOR` map in `CategoryLabel.tsx`.
+
+**Pure logic** (`src/utils/`): `collection-filters.ts` (filter predicate, `uniqSorted`, filter options, lookup by id), `url-params.ts` (filters ↔ query params, `?model=` add/remove — all return new `URLSearchParams`, never mutate), `color.ts` (hex → flat color / conic-gradient). Components call these; keep new logic here, not inline, so it stays testable.
 
 **CollectionPage** (`src/pages/collection-page/collection-page.tsx`) is the core page: it holds filter state (`Sidebar`), renders the filtered grid (`ModelCard`), and drives `DetailsModal` off a `?model=<id>` URL query param rather than local state alone. Notable behavior baked in here:
 - Filters (brand/manufacturer/category/color) are synced to the URL as query params by `Sidebar`, and the model id is synced by `CollectionPage` itself — both read/write `useSearchParams` independently, so changes to one must not clobber the other's params (see the `new URLSearchParams(searchParams)` merge pattern used everywhere).

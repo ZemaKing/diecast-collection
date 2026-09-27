@@ -2,22 +2,10 @@ import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 
 import type {DiecastModel, DiecastType} from "../../types.ts";
+import {ALL_VALUE, DEFAULT_FILTERS, getFilterOptions, type Filters} from "../../utils/collection-filters.ts";
+import {applyFiltersToSearchParams, filtersEqual, getFiltersFromSearchParams} from "../../utils/url-params.ts";
 
 import "./Sidebar.css";
-
-type FilterOptions = {
-    brands: string[];
-    manufacturers: string[];
-    categories: string[];
-    colors: string[];
-};
-
-export type Filters = {
-    brand: string;
-    manufacturer: string;
-    category: string;
-    color: string;
-};
 
 type SidebarProps = {
     type: DiecastType;
@@ -27,37 +15,6 @@ type SidebarProps = {
     onFiltersChange: (filters: Filters) => void;
 };
 
-const ALL_VALUE = "All";
-
-const DEFAULT_FILTERS: Filters = {
-    brand: ALL_VALUE,
-    manufacturer: ALL_VALUE,
-    category: ALL_VALUE,
-    color: ALL_VALUE,
-};
-
-function uniqSorted(values: string[]) {
-    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-}
-
-function getFilterOptions(items: DiecastModel[]): FilterOptions {
-    return {
-        brands: uniqSorted(items.map((x) => x.brand)),
-        manufacturers: uniqSorted(items.map((x) => x.manufacturer)),
-        categories: uniqSorted(items.map((x) => x.category)),
-        colors: uniqSorted(items.flatMap((x) => x.color)),
-    };
-}
-
-function getFiltersFromSearchParams(searchParams: URLSearchParams): Filters {
-    return {
-        brand: searchParams.get("brand") || ALL_VALUE,
-        manufacturer: searchParams.get("manufacturer") || ALL_VALUE,
-        category: searchParams.get("category") || ALL_VALUE,
-        color: searchParams.get("color") || ALL_VALUE,
-    };
-}
-
 export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
     const options = useMemo(() => getFilterOptions(models), [models]);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -66,18 +23,9 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
     useEffect(() => {
         const nextFilters = getFiltersFromSearchParams(searchParams);
 
-        setFilters((prev) => {
-            if (
-                prev.brand === nextFilters.brand &&
-                prev.manufacturer === nextFilters.manufacturer &&
-                prev.category === nextFilters.category &&
-                prev.color === nextFilters.color
-            ) {
-                return prev;
-            }
-
-            return nextFilters;
-        });
+        // Legacy URL→state sync; replaced by URL-as-source-of-truth in ROADMAP Phase 13.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setFilters((prev) => filtersEqual(prev, nextFilters) ? prev : nextFilters);
     }, [searchParams]);
 
     useEffect(() => {
@@ -85,31 +33,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
     }, [filters, onFiltersChange]);
 
     useEffect(() => {
-        const nextSearchParams = new URLSearchParams(searchParams);
-
-        if (filters.brand === ALL_VALUE) {
-            nextSearchParams.delete("brand");
-        } else {
-            nextSearchParams.set("brand", filters.brand);
-        }
-
-        if (filters.manufacturer === ALL_VALUE) {
-            nextSearchParams.delete("manufacturer");
-        } else {
-            nextSearchParams.set("manufacturer", filters.manufacturer);
-        }
-
-        if (filters.category === ALL_VALUE) {
-            nextSearchParams.delete("category");
-        } else {
-            nextSearchParams.set("category", filters.category);
-        }
-
-        if (filters.color === ALL_VALUE) {
-            nextSearchParams.delete("color");
-        } else {
-            nextSearchParams.set("color", filters.color);
-        }
+        const nextSearchParams = applyFiltersToSearchParams(searchParams, filters);
 
         if (nextSearchParams.toString() !== searchParams.toString()) {
             setSearchParams(nextSearchParams, {replace: true});

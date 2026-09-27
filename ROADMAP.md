@@ -2,7 +2,7 @@
 
 Audit findings: [`docs/AUDIT.md`](docs/AUDIT.md). Visual source of truth: [`diecast-details/`](diecast-details/) (Desktop mockups; Tablet/Mobile references still to be supplied — see [Open decisions](#open-decisions--inputs-needed)).
 
-There was no earlier roadmap in this repo, so numbering starts at 1. **Phase 1 (audit) is complete; Phase 2 is next, pending approval.**
+There was no earlier roadmap in this repo, so numbering starts at 1. **Phases 1–2 are complete; Phase 3 is next, pending approval.**
 
 ---
 
@@ -40,7 +40,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | # | Phase | Status | Needs from owner |
 | --- | --- | --- | --- |
 | 1 | Current Application Audit | ✅ Done | Approve roadmap |
-| 2 | Test & Tooling Baseline | ⬜ | Confirm npm vs pnpm |
+| 2 | Test & Tooling Baseline | ✅ Done | Approve phase |
 | 3 | Design Foundation (tokens) | ⬜ | — |
 | 4 | Supabase Schema Design | ⬜ | Answers to schema decisions |
 | 5 | Supabase Project & Client Integration | ⬜ | Create Supabase project, provide URL + anon key |
@@ -107,21 +107,24 @@ Understand the existing app, data and mockups before designing anything.
 
 ---
 
-## Phase 2 — Test & Tooling Baseline
+## Phase 2 — Test & Tooling Baseline ✅
 
 ### Goal
 Establish a safety net *before* logic is replaced or migrated.
 
 ### Tasks
-- [ ] Add Vitest (+ jsdom); `npm test` script; add `@testing-library/react` only when the first component test needs it
-- [ ] Extract the existing pure logic (filter predicate, `uniqSorted`, color/`hex` handling, URL param merge) and write **characterization tests** capturing current behavior against real `car-models.json`
-- [ ] Decide npm vs pnpm; make lockfile + `node_modules` consistent; document in `CLAUDE.md`
-- [ ] Add `.env.example` and typed `import.meta.env` (`src/vite-env.d.ts`) placeholders (no Supabase yet)
-- [ ] Add a `typecheck` script (`tsc -b --noEmit` equivalent)
+- [x] Add Vitest (+ jsdom); `npm test` script; add `@testing-library/react` only when the first component test needs it *(not added — no component tests yet)*
+- [x] Extract the existing pure logic (filter predicate, `uniqSorted`, color/`hex` handling, URL param merge) and write **characterization tests** capturing current behavior against real `car-models.json` *(`src/utils/*`, 48 tests)*
+- [x] Decide npm vs pnpm; make lockfile + `node_modules` consistent; document in `CLAUDE.md` *(npm; `packageManager` pinned; pnpm/yarn lockfiles git-ignored)*
+- [x] Add `.env.example` and typed `import.meta.env` (`src/vite-env.d.ts`) placeholders (no Supabase yet)
+- [x] Add a `typecheck` script (`tsc -b --noEmit` equivalent) *(`tsc -b`; both tsconfigs already `noEmit`)*
 
 ### Verification
-- [ ] Tests fail if a filter rule is deliberately broken (mutation sanity check)
-- [ ] Fresh clone → install → `build`, `lint`, `test` all pass
+- [x] Tests fail if a filter rule is deliberately broken (mutation sanity check) *(3 mutations: first-color-only match, case-insensitive brand, `All` not deleted from URL — each caught)*
+- [x] Fresh clone → install → `build`, `lint`, `test` all pass *(`npm ci` in a clean copy)*
+
+### Notes
+- `npm run lint` failed on `main` before this phase (3 × `react-hooks/set-state-in-effect` in `Sidebar` and `CollectionPage`). Fixing them means restructuring the effect-based sync, which is Phase 13/19 work, so they're suppressed line-by-line with a comment naming the phase that removes them.
 
 ### Definition of Done
 `npm test` runs ≥ 1 meaningful suite covering current filtering behavior; one package manager; app behavior unchanged.
@@ -871,6 +874,6 @@ Owner go/no-go recorded; site stable on Supabase.
 | 6 | Description editor: rich text (WYSIWYG) vs plain/markdown-lite | Ph 26 |
 | 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? Breadcrumb "model line" level — wanted? | Ph 19 / 20 |
 | 8 | Merge `Corvette` into `Chevrolet` brand, or leave as-is? Confirm all 227 are 1:43 | Ph 4 / 7 |
-| 9 | npm or pnpm | Ph 2 |
+| 9 | ~~npm or pnpm~~ → **npm** (decided in Phase 2) | Ph 2 |
 | 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? | Ph 5 / 37 |
 | 11 | Assets: header logo (SVG preferred), hero background image | Ph 12, 17 |
