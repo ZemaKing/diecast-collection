@@ -1,0 +1,10 @@
+{
+  "_comment": "Raw carDriver string (after NFC + U+2011→'-' normalization) → canonical driver name. Reviewed in docs/SCHEMA.md §6.3 (audit D5).",
+  "aliases": {
+    "Sebastien Loeb": "Sébastien Loeb",
+    "Francois Delecour": "François Delecour",
+    "Sébatien Ogier": "Sébastien Ogier",
+    "Marcel Faessler": "Marcel Fässler",
+    "Augusto Farfus Júnior": "Augusto Farfus"
+  }
+}

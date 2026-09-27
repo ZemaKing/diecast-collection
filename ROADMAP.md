@@ -45,7 +45,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 4 | Supabase Schema Design | 🟡 Awaiting approval | Approve `docs/SCHEMA.md` (§12); answer D15 (DTM) |
 | 5 | Supabase Project & Client Integration | ✅ Done | Reset DB password; disable sign-ups |
 | 6 | Migrations & RLS | ✅ Done | — |
-| 7 | JSON → Supabase Import Tool | ⬜ | Service-role key in `.env.local` (local only) |
+| 7 | JSON → Supabase Import Tool | ✅ Done | — |
 | 8 | Migration Verification | ⬜ | Sign off on report |
 | 9 | Data Access Layer | ⬜ | — |
 | 10 | Cars Read from Supabase | ⬜ | — |
@@ -235,25 +235,25 @@ RLS enabled on all tables, verification script green, migrations reproducible.
 
 ---
 
-## Phase 7 — JSON → Supabase Import Tool
+## Phase 7 — JSON → Supabase Import Tool ✅
 
 ### Goal
 A repeatable, idempotent importer — no hand-inserting rows.
 
 ### Tasks
-- [ ] `scripts/import/` (add `tsx` as dev dep if needed); reads **`car-models.json` only** (trucks explicitly skipped)
-- [ ] Reviewed alias map for drivers (D5) and any other normalizations, kept in a versioned file
-- [ ] Upsert by `slug`; `--dry-run`; safe to re-run; per-table transaction
-- [ ] Derives `is_racing`, `model_colors`, `livery_hex`, `scale = '1:43'`; drops `COMING_SOON`
-- [ ] Backfills `added_at` for the ~23 models datable from git; others `NULL` (one-off `scripts/import/added-dates.json`)
-- [ ] Image rows reference the **existing postimg URLs** unchanged (thumbnail + full)
-- [ ] Uses `SUPABASE_SERVICE_ROLE_KEY` from `.env.local`/shell only
-- [ ] Console summary, e.g. `Imported models: 227 · manufacturers: 19 · brands: 45 · categories: 5 · colors: 13 · drivers: 138 · model_colors: 244 · images: 227 · Warnings: N · Failed: 0` (expected counts: `docs/SCHEMA.md` §6.4), warnings itemized (D3, D7, drivers without country, …)
+- [x] `scripts/import/` (add `tsx` as dev dep if needed); reads **`car-models.json` only** (trucks explicitly skipped)
+- [x] Reviewed alias map for drivers (D5) and any other normalizations, kept in a versioned file *(`driver-aliases.json`, `lookups.json`)*
+- [x] Upsert by `slug`; `--dry-run`; safe to re-run; per-table transaction *(stronger: **one** transaction for the whole import via `diecast.import_collection()`; dry run is the default and `--apply` is required to write)*
+- [x] Derives `is_racing`, `model_colors`, `livery_hex`, `scale = '1:43'`; drops `COMING_SOON`
+- [x] Backfills `added_at` for the ~23 models datable from git; others `NULL` (one-off `scripts/import/added-dates.json`) *(actually **67**: the audit missed a rename of the data file. Id renames are followed; the 160 catalogued on day one stay NULL)*
+- [x] Image rows reference the **existing postimg URLs** unchanged (thumbnail + full)
+- [x] Uses `SUPABASE_SERVICE_ROLE_KEY` from `.env.local`/shell only *(rejects any non-service-role key)*
+- [x] Console summary, e.g. `Imported models: 227 · manufacturers: 19 · brands: 45 · categories: 5 · colors: 13 · drivers: 138 · model_colors: 244 · images: 227 · Warnings: N · Failed: 0` (expected counts: `docs/SCHEMA.md` §6.4), warnings itemized (D3, D7, drivers without country, …) *(plus a per-table inserted/updated/deleted table)*
 
 ### Verification
-- [ ] Dry-run makes zero writes
-- [ ] Run twice → second run reports 0 inserts, 0 changes
-- [ ] Failure injected mid-run leaves no partial table state
+- [x] Dry-run makes zero writes *(all tables still 0 after the dry run)*
+- [x] Run twice → second run reports 0 inserts, 0 changes *(913 changes, then 0)*
+- [x] Failure injected mid-run leaves no partial table state *(`--apply --fail-after=models`: all tables still 0)*
 
 ### Definition of Done
 One command imports all 227 models with a clear report and zero failures.

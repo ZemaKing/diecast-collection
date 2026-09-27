@@ -101,7 +101,7 @@ Conventions:
 | `key_features` | `text[]` | no | `'{}'`, ≤ 12 items | Ordered bullet list ("Key Features") |
 | `condition` | `text` | yes | check `in ('mint','near_mint','excellent','good','fair','poor')` | Public (owner). Stable, short list: check constraint instead of a table |
 | `location` | `text` | yes | length ≤ 80 | Public (owner). Free text with suggestions ("Display Cabinet") |
-| `added_at` | `date` | yes | | Public. D13: backfilled for ~23 models from git, NULL for the rest |
+| `added_at` | `date` | yes | | Public. D13: backfilled for **67** models from git (first-appearance commit, id renames followed), NULL for the 160 catalogued on the repo's first day |
 | `is_published` | `boolean` | no | `true` | `false` = draft ("Save as Draft"); invisible to the public via RLS |
 | `created_at` / `updated_at` | `timestamptz` | no | `now()` + trigger | |
 
@@ -231,7 +231,7 @@ Import: one row per model (position 0, `is_primary = true`, both postimg URLs) �
 | Column | Import value |
 | --- | --- |
 | `is_racing` | `category ∈ {Rally, Racing}` → **182 true**, 45 false. Every model with a driver or number is in those two categories. The 11 Rally/Racing models with neither are still race cars (D7; the audit said 12, re-measured as 11) |
-| `added_at` | From `scripts/import/added-dates.json` (~23 models dated from git history); others NULL (D13) |
+| `added_at` | From `scripts/import/added-dates.json`: 67 models dated from git history; the 160 catalogued on 2026-01-11 stay NULL (D13; the audit's "~23" had missed a rename of the data file) |
 | `is_published` | `true` for all 227 |
 | `team`, `event`, `series`, `description`, `condition`, `location` | NULL |
 | `key_features` | `'{}'` |
@@ -303,7 +303,7 @@ Phase 7's importer must print exactly these numbers, and Phase 8 verifies them. 
 | D10 | Uniqueness = `slug` only. No name-tuple constraint |
 | D11 | Slugs imported verbatim. The slug CHECK already passes for all 227. Order is irrelevant in the DB |
 | D12 | Image URLs treated as opaque; no filename parsing |
-| D13 | `added_at` nullable; ~23 backfilled from git. "Recently added" sorts NULLs last, then by name (Phase 15) |
+| D13 | `added_at` nullable; 67 backfilled from git (160 NULL). "Recently added" sorts NULLs last, then by name (Phase 15) |
 | D14 | No position column; ordering is always an explicit sort with `slug` as the tie-breaker |
 | **D15** (new) | Manufacturer **"DTM"** (3 models) is a racing series, not a model maker. Imported **as-is**; the owner can rename it later (Phase 28) or give the correct manufacturers before Phase 7 |
 

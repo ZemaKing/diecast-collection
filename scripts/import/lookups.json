@@ -1,0 +1,35 @@
+{
+  "_comment": "Import-time normalizations and lookup metadata (docs/SCHEMA.md §4, §6, D4, D9).",
+  "brandMerges": {
+    "Corvette": "Chevrolet"
+  },
+  "colors": {
+    "_comment": "Filter colors: legacy JSON name → display name, representative swatch (NULL = multi, rendered as conic), order in the filter panel.",
+    "list": [
+      {"legacy": "Black",  "name": "Black",  "hex": "#16181D", "sort_order": 10},
+      {"legacy": "Gray",   "name": "Gray",   "hex": "#8A9099", "sort_order": 20},
+      {"legacy": "Silver", "name": "Silver", "hex": "#C4C9D0", "sort_order": 30},
+      {"legacy": "White",  "name": "White",  "hex": "#F4F5F7", "sort_order": 40},
+      {"legacy": "Red",    "name": "Red",    "hex": "#D0202E", "sort_order": 50},
+      {"legacy": "Orange", "name": "Orange", "hex": "#F07F13", "sort_order": 60},
+      {"legacy": "Yellow", "name": "Yellow", "hex": "#F5C400", "sort_order": 70},
+      {"legacy": "Gold",   "name": "Gold",   "hex": "#C9A227", "sort_order": 80},
+      {"legacy": "Green",  "name": "Green",  "hex": "#2E9E45", "sort_order": 90},
+      {"legacy": "Blue",   "name": "Blue",   "hex": "#1F63D0", "sort_order": 100},
+      {"legacy": "Purple", "name": "Purple", "hex": "#7B3FA0", "sort_order": 110},
+      {"legacy": "Pink",   "name": "Pink",   "hex": "#E85A9B", "sort_order": 120},
+      {"legacy": "MULTI",  "name": "Multi",  "hex": null,      "sort_order": 130}
+    ]
+  },
+  "categories": {
+    "_comment": "Must already exist (seeded by migration 20260927140200). Legacy name → slug.",
+    "Rally": "rally",
+    "Racing": "racing",
+    "Supercar": "supercar",
+    "Premium": "premium",
+    "Retro": "retro"
+  },
+  "racingCategories": ["rally", "racing"],
+  "reviewManufacturers": ["DTM"],
+  "defaultScale": "1:43"
+}

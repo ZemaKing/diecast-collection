@@ -526,6 +526,10 @@ export type Database = {
             }
         }
         Functions: {
+            import_collection: {
+                Args: {p_dry_run?: boolean; p_fail_after?: string; p_payload: Json}
+                Returns: Json
+            }
             is_admin: {Args: never; Returns: boolean}
             is_hex_palette: {Args: {p: string[]}; Returns: boolean}
         }

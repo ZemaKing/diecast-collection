@@ -72,6 +72,7 @@ Add the same two `VITE_` variables to Vercel when the site starts reading from S
 | --- | --- |
 | `npm run supabase:check` | Checks `.env.local` against `/auth/v1/health` (URL reachable + key accepted) |
 | `npm run build` → `postbuild` | Scans `dist/` for service_role JWTs, `sb_secret_` keys and `SUPABASE_SERVICE_ROLE_KEY`, and fails the build if found |
+| `npm run import:cars` | JSON → Supabase import (dry run by default; `-- --apply` writes in one transaction). See `scripts/import/README.md`. Needs `SUPABASE_SERVICE_ROLE_KEY` |
 | `npm run verify:rls` | Live RLS proof as anon / non-admin / admin (63 checks) |
 | `npm run verify:types` | Checks `database.types.ts` columns against the live schema |
 | `npm run db:push` | CLI-only alternative to the SQL editor; **repair the history first** (see Migrations) |
