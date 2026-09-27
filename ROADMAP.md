@@ -542,6 +542,10 @@ Move images off postimg.cc into Supabase Storage safely.
 - [ ] Resumable migration script with **retries** (audit saw transient fetch failures), checksums, `--dry-run`, skip-already-done
 - [ ] Keep `legacy_url` on `model_images` until verification; flip to `storage_path` only after checks
 - [ ] Thumbnails: check if Storage image transformations are available on the plan; otherwise generate at import (and at upload in Phase 27)
+- [ ] **WebP pipeline, reusable across apps (owner decision 2026-09-27, option A):** image transformations are a paid feature, and free egress is ~5 GB/month (~40 MB per full collection view with today's ~177 KB thumbnails). So generate WebP ourselves: thumbnail ~400 px / ~20–30 KB, full ~1600 px. Build it app-agnostic so the **games and recipes apps can copy it**:
+  - `scripts/images/`: config-driven batch converter (`sharp`): source list → sizes/quality → bucket + path pattern, with retries, resume and `--dry-run`. No diecast-specific code
+  - `src/lib/image-resize.ts`: self-contained browser helper (canvas → WebP) reused by the Phase 27 upload form
+  - README in `scripts/images/` on how to adopt it in another repo. Extract into a shared package later only if the three copies start diverging
 - [ ] Verify total size fits the plan (est. ~230 MB); no base64 in Postgres
 
 ### Verification
