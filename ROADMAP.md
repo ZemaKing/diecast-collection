@@ -2,7 +2,7 @@
 
 Audit findings: [`docs/AUDIT.md`](docs/AUDIT.md). Visual source of truth: [`diecast-details/`](diecast-details/) (Desktop mockups; Tablet/Mobile references still to be supplied — see [Open decisions](#open-decisions--inputs-needed)).
 
-There was no earlier roadmap in this repo, so numbering starts at 1. **Phases 1–3 are complete; Phase 4 is next, pending approval.**
+There was no earlier roadmap in this repo, so numbering starts at 1. **Phases 1–3 are complete. Phase 4 (schema doc) is written and awaits owner approval of `docs/SCHEMA.md`.**
 
 ---
 
@@ -42,7 +42,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 1 | Current Application Audit | ✅ Done | Approve roadmap |
 | 2 | Test & Tooling Baseline | ✅ Done | Approve phase |
 | 3 | Design Foundation (tokens) | ✅ Done | Approve phase; review font + light theme |
-| 4 | Supabase Schema Design | ⬜ | Answers to schema decisions |
+| 4 | Supabase Schema Design | 🟡 Awaiting approval | Approve `docs/SCHEMA.md` (§12); answer D15 (DTM) |
 | 5 | Supabase Project & Client Integration | ⬜ | Create Supabase project, provide URL + anon key |
 | 6 | Migrations & RLS | ⬜ | Run `db push`, create owner user |
 | 7 | JSON → Supabase Import Tool | ⬜ | Service-role key in `.env.local` (local only) |
@@ -155,14 +155,14 @@ Tokens exist for every value class above; existing pages look unchanged/acceptab
 
 ---
 
-## Phase 4 — Supabase Schema Design (documentation only)
+## Phase 4 — Supabase Schema Design (documentation only) 🟡
 
 ### Goal
 Design the database from the real data and mockups, and document the OLD JSON → NEW mapping. **No database is touched.**
 
 ### Tasks
-- [ ] `docs/SCHEMA.md` with ERD, per-table columns/types/nullability/constraints/indexes
-- [ ] Proposed tables (validate against the audit; don't over-normalize):
+- [x] `docs/SCHEMA.md` with ERD, per-table columns/types/nullability/constraints/indexes
+- [x] Proposed tables (validate against the audit; don't over-normalize): *(deviations: no `status` column (owner: all models are owned); `car_number` is `text` so `00`/`07` round-trip; `model_images` uses `storage_path` + `external_url` (= `legacy_url`); added a `model_summaries` view)*
   - `models` — `id uuid`, `slug` unique (**= legacy `id` verbatim**), `name`, `year int`, `brand_id`, `manufacturer_id`, `category_id`, `scale text default '1:43'` (format check; no `scales` table until a 2nd scale exists), `livery_hex text[]`, `is_racing bool`, `car_number int null`, `driver_id null`, `team null`, `event null`, `series null`, `description null`, `key_features text[]`, `status`/`condition`/`location null`, `added_at date null`, `is_published bool default true`, `created_at/updated_at` (+ trigger)
   - `brands`, `manufacturers` — `slug`, `name`, `logo_path`
   - `categories` — `slug`, `name`, `sort_order` (table, not enum: mockup implies categories evolve)
@@ -172,14 +172,14 @@ Design the database from the real data and mockups, and document the OLD JSON �
   - `tags` + `model_tags`
   - `model_private_notes` — **separate admin-only table** (RLS is row-level, so private text cannot live on a public row)
   - `admin_users` — owner allow-list used by `is_admin()`
-- [ ] Indexes: FK columns, `slug`, filter columns, `pg_trgm`/generated `tsvector` for search (justify vs client-side search)
-- [ ] Mapping table for every JSON field, including **decisions for each data-quality finding D1–D14** (driver alias map, MULTI, hex vs color, `is_racing` derivation, `added_at` backfill, `COMING_SOON` dropped, Chevrolet/Corvette left as-is)
-- [ ] Decide logo strategy: keep SVGs in `public/` and store `logo_path` (recommended: no file renames, `encodeURI` at use)
-- [ ] Decide public vs private for condition/location/added/notes (owner input)
+- [x] Indexes: FK columns, `slug`, filter columns, `pg_trgm`/generated `tsvector` for search (justify vs client-side search) *(no search index: client-side search over a list of about 90 KB; revisit in Phase 33)*
+- [x] Mapping table for every JSON field, including **decisions for each data-quality finding D1–D14** (driver alias map, MULTI, hex vs color, `is_racing` derivation, `added_at` backfill, `COMING_SOON` dropped, ~~Chevrolet/Corvette left as-is~~ **Corvette merged into Chevrolet** per owner) *(+ new D15: "DTM" manufacturer)*
+- [x] Decide logo strategy: keep SVGs in `public/` and store `logo_path` (recommended: no file renames, `encodeURI` at use)
+- [x] Decide public vs private for condition/location/added/notes (owner input) *(condition, added, location public; notes private)*
 
 ### Verification
-- [ ] Every JSON key appears in the mapping table (or is explicitly dropped with a reason)
-- [ ] Every mockup field maps to a column/table (or is explicitly deferred)
+- [x] Every JSON key appears in the mapping table (or is explicitly dropped with a reason)
+- [x] Every mockup field maps to a column/table (or is explicitly deferred)
 - [ ] Owner reviews and approves `docs/SCHEMA.md`
 
 ### Definition of Done
@@ -248,7 +248,7 @@ A repeatable, idempotent importer — no hand-inserting rows.
 - [ ] Backfills `added_at` for the ~23 models datable from git; others `NULL` (one-off `scripts/import/added-dates.json`)
 - [ ] Image rows reference the **existing postimg URLs** unchanged (thumbnail + full)
 - [ ] Uses `SUPABASE_SERVICE_ROLE_KEY` from `.env.local`/shell only
-- [ ] Console summary, e.g. `Imported models: 227 · manufacturers: 19 · brands: 46 · categories: 5 · colors: 13 · drivers: ~138 · Warnings: N · Failed: 0`, warnings itemized (D3, D7, drivers without country, …)
+- [ ] Console summary, e.g. `Imported models: 227 · manufacturers: 19 · brands: 45 · categories: 5 · colors: 13 · drivers: 138 · model_colors: 244 · images: 227 · Warnings: N · Failed: 0` (expected counts: `docs/SCHEMA.md` §6.4), warnings itemized (D3, D7, drivers without country, …)
 
 ### Verification
 - [ ] Dry-run makes zero writes
@@ -267,7 +267,7 @@ Prove Supabase matches the JSON before anything depends on it.
 
 ### Tasks
 - [ ] `scripts/verify-migration.mjs` compares JSON ↔ DB per model: name, year, brand, manufacturer, category, color names, `livery_hex` order, scale, driver (post-alias), car number, image URLs, slug
-- [ ] Aggregate checks: 227 models, 46 brands, 19 manufacturers, 5 categories, 13 colors, driver count matches alias map
+- [ ] Aggregate checks: 227 models, 45 brands (Corvette merged), 19 manufacturers, 5 categories, 13 colors, driver count matches alias map
 - [ ] Duplicate-slug and orphan-FK checks; models without images/brand/manufacturer/category
 - [ ] HEAD-check all 454 image URLs (with retry; report failures, don't fail the build on transient errors)
 - [ ] Write `docs/migration-report.md`
@@ -869,11 +869,12 @@ Owner go/no-go recorded; site stable on Supabase.
 | 1 | **Tablet & Mobile mockups**: the supplied images only include small insets of the collection page. Please provide full-page Tablet and Mobile references (collection, filter sheet, details, add/edit), ideally as separate images per device | Ph 14 (filter sheet), 31, 32 |
 | 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? | Ph 22, 23, 24 |
 | 3 | **Light theme**: keep (derived from tokens, no mockup) or dark-only? *Phase 3 kept it, with derived values that pass contrast. Confirm, or say dark-only* | Ph 3 |
-| 4 | Confirm **trucks are excluded** from Supabase (archive JSON only) | Ph 4 / 11 |
-| 5 | Which "My Collection" fields are **public** (condition, location, added, notes)? Private notes are a separate admin-only table regardless | Ph 4 |
+| 4 | ~~Confirm trucks are excluded~~ → excluded; schema has no truck data (Phase 4) | Ph 4 / 11 |
+| 5 | ~~Public "My Collection" fields~~ → condition, added, location **public**; notes private; **no collected/status field** (all owned) (Phase 4) | Ph 4 |
 | 6 | Description editor: rich text (WYSIWYG) vs plain/markdown-lite | Ph 26 |
 | 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? Breadcrumb "model line" level — wanted? | Ph 19 / 20 |
-| 8 | Merge `Corvette` into `Chevrolet` brand, or leave as-is? Confirm all 227 are 1:43 | Ph 4 / 7 |
+| 8 | ~~Corvette / scale~~ → **merge Corvette into Chevrolet**; **all 227 are 1:43** (Phase 4) | Ph 4 / 7 |
 | 9 | ~~npm or pnpm~~ → **npm** (decided in Phase 2) | Ph 2 |
 | 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? | Ph 5 / 37 |
 | 11 | Assets: header logo (SVG preferred), hero background image | Ph 12, 17 |
+| 12 | **D15**: manufacturer "DTM" (3 BMW/Mercedes models) is a race series, not a model maker. Keep, or give the real manufacturers? | Ph 7 |
