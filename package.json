@@ -21,6 +21,7 @@
     "import:dates": "node scripts/import/build-added-dates.mjs",
     "verify:types": "node --env-file-if-exists=.env.local scripts/verify-types.mjs",
     "verify:rls": "node --env-file-if-exists=.env.local scripts/verify-rls.mjs",
+    "verify:migration": "tsx --env-file-if-exists=.env.local scripts/verify-migration.ts",
     "db:types": "supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
     "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"
   },
