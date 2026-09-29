@@ -46,7 +46,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 5 | Supabase Project & Client Integration | ✅ Done | Reset DB password; disable sign-ups |
 | 6 | Migrations & RLS | ✅ Done | — |
 | 7 | JSON → Supabase Import Tool | ✅ Done | — |
-| 8 | Migration Verification | 🟡 Awaiting sign-off | Sign off on `docs/migration-report.md` |
+| 8 | Migration Verification | ✅ Done | — |
 | 9 | Data Access Layer | ⬜ | — |
 | 10 | Cars Read from Supabase | ⬜ | — |
 | 11 | Retire Trucks & Runtime JSON | ⬜ | Confirm truck archive |
@@ -260,7 +260,7 @@ One command imports all 227 models with a clear report and zero failures.
 
 ---
 
-## Phase 8 — Migration Verification 🟡
+## Phase 8 — Migration Verification ✅
 
 ### Goal
 Prove Supabase matches the JSON before anything depends on it.
@@ -274,7 +274,7 @@ Prove Supabase matches the JSON before anything depends on it.
 
 ### Verification
 - [x] Report shows 0 mismatches, 0 orphans, 0 duplicates
-- [ ] Owner spot-checks ~10 models in the Supabase dashboard
+- [x] Owner spot-checks ~10 models in the Supabase dashboard *(confirmed 2026-09-29)*
 
 ### Definition of Done
 Signed-off report. **Do not start Phase 9 until this is approved.**
