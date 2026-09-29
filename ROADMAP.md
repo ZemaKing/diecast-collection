@@ -50,7 +50,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 9 | Data Access Layer | ✅ Done | — |
 | 10 | Cars Read from Supabase | ✅ Done | — |
 | 11 | Retire Trucks & Runtime JSON | ✅ Done | — |
-| 12 | Application Shell & Routing | ⬜ | Logo asset; About content |
+| 12 | Application Shell & Routing | 🟡 Placeholders used | Review logo reuse + About placeholder |
 | 13 | Collection Toolbar & URL State | ⬜ | — |
 | 14 | Advanced Filter Panel | ⬜ | Tablet/Mobile filter mockups |
 | 15 | Search & Sorting | ⬜ | — |
@@ -346,25 +346,31 @@ Production reads only Supabase; archives preserved; trucks gone from UI.
 
 ---
 
-## Phase 12 — Application Shell & Routing
+## Phase 12 — Application Shell & Routing 🟡
 
 ### Goal
 The redesigned header, navigation, page container and route table.
 
 ### Tasks
-- [ ] Route table: `/`, `/models/:slug`, `/manufacturers`, `/manufacturers/:slug`, `/brands`, `/brands/:slug`, `/statistics`, `/about`, `/login`, `/admin/models/new`, `/admin/models/:slug/edit`, 404 page. **Nav only links to pages that exist**; `?model=` modal still works until Phase 19
-- [ ] Header per mockup: logo, nav, search entry (wired in Phase 15), live "N models" from `getCollectionStats()`, theme toggle, Instagram, email, avatar slot (Phase 24)
-- [ ] Responsive nav (hamburger → drawer) — desktop first, usable at 360 px
-- [ ] Page container/max-width/spacing from tokens; scroll-to-top retained
-- [ ] Optimize the logo (687 KB PNG → SVG/WebP); About page (content from owner)
-- [ ] Footer/socials if in the final design
+- [x] Route table: `/` (collection), `/about`, `/cars` + `/trucks` (legacy redirects, Phase 11), 404 page *(only routes with a real page get a nav link or a `<Route>` — `/models/:slug`, `/manufacturers`, `/brands`, `/statistics`, `/login`, `/admin/*` don't exist until their own phase (19/22/23/24/25), and "nav only links to pages that exist" (this phase's own rule) means adding them now would either be dead links or premature stub pages pre-empting phases not yet designed. `?model=` modal still works — unchanged, still driven by `CollectionPage`)*
+- [x] Header per mockup: logo, nav, search entry (wired in Phase 15), live "N models" from `getCollectionStats()`, theme toggle, Instagram, email *(avatar slot skipped — nothing to show before auth exists in Phase 24; adding an empty slot now would just be clutter)*
+- [x] Responsive nav (hamburger → drawer) — desktop first, usable at 360 px
+- [x] Page container/max-width/spacing from tokens; scroll-to-top retained *(`--container-max`/`--container-gutter`/`--header-height`/`--tap-target`, all already defined in Phase 3 and unused until now)*
+- [x] Optimize the logo (687 KB PNG → SVG/WebP) *(deviation — see below)*; About page (content from owner) *(placeholder — see below)*
+- [ ] Footer/socials if in the final design *(no footer in the mockup — socials live in the header, already done)*
 
 ### Verification
-- [ ] Every nav link resolves; unknown URL → 404 page; refresh on any route works (Vercel rewrite)
-- [ ] Model count matches DB; keyboard-only nav works
+- [x] Every nav link resolves; unknown URL → 404 page; refresh on any route works (Vercel rewrite) *(`vercel.json` already rewrites all paths to `/`, unchanged)*
+- [x] Model count matches DB; keyboard-only nav works *(count comes from `getCollectionStats()` over the live `getModels()` result, shown identically on `/`, `/about` and the 404 page; keyboard: Tab reaches logo → Collection → About → search → count → theme → Instagram → email → menu button in order, Enter activates links, Escape closes the mobile drawer and returns focus to the menu button — verified live)*
 
 ### Definition of Done
 New shell live on all routes with real data; old content areas temporarily inside it.
+
+**Deviations from the task list (flagged per workflow rule 4):**
+- **Logo**: the 687 KB `cars-logo.png` was a landing-page hero image, not a header logo, and it's now unreferenced (the landing page it was on is gone — Phase 11) — deleting it isn't this phase's call (nothing in `public/` before Phase 36). For the actual header logo, reused the existing `public/favicon.svg` (26 KB, already the app's icon and already used as the brand mark in `Sidebar`) rather than commissioning a new asset — it's already SVG, already on-brand, and already established in the UI. If a dedicated logo file exists, swap `Header.tsx`'s `<img src="/favicon.svg">`.
+- **About page**: content is a placeholder built only from copy already approved in the mockup ("More than models. A collection of automotive history in 1:43 scale.") — no biography or personal detail was invented. Flagged in-file with a comment. Replace with real copy whenever ready.
+
+**Manual:** review the About page placeholder copy and the favicon.svg-as-logo decision; supply a dedicated logo file and/or real About content if the placeholders aren't good enough to ship.
 
 ---
 

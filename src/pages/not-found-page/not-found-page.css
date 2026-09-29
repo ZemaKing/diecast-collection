@@ -1,0 +1,51 @@
+.notFoundPage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.notFoundMain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-3xl) var(--container-gutter);
+}
+
+.notFoundCode {
+    color: var(--color-accent-text);
+    font-size: var(--text-display);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+}
+
+.notFoundTitle {
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    margin: var(--space-sm) 0 var(--space-xs);
+}
+
+.notFoundBody {
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    margin: 0 0 var(--space-xl);
+}
+
+.notFoundLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding: 0 var(--space-xl);
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-md);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.notFoundLink:hover {
+    background: var(--color-accent-hover);
+}

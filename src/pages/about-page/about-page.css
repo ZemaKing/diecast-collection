@@ -1,0 +1,53 @@
+.aboutPage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.aboutMain {
+    flex: 1;
+    max-width: var(--container-max);
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--container-gutter);
+    display: flex;
+}
+
+.aboutCard {
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2xl);
+    max-width: 640px;
+}
+
+.aboutEyebrow {
+    display: block;
+    color: var(--color-accent-text);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    margin-bottom: var(--space-sm);
+}
+
+.aboutTitle {
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    margin: 0 0 var(--space-xs);
+}
+
+.aboutLead {
+    color: var(--color-text-secondary);
+    font-size: var(--text-lg);
+    margin: 0 0 var(--space-lg);
+}
+
+.aboutBody {
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin: 0;
+}

@@ -11,6 +11,7 @@ import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
 import {toLegacyModel} from "../../services/legacy-adapter.ts";
+import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
 import type {DiecastModel} from "../../types.ts";
@@ -33,6 +34,7 @@ export function CollectionPage() {
     });
 
     const models = useMemo(() => (carsQuery.data ?? []).map(toLegacyModel), [carsQuery.data]);
+    const stats = useMemo(() => getCollectionStats(carsQuery.data ?? []), [carsQuery.data]);
 
     const filteredModels = useMemo(() => filterModels(models, filters), [models, filters]);
 
@@ -118,7 +120,7 @@ export function CollectionPage() {
 
     return (
         <div className="layout">
-            <Header title="ZemaKing Diecast Collection" count={models.length}/>
+            <Header count={stats.totalModels}/>
 
             <div className="content">
                 <Sidebar
