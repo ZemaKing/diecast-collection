@@ -52,7 +52,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 11 | Retire Trucks & Runtime JSON | ✅ Done | — |
 | 12 | Application Shell & Routing | ✅ Done | — |
 | 13 | Collection Toolbar & URL State | ✅ Done | — |
-| 14 | Advanced Filter Panel | ⬜ | Tablet/Mobile filter mockups |
+| 14 | Advanced Filter Panel | ✅ Done | — |
 | 15 | Search & Sorting | ⬜ | — |
 | 16 | Model Card Redesign | ⬜ | — |
 | 17 | Collection Hero & Grid | ⬜ | Hero background image |
@@ -397,23 +397,23 @@ Shareable filtered URLs; sidebar gone; no effect-based state sync remains.
 
 ---
 
-## Phase 14 — Advanced Filter Experience
+## Phase 14 — Advanced Filter Experience ✅
 
 ### Goal
 The rich filter panel from the mockup.
 
 ### Tasks
-- [ ] Filter panel component: desktop/tablet popover/side panel, **mobile bottom sheet/drawer** (same content)
-- [ ] Manufacturer: searchable checkbox list with counts and selected state; Brand: searchable; Category: pills (colors from tokens); Color: **swatches** (Multi as conic); Scale: hidden until >1 scale exists
-- [ ] Facet counts computed from the loaded list against the *other* active filters
-- [ ] Apply/Clear/Close, focus management, Esc closes
+- [x] Filter panel component: desktop/tablet popover/side panel, **mobile bottom sheet/drawer** (same content) *(desktop/tablet: the Phase 13 per-field `<details>` triggers, now content-enhanced below — that already **is** "a popover per field", matching the mockup's four separate toolbar triggers; mobile: the Phase 13 "Filters" toggle now opens a real fixed bottom sheet (scrim, header with title/Clear all/✕, scrollable body with all four sections, "Show N models" footer) instead of just an inline stacked list. Same `FilterFields.tsx` renderers power both, so there's one implementation of each field's content, not two)*
+- [x] Manufacturer: searchable checkbox list with counts and selected state; Brand: searchable; Category: pills (colors from tokens); Color: **swatches** (Multi as conic); Scale: hidden until >1 scale exists *(search box only renders past 8 options, so it won't show for short lists; Category pills use `categoryColorVar()` — the same token-driven color `CategoryLabel` uses on the cards; Color swatches reuse `ColorCircle`/`getSwatchBackground()` — Multi has no real DB hex (`colors.hex` is `NULL` for it) so it gets a generic 4-color conic gradient from existing feedback tokens, not a fabricated "real" color; Scale needed no code — there's nothing to hide since only `variant`-tagged groups render)*
+- [x] Facet counts computed from the loaded list against the *other* active filters *(unchanged from Phase 9/13 — `getFacetCounts()`, re-verified below)*
+- [x] Apply/Clear/Close, focus management, Esc closes *("Apply" reinterpreted honestly: filters already apply live on toggle (Phase 13's proven URL-as-state architecture), so the sheet's footer button is "Show N results" — it closes the sheet, it doesn't stage/commit anything, because there's nothing left to commit. Esc closes both the desktop popovers (native `<details>` doesn't support this natively — added) and the mobile sheet, returning focus to the trigger/toggle button; desktop popovers also close on an outside click)*
 
 ### Verification
-- [ ] Counts correct against a scripted count (e.g. Ixo = 29, Rally = 98 with no other filters)
-- [ ] Works at 360 / 768 / 1280; keyboard operable
+- [x] Counts correct against a scripted count (e.g. Ixo = 29, Rally = 98 with no other filters) *(verified live: Ixo 29, Rally 98, Racing 84, Supercar 19, Premium 18, Retro 8, Red 33, White 54, Multi 26 — all match the known dataset baseline)*
+- [x] Works at 360 / 768 / 1280; keyboard operable *(no horizontal scroll at any of the three; mobile sheet opens/updates live/closes correctly; Esc-close and focus-return verified on both the desktop popovers and the mobile sheet)*
 
 ### Definition of Done
-All four filters usable on all sizes with counts; matches the mockup panel (categories/data from the DB, not the mockup's sample "Road/Classic").
+All four filters usable on all sizes with counts; matches the mockup panel (categories/data from the DB, not the mockup's sample "Road/Classic") *(categories are the real 5 from the DB — Rally/Racing/Supercar/Premium/Retro — never the mockup's placeholder "Road"/"Classic")*.
 
 ---
 
