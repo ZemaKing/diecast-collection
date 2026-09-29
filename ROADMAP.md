@@ -47,7 +47,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 6 | Migrations & RLS | ✅ Done | — |
 | 7 | JSON → Supabase Import Tool | ✅ Done | — |
 | 8 | Migration Verification | ✅ Done | — |
-| 9 | Data Access Layer | ⬜ | — |
+| 9 | Data Access Layer | ✅ Done | — |
 | 10 | Cars Read from Supabase | ⬜ | — |
 | 11 | Retire Trucks & Runtime JSON | ⬜ | Confirm truck archive |
 | 12 | Application Shell & Routing | ⬜ | Logo asset; About content |
@@ -281,22 +281,22 @@ Signed-off report. **Do not start Phase 9 until this is approved.**
 
 ---
 
-## Phase 9 — Data Access Layer
+## Phase 9 — Data Access Layer ✅
 
 ### Goal
 Clean services so components never query Supabase directly.
 
 ### Tasks
-- [ ] Domain types (`Model`, `ModelSummary`, `Brand`, `Manufacturer`, `Category`, `Driver`, `ModelImage`) + row→domain mappers
-- [ ] `src/services/`: `getModels()` (summary columns), `getModelBySlug()`, `getManufacturers()`, `getBrands()`, `getCategories()`, `getColors()`, `getCollectionStats()`, `getRecentlyAddedModels()`, `searchModels()`
-- [ ] Pure `collection-query` module: filter (multi-value), search (diacritic-insensitive), sort, facet counts — built on the Phase 2 characterization tests
-- [ ] Caching/loading approach; decide TanStack Query vs a small hook (recommend TanStack Query: caching, retry, loading/error states; justify)
-- [ ] ESLint `no-restricted-imports` blocking `@supabase/supabase-js` outside `src/lib` and `src/services`
-- [ ] Unit tests with a mocked client + fixtures (`car-models.json`-derived)
+- [x] Domain types (`Model`, `ModelSummary`, `Brand`/`Manufacturer` → `LookupRef`, `Category`, `Driver`, `ModelImage`) + row→domain mappers *(`src/services/types.ts`, `src/services/mappers.ts`. `Brand`/`Manufacturer` share one `LookupRef` shape — both are `{slug, name, logoPath}` with nothing else to distinguish, so a separate type each would just be a rename)*
+- [x] `src/services/`: `getModels()` (summary columns), `getModelBySlug()`, `getManufacturers()`, `getBrands()`, `getCategories()`, `getColors()`, `getCollectionStats()`, `getRecentlyAddedModels()`, `searchModels()` *(`models.ts`, `lookups.ts`, `stats.ts`; `searchModels()` lives in `collection-query.ts` and is re-exported through the `src/services` barrel (`index.ts`) — it's pure client-side logic per the read strategy, not a network call, so it belongs with filter/sort/facets, not beside the Supabase-calling functions)*
+- [x] Pure `collection-query` module: filter (multi-value), search (diacritic-insensitive), sort, facet counts *(`collection-query.ts` — `filterModels`/`searchModels`/`sortModels`/`getFacetCounts`, tested against fixtures derived from `car-models.json`, incl. the known Ixo=29/Altaya=130/Ford=22/Rally=98 counts cited elsewhere in this roadmap)*
+- [x] Caching/loading approach: **TanStack Query**, justified below *(`@supabase/supabase-js` dep bump aside, one new dependency: `@tanstack/react-query`. Justification: services already throw a typed `AppError` on failure — TanStack Query's `isPending`/`isError`/`error`/`refetch` map onto that directly with no hand-rolled `useEffect` + local state per call, and its cache is exactly the "load the summary list once" the ROADMAP architecture asks for. `QueryClientProvider` is wired in `main.tsx` now (infrastructure only — no component calls `useQuery` yet, so this is not a user-visible change); Phase 10 is the first consumer)*
+- [x] ESLint `no-restricted-imports` blocking `@supabase/supabase-js` outside `src/lib` and `src/services` *(`eslint.config.js`; verified live — see Verification)*
+- [x] Unit tests with a mocked client + fixtures (`car-models.json`-derived) *(`src/services/*.test.ts`, 381 tests total across the repo; fixtures in `fixtures.test-data.ts`, mock Supabase chain in `chainable.test-data.ts` — both named `*.test-data.ts`, not `*.test.ts`, so Vitest doesn't try to run them as suites)*
 
 ### Verification
-- [ ] Services return the full 227-model set with identical field values to Phase 8
-- [ ] Lint fails if a component imports Supabase directly
+- [x] Services return the full 227-model set with identical field values to Phase 8 *(ran `getModels()` live against Supabase with the anon key: 227 models, 45 brands, 19 manufacturers, 5 categories — matches `docs/migration-report.md` exactly; no null brand/manufacturer/category slugs)*
+- [x] Lint fails if a component imports Supabase directly *(verified by temporarily adding a `@supabase/supabase-js` import to `collection-page.tsx`, confirming `npm run lint` fails with the `no-restricted-imports` message, then reverting)*
 
 ### Definition of Done
 Services + pure query module tested; UI still on JSON (no user-visible change).

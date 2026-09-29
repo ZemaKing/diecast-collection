@@ -20,4 +20,18 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  // Only src/lib (the one client) and src/services (the data access layer) may talk to Supabase
+  // directly — everything else goes through services (ROADMAP Phase 9).
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/lib/**', 'src/services/**'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        paths: [{
+          name: '@supabase/supabase-js',
+          message: 'Import the shared client from src/lib/supabase.ts, or go through src/services — components never call @supabase/supabase-js directly.',
+        }],
+      }],
+    },
+  },
 ])

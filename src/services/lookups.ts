@@ -1,0 +1,27 @@
+// Lookup-table reads: brands, manufacturers, categories, colors. Small, rarely-changing tables —
+// each is one unfiltered `select *`.
+import {supabase} from "../lib/supabase.ts";
+
+import {mapCategory} from "./mappers.ts";
+import {unwrap} from "./supabase-query.ts";
+import type {Category, LookupRef} from "./types.ts";
+
+export async function getBrands(): Promise<LookupRef[]> {
+    const rows = await unwrap(supabase.from("brands").select("*").order("name"));
+    return rows.map((r) => ({slug: r.slug, name: r.name, logoPath: r.logo_path}));
+}
+
+export async function getManufacturers(): Promise<LookupRef[]> {
+    const rows = await unwrap(supabase.from("manufacturers").select("*").order("name"));
+    return rows.map((r) => ({slug: r.slug, name: r.name, logoPath: r.logo_path}));
+}
+
+export async function getCategories(): Promise<Category[]> {
+    const rows = await unwrap(supabase.from("categories").select("*").order("sort_order"));
+    return rows.map(mapCategory);
+}
+
+export async function getColors(): Promise<{slug: string; name: string; hex: string | null}[]> {
+    const rows = await unwrap(supabase.from("colors").select("*").order("sort_order"));
+    return rows.map((r) => ({slug: r.slug, name: r.name, hex: r.hex}));
+}
