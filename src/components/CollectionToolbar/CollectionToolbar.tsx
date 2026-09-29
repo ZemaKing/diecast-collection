@@ -4,9 +4,10 @@ import {useQuery} from "@tanstack/react-query";
 import {Close} from "../../icons/Close.tsx";
 import {Filter} from "../../icons/Filter.tsx";
 import {getColors} from "../../services/lookups.ts";
-import type {CollectionFilters, FacetCount, FacetCounts} from "../../services/collection-query.ts";
+import type {CollectionFilters, FacetCount, FacetCounts, SortOption} from "../../services/collection-query.ts";
 import {MEDIA} from "../../styles/breakpoints.ts";
 import {CategoryPills, ColorSwatchList, SearchableCheckboxList} from "./FilterFields.tsx";
+import {useDetailsPopover} from "./useDetailsPopover.ts";
 
 import "./CollectionToolbar.css";
 
@@ -19,6 +20,9 @@ type CollectionToolbarProps = {
     resultsCount: number;
     onToggle: (key: FilterKey, value: string) => void;
     onClear: () => void;
+    sort: SortOption;
+    onSortChange: (sort: SortOption) => void;
+    hasQuery: boolean;
 };
 
 const GROUPS: {key: FilterKey; label: string; variant: Variant}[] = [
@@ -27,6 +31,18 @@ const GROUPS: {key: FilterKey; label: string; variant: Variant}[] = [
     {key: "categories", label: "Category", variant: "pills"},
     {key: "colors", label: "Color", variant: "swatches"},
     // Scale: hidden until a second scale exists in the data (ROADMAP Phase 14).
+];
+
+// "Relevance" only makes sense (and only appears) while a search is active — see useCollectionQuery.ts.
+const SORT_OPTIONS: {value: SortOption; label: string}[] = [
+    {value: "added-desc", label: "Recently added"},
+    {value: "added-asc", label: "Oldest added"},
+    {value: "name-asc", label: "Model A–Z"},
+    {value: "name-desc", label: "Model Z–A"},
+    {value: "year-desc", label: "Year: newest"},
+    {value: "year-asc", label: "Year: oldest"},
+    {value: "manufacturer", label: "Manufacturer"},
+    {value: "brand", label: "Brand"},
 ];
 
 function FilterFieldContent({variant, options, selected, onToggle, label, hexBySlug}: {
@@ -43,9 +59,7 @@ function FilterFieldContent({variant, options, selected, onToggle, label, hexByS
     return <SearchableCheckboxList options={options} selected={selected} onToggle={onToggle} searchLabel={label}/>;
 }
 
-// A desktop/tablet popover for one field. Native <details> gives free keyboard toggling (Enter/
-// Space on the summary); Escape-to-close and click-outside-to-close are added on top since
-// <details> doesn't support either natively.
+// A desktop/tablet popover for one field.
 function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug}: {
     label: string;
     variant: Variant;
@@ -54,31 +68,10 @@ function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug}:
     onToggle: (value: string) => void;
     hexBySlug: Map<string, string | null>;
 }) {
-    const [open, setOpen] = useState(false);
-    const detailsRef = useRef<HTMLDetailsElement>(null);
-
-    useEffect(() => {
-        if (!open) return;
-
-        const onDocumentClick = (e: MouseEvent) => {
-            if (detailsRef.current && !detailsRef.current.contains(e.target as Node)) setOpen(false);
-        };
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key !== "Escape") return;
-            setOpen(false);
-            detailsRef.current?.querySelector("summary")?.focus();
-        };
-
-        document.addEventListener("click", onDocumentClick);
-        document.addEventListener("keydown", onKeyDown);
-        return () => {
-            document.removeEventListener("click", onDocumentClick);
-            document.removeEventListener("keydown", onKeyDown);
-        };
-    }, [open]);
+    const {open, setOpen, ref} = useDetailsPopover();
 
     return (
-        <details ref={detailsRef} className="filterTrigger" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+        <details ref={ref} className="filterTrigger" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
             <summary className="filterTriggerSummary">
                 {label}
                 {selected.length > 0 && <span className="filterTriggerCount">{selected.length}</span>}
@@ -90,7 +83,40 @@ function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug}:
     );
 }
 
-export function CollectionToolbar({filters, facets, resultsCount, onToggle, onClear}: CollectionToolbarProps) {
+// The toolbar's sort dropdown — single-select, closes itself as soon as an option is picked
+// (unlike FilterTrigger's checkboxes, which stay open for multiple picks).
+function SortTrigger({sort, onChange, showRelevance}: {
+    sort: SortOption;
+    onChange: (sort: SortOption) => void;
+    showRelevance: boolean;
+}) {
+    const {open, setOpen, ref} = useDetailsPopover();
+    const options = showRelevance ? [{value: "relevance" as const, label: "Relevance"}, ...SORT_OPTIONS] : SORT_OPTIONS;
+    const currentLabel = options.find((o) => o.value === sort)?.label ?? options[0]!.label;
+
+    return (
+        <details ref={ref} className="filterTrigger sortTrigger" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+            <summary className="filterTriggerSummary sortTriggerSummary">Sort: {currentLabel} ▾</summary>
+            <div className="filterTriggerPanel">
+                {options.map((option) => (
+                    <button
+                        key={option.value}
+                        type="button"
+                        className={`sortOption${option.value === sort ? " sortOptionSelected" : ""}`}
+                        onClick={() => {
+                            onChange(option.value);
+                            setOpen(false);
+                        }}
+                    >
+                        {option.label}
+                    </button>
+                ))}
+            </div>
+        </details>
+    );
+}
+
+export function CollectionToolbar({filters, facets, resultsCount, onToggle, onClear, sort, onSortChange, hasQuery}: CollectionToolbarProps) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const filtersToggleRef = useRef<HTMLButtonElement>(null);
     const activeCount = GROUPS.reduce((n, {key}) => n + filters[key].length, 0);
@@ -171,16 +197,14 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
 
                 <span className="resultsCount">{resultsCount} models</span>
 
-                {/* View modes and sort: visual placeholders only — wired in Phases 18 and 15. */}
                 <div className="toolbarPlaceholders">
+                    {/* View modes: visual placeholder only — wired in Phase 18. */}
                     <div className="viewModeGroup" aria-hidden="true">
                         <button type="button" className="viewModeButton viewModeButtonActive" disabled title="Grid view">⊞</button>
                         <button type="button" className="viewModeButton" disabled title="List view — coming soon">☰</button>
                         <button type="button" className="viewModeButton" disabled title="Compact view — coming soon">≡</button>
                     </div>
-                    <button type="button" className="sortTrigger" disabled title="Sorting is coming in a future update">
-                        Sort: Recently added ▾
-                    </button>
+                    <SortTrigger sort={sort} onChange={onSortChange} showRelevance={hasQuery}/>
                 </div>
             </div>
 

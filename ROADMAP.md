@@ -53,7 +53,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 12 | Application Shell & Routing | ✅ Done | — |
 | 13 | Collection Toolbar & URL State | ✅ Done | — |
 | 14 | Advanced Filter Panel | ✅ Done | — |
-| 15 | Search & Sorting | ⬜ | — |
+| 15 | Search & Sorting | ✅ Done | — |
 | 16 | Model Card Redesign | ⬜ | — |
 | 17 | Collection Hero & Grid | ⬜ | Hero background image |
 | 18 | View Modes | ⬜ | Decide Showcase mode |
@@ -417,24 +417,26 @@ All four filters usable on all sizes with counts; matches the mockup panel (cate
 
 ---
 
-## Phase 15 — Search & Sorting
+## Phase 15 — Search & Sorting ✅
 
 ### Goal
 Collection-wide search and useful sorting.
 
 ### Tasks
-- [ ] Search box (header entry + toolbar) → `?q=`; 250 ms debounce; clear button; loading + no-results state
-- [ ] Fields: name, brand, manufacturer, year, category, driver, car number; **diacritic-insensitive** (`citroen` finds Citroën, `skoda` finds Škoda); ranking: name-prefix > name-contains > other fields
-- [ ] Sort options from real data: Recently added, Oldest added, Model A–Z / Z–A, Year newest/oldest, Manufacturer, Brand → `?sort=`
-- [ ] Stable tie-breaker (204 models share one added date) so order never flickers
-- [ ] "Recently added" behavior for `added_at IS NULL` documented (NULL last, then by name)
+- [x] Search box (header entry + toolbar) → `?q=`; 250 ms debounce; clear button; loading + no-results state *("header entry + toolbar" turned out to be one box, not two: the Header's single search input (already built as a Phase 12 disabled placeholder) is global — it renders on every page and writes to `/`'s `?q=` (updating in place if already there, navigating there otherwise), and the toolbar/results below react to it. "Loading" state is the pre-existing collection fetch state (search itself is instant client-side filtering, no request); "no-results" is a dedicated `No models match "query".` message, distinct from the filter-only empty state)*
+- [x] Fields: name, brand, manufacturer, year, category, driver, car number; **diacritic-insensitive** (`citroen` finds Citroën, `skoda` finds Škoda); ranking: name-prefix > name-contains > other fields *(`matchRank()` in `collection-query.ts`, shared by `searchModels()` (filters on `rank !== null`) and `sortModels(..., "relevance", query)` (orders by rank) — one tier definition, not two independently-maintained ones)*
+- [x] Sort options from real data: Recently added, Oldest added, Model A–Z / Z–A, Year newest/oldest, Manufacturer, Brand → `?sort=` *(added `"manufacturer"`/`"brand"` to `SortOption`, plus a `"relevance"` option: with no explicit `?sort=`, the effective default is `relevance` while a search is active and `added-desc` ("Recently added") otherwise — an untouched sort shouldn't visually ignore what you just typed. Explicitly picking a sort always overrides relevance, same as any other e-commerce "sort re-orders past whatever relevance gave you" pattern)*
+- [x] Stable tie-breaker (204 models share one added date) so order never flickers *(every comparator already broke ties by slug (Phase 9); strengthened to name-then-slug so equal-year/equal-manufacturer ties read in a sensible order, not just a stable-but-arbitrary one)*
+- [x] "Recently added" behavior for `added_at IS NULL` documented (NULL last, then by name) *(unchanged from Phase 9 — `compareAddedAt()`, NULL always sorts last regardless of direction)*
 
 ### Verification
-- [ ] Unit tests for normalization, ranking, every sort, NULL `added_at`
-- [ ] Search + filters + sort combine correctly and survive refresh
+- [x] Unit tests for normalization, ranking, every sort, NULL `added_at` *(20 new tests in `collection-query.test.ts` — hand-built fixtures for the ranking tests specifically, since real model names all start with their brand, making "contains but doesn't start with" impossible to exercise from the JSON fixtures alone; 9 new tests in `url-params.test.ts` for `?q=`/`?sort=` parse/serialize)*
+- [x] Search + filters + sort combine correctly and survive refresh *(verified live: `/?brand=ford&sort=year-asc&q=e` on a fresh full-page load — not a client nav — correctly shows 20 Ford models containing "e", oldest first, with the sort dropdown reading "Year: oldest" (not "Relevance" — an explicit `?sort=` always wins))*
 
 ### Definition of Done
 Search and sort work, are URL-persisted, and are covered by tests.
+
+**Bug found and fixed along the way:** the mobile drawer's search box has been invisible since Phase 12 — `.siteSearch`'s base `display: none` (shown only ≥640px) was never overridden for the `.siteSearchMobile` variant, and separately its `flex: 1 1 220px` (sized for the horizontal desktop header row) became a *height* basis inside the drawer's vertical flex stack, so even after fixing `display` it first rendered as a ~220px-tall blob. Both went unnoticed because the box was a disabled placeholder until this phase made it functional. Fixed: `display: flex; flex: none;` on `.siteSearchMobile`.
 
 ---
 

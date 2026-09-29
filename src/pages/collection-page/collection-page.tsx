@@ -11,7 +11,7 @@ import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
-import {filterModels, getFacetCounts} from "../../services/collection-query.ts";
+import {filterModels, getFacetCounts, searchModels, sortModels} from "../../services/collection-query.ts";
 import {toLegacyModel} from "../../services/legacy-adapter.ts";
 import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
@@ -22,7 +22,7 @@ import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
 
 export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
-    const {filters, toggleFilter, clearFilters} = useCollectionQuery();
+    const {filters, query, sort, toggleFilter, clearFilters, setSort} = useCollectionQuery();
 
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,14 +36,18 @@ export function CollectionPage() {
     });
     const summaries = useMemo(() => carsQuery.data ?? [], [carsQuery.data]);
 
-    // Filtering runs on the Supabase domain shape (ModelSummary); toLegacyModel() only maps the
-    // result for the still-legacy ModelCard/DetailsModal (ROADMAP Phase 16/19 replace those).
+    // Filter -> search -> sort, all on the Supabase domain shape (ModelSummary); toLegacyModel()
+    // only maps the final result for the still-legacy ModelCard/DetailsModal (Phase 16/19 replace
+    // those). Facets are computed pre-search/sort — they describe "what else is in this filtered
+    // set", not "what's currently visible after searching", so a search doesn't zero them out.
     const filteredSummaries = useMemo(() => filterModels(summaries, filters), [summaries, filters]);
+    const searchedSummaries = useMemo(() => searchModels(filteredSummaries, query), [filteredSummaries, query]);
+    const visibleSummaries = useMemo(() => sortModels(searchedSummaries, sort, query), [searchedSummaries, sort, query]);
     const facets = useMemo(() => getFacetCounts(summaries, filters), [summaries, filters]);
     const stats = useMemo(() => getCollectionStats(summaries), [summaries]);
 
     const models = useMemo(() => summaries.map(toLegacyModel), [summaries]);
-    const filteredModels = useMemo(() => filteredSummaries.map(toLegacyModel), [filteredSummaries]);
+    const filteredModels = useMemo(() => visibleSummaries.map(toLegacyModel), [visibleSummaries]);
 
     // ?model= looks up the full (unfiltered) list — a shared/deep link should open its model
     // regardless of the current filters, matching the pre-Phase-13 behavior.
@@ -139,6 +143,9 @@ export function CollectionPage() {
                         resultsCount={filteredModels.length}
                         onToggle={toggleFilter}
                         onClear={clearFilters}
+                        sort={sort}
+                        onSortChange={setSort}
+                        hasQuery={!!query.trim()}
                     />
 
                     {carsQuery.isPending ? (
@@ -151,7 +158,9 @@ export function CollectionPage() {
                             </button>
                         </div>
                     ) : filteredModels.length === 0 ? (
-                        <div className="contentEmpty">No models match the selected filters.</div>
+                        <div className="contentEmpty">
+                            {query.trim() ? `No models match "${query.trim()}".` : "No models match the selected filters."}
+                        </div>
                     ) : (
                         <div className="modelGrid">
                             {filteredModels.map((m) => (

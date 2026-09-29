@@ -4,8 +4,12 @@ import {EMPTY_FILTERS} from "../services/collection-query.ts";
 import {
     applyCollectionFiltersToSearchParams,
     getCollectionFiltersFromSearchParams,
+    getSearchQueryFromSearchParams,
+    getSortFromSearchParams,
     withModelParam,
     withoutModelParam,
+    withSearchQuery,
+    withSort,
 } from "./url-params.ts";
 
 const params = (query: string) => new URLSearchParams(query);
@@ -80,6 +84,56 @@ describe("applyCollectionFiltersToSearchParams", () => {
         const current = params("brand=bmw&brand=ford&model=abc");
         const next = applyCollectionFiltersToSearchParams(current, getCollectionFiltersFromSearchParams(current));
         expect(next.toString()).toBe(current.toString());
+    });
+});
+
+describe("search query param", () => {
+    it("defaults to an empty string when absent", () => {
+        expect(getSearchQueryFromSearchParams(params(""))).toBe("");
+    });
+
+    it("reads ?q= verbatim, no normalization at the URL layer", () => {
+        expect(getSearchQueryFromSearchParams(params("q=Citro%C3%ABn"))).toBe("Citroën");
+    });
+
+    it("writes ?q= for a non-empty query", () => {
+        expect(withSearchQuery(params(""), "ford").toString()).toBe("q=ford");
+    });
+
+    it("clears ?q= for an empty or whitespace-only query", () => {
+        expect(withSearchQuery(params("q=ford"), "").has("q")).toBe(false);
+        expect(withSearchQuery(params("q=ford"), "   ").has("q")).toBe(false);
+    });
+
+    it("does not mutate its input", () => {
+        const input = params("q=ford");
+        withSearchQuery(input, "bmw");
+        expect(input.toString()).toBe("q=ford");
+    });
+});
+
+describe("sort param", () => {
+    it("returns null when absent", () => {
+        expect(getSortFromSearchParams(params(""))).toBeNull();
+    });
+
+    it("returns null for an unrecognized value instead of throwing", () => {
+        expect(getSortFromSearchParams(params("sort=not-a-real-sort"))).toBeNull();
+    });
+
+    it("parses a valid sort", () => {
+        expect(getSortFromSearchParams(params("sort=year-desc"))).toBe("year-desc");
+    });
+
+    it("writes and clears the sort param", () => {
+        expect(withSort(params(""), "brand").toString()).toBe("sort=brand");
+        expect(withSort(params("sort=brand"), null).has("sort")).toBe(false);
+    });
+
+    it("does not mutate its input", () => {
+        const input = params("sort=brand");
+        withSort(input, "year-asc");
+        expect(input.toString()).toBe("sort=brand");
     });
 });
 

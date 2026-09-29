@@ -112,9 +112,28 @@
     color: var(--color-text-muted);
 }
 
-.siteSearch input:disabled {
-    cursor: not-allowed;
-    opacity: var(--state-disabled-opacity);
+.siteSearch input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.siteSearchClear {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-round);
+    color: var(--color-text-subtle);
+    cursor: pointer;
+}
+
+.siteSearchClear:hover {
+    color: var(--color-text);
+    background: var(--color-surface-hover);
 }
 
 .siteHeaderActions {
@@ -214,6 +233,10 @@
 }
 
 .siteSearchMobile {
+    display: flex;
+    /* .siteSearch's "flex: 1 1 220px" sizes it along a horizontal row (the desktop header); inside
+       the drawer's vertical stack that basis applies to height instead, not width — override both. */
+    flex: none;
     max-width: none;
 }
 

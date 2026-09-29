@@ -199,17 +199,41 @@
     border-color: var(--color-accent);
 }
 
-.sortTrigger {
-    display: none;
-    background: var(--color-surface-sunken);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    color: var(--color-text-subtle);
-    cursor: not-allowed;
+/* Sort: same <details> popover mechanics as a filter trigger, but single-select and right-
+   anchored (it's the rightmost control in the row, so a left-anchored panel would overflow). */
+
+.sortTriggerSummary {
+    white-space: nowrap;
+}
+
+.sortTrigger .filterTriggerPanel {
+    left: auto;
+    right: 0;
+    min-width: 180px;
+}
+
+.sortOption {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding: 0 var(--space-sm);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
     font-family: var(--font-sans);
     font-size: var(--text-sm);
-    min-height: var(--tap-target);
-    padding: 0 var(--space-md);
+    text-align: left;
+}
+
+.sortOption:hover {
+    background: var(--color-surface-hover);
+}
+
+.sortOptionSelected {
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
 }
 
 /* Manufacturer / Brand: search box + scrollable checkbox list -------------- */
@@ -456,8 +480,7 @@
         display: none;
     }
 
-    .viewModeGroup,
-    .sortTrigger {
+    .viewModeGroup {
         display: flex;
     }
 

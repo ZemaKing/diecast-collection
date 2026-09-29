@@ -1,7 +1,6 @@
 // Pure client-side query logic over an already-loaded ModelSummary[] list — no network calls.
 // This is what makes the ROADMAP read strategy work: load the summary list once (getModels()),
-// then filter/search/sort/facet-count entirely in memory. Built to be extended (not replaced) by
-// Phase 15 (full search ranking + more sort options) and Phase 14 (the filter panel UI).
+// then filter/search/sort/facet-count entirely in memory.
 import type {ModelSummary} from "./types.ts";
 
 export type CollectionFilters = {
@@ -34,19 +33,42 @@ export function normalizeSearchText(value: string): string {
         .toLowerCase();
 }
 
-function searchableFields(m: ModelSummary): string[] {
-    return [m.name, m.brand.name, m.manufacturer.name, String(m.year), m.category.name, m.driver?.name ?? "", m.carNumber ?? ""];
+function otherSearchFields(m: ModelSummary): string[] {
+    return [m.brand.name, m.manufacturer.name, String(m.year), m.category.name, m.driver?.name ?? "", m.carNumber ?? ""];
+}
+
+// Relevance tier: 0 = name starts with the query, 1 = name contains it elsewhere, 2 = it only
+// matched another field (brand/manufacturer/year/category/driver/car number), null = no match.
+// Shared by searchModels() (keeps rank !== null) and sortModels()'s "relevance" option (orders by
+// rank) so the two never define "match" and "order" differently.
+function matchRank(m: ModelSummary, needle: string): number | null {
+    if (!needle) return 0;
+    const name = normalizeSearchText(m.name);
+    if (name.startsWith(needle)) return 0;
+    if (name.includes(needle)) return 1;
+    if (otherSearchFields(m).some((field) => normalizeSearchText(field).includes(needle))) return 2;
+    return null;
 }
 
 // Substring match across name/brand/manufacturer/year/category/driver/car number, diacritic- and
-// case-insensitive. No ranking yet — Phase 15 adds name-prefix > name-contains > other-field.
+// case-insensitive. A pure filter — ordering by relevance is sortModels(..., "relevance")'s job,
+// so search and sort compose the same way any other filter+sort pair does.
 export function searchModels(models: ModelSummary[], query: string): ModelSummary[] {
     const needle = normalizeSearchText(query.trim());
     if (!needle) return models;
-    return models.filter((m) => searchableFields(m).some((field) => normalizeSearchText(field).includes(needle)));
+    return models.filter((m) => matchRank(m, needle) !== null);
 }
 
-export type SortOption = "name-asc" | "name-desc" | "year-desc" | "year-asc" | "added-desc" | "added-asc";
+export type SortOption =
+    | "relevance"
+    | "added-desc"
+    | "added-asc"
+    | "name-asc"
+    | "name-desc"
+    | "year-desc"
+    | "year-asc"
+    | "manufacturer"
+    | "brand";
 
 // NULL `added_at` always sorts last, in either direction (204+ models share one import-day date —
 // Phase 15 documents this; here it just needs to never crash or float NULLs to the top).
@@ -57,17 +79,32 @@ function compareAddedAt(a: ModelSummary, b: ModelSummary, direction: 1 | -1): nu
     return direction * a.addedAt.localeCompare(b.addedAt);
 }
 
-// Ties always break by slug, so order never flickers across renders/refreshes.
-const COMPARATORS: Record<SortOption, (a: ModelSummary, b: ModelSummary) => number> = {
+// Ties always break by name then slug, so order never flickers across renders/refreshes — real
+// data has 204+ models sharing one `added_at` (the Phase 7 import's backfill cutoff) and 160+
+// sharing NULL, so "added-*" leans on this tie-break constantly, not just in edge cases.
+const COMPARATORS: Record<Exclude<SortOption, "relevance">, (a: ModelSummary, b: ModelSummary) => number> = {
     "name-asc": (a, b) => a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
     "name-desc": (a, b) => b.name.localeCompare(a.name) || a.slug.localeCompare(b.slug),
-    "year-desc": (a, b) => b.year - a.year || a.slug.localeCompare(b.slug),
-    "year-asc": (a, b) => a.year - b.year || a.slug.localeCompare(b.slug),
-    "added-desc": (a, b) => compareAddedAt(a, b, -1) || a.slug.localeCompare(b.slug),
-    "added-asc": (a, b) => compareAddedAt(a, b, 1) || a.slug.localeCompare(b.slug),
+    "year-desc": (a, b) => b.year - a.year || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
+    "year-asc": (a, b) => a.year - b.year || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
+    "added-desc": (a, b) => compareAddedAt(a, b, -1) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
+    "added-asc": (a, b) => compareAddedAt(a, b, 1) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
+    "manufacturer": (a, b) => a.manufacturer.name.localeCompare(b.manufacturer.name) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
+    "brand": (a, b) => a.brand.name.localeCompare(b.brand.name) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug),
 };
 
-export function sortModels(models: ModelSummary[], sort: SortOption): ModelSummary[] {
+// "relevance" needs the search query itself (it orders by matchRank(), the same tiers
+// searchModels() filters on), so it's handled separately instead of living in the static
+// COMPARATORS table above. Meaningless without a query — falls back to name-asc-ish stability.
+export function sortModels(models: ModelSummary[], sort: SortOption, query = ""): ModelSummary[] {
+    if (sort === "relevance") {
+        const needle = normalizeSearchText(query.trim());
+        return [...models].sort((a, b) => {
+            const rankA = matchRank(a, needle) ?? 3;
+            const rankB = matchRank(b, needle) ?? 3;
+            return rankA - rankB || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug);
+        });
+    }
     return [...models].sort(COMPARATORS[sort]);
 }
 

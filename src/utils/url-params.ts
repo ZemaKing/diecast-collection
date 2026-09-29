@@ -1,7 +1,7 @@
-// URL <-> filter state (ROADMAP Phase 13). Filters are the single source of truth in the URL —
-// no mirrored local state, no sync effects. All functions here are pure: they read a
-// URLSearchParams and return a new one, never mutating the input.
-import type {CollectionFilters} from "../services/collection-query.ts";
+// URL <-> filter/search/sort state (ROADMAP Phase 13, extended Phase 15). This is the single
+// source of truth in the URL — no mirrored local state, no sync effects. All functions here are
+// pure: they read a URLSearchParams and return a new one, never mutating the input.
+import type {CollectionFilters, SortOption} from "../services/collection-query.ts";
 import {EMPTY_FILTERS} from "../services/collection-query.ts";
 import {slugify} from "./slug.ts";
 
@@ -60,6 +60,35 @@ export function applyCollectionFiltersToSearchParams(searchParams: URLSearchPara
         for (const v of canonicalValues(filters, key)) next.append(key, v);
     }
 
+    return next;
+}
+
+export function getSearchQueryFromSearchParams(searchParams: URLSearchParams): string {
+    return searchParams.get("q") ?? "";
+}
+
+// Empty/whitespace-only clears the param rather than writing `?q=`.
+export function withSearchQuery(searchParams: URLSearchParams, query: string): URLSearchParams {
+    const next = new URLSearchParams(searchParams);
+    if (query.trim()) next.set("q", query); else next.delete("q");
+    return next;
+}
+
+const VALID_SORTS: ReadonlySet<string> = new Set<SortOption>([
+    "relevance", "added-desc", "added-asc", "name-asc", "name-desc", "year-desc", "year-asc", "manufacturer", "brand",
+]);
+
+// null means "absent or unrecognized" — the caller decides the effective default (added-desc, or
+// relevance while a search is active), since that decision depends on *other* state (the query)
+// that this module has no reason to know about.
+export function getSortFromSearchParams(searchParams: URLSearchParams): SortOption | null {
+    const raw = searchParams.get("sort");
+    return raw !== null && VALID_SORTS.has(raw) ? (raw as SortOption) : null;
+}
+
+export function withSort(searchParams: URLSearchParams, sort: SortOption | null): URLSearchParams {
+    const next = new URLSearchParams(searchParams);
+    if (sort) next.set("sort", sort); else next.delete("sort");
     return next;
 }
 

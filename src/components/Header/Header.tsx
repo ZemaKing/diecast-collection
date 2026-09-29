@@ -1,5 +1,5 @@
 import {useEffect, useId, useRef, useState} from "react";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 
 import {Close} from "../../icons/Close.tsx";
 import {Email} from "../../icons/Email.tsx";
@@ -7,6 +7,7 @@ import {Instagram} from "../../icons/Instagram.tsx";
 import {Menu} from "../../icons/Menu.tsx";
 import {Search} from "../../icons/Search.tsx";
 import {MEDIA} from "../../styles/breakpoints.ts";
+import {getSearchQueryFromSearchParams, withSearchQuery} from "../../utils/url-params.ts";
 import {ThemeToggle} from "../ThemeToggle/ThemeToggle.tsx";
 
 import "./Header.css";
@@ -23,6 +24,8 @@ const NAV_LINKS = [
     {to: "/about", label: "About", end: false},
 ];
 
+const SEARCH_DEBOUNCE_MS = 250;
+
 function navLinkClass({isActive}: {isActive: boolean}) {
     return `siteNavLink${isActive ? " siteNavLinkActive" : ""}`;
 }
@@ -35,8 +38,35 @@ export function Header({count}: Props) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
     const drawerId = useId();
+    const searchId = useId();
 
     const closeMenu = () => setIsMenuOpen(false);
+
+    // Global search (ROADMAP Phase 15): Header renders on every page, so the box always writes to
+    // "/"'s ?q= — updating in place when already there, navigating there otherwise. `raw` is a
+    // deliberate exception to "no local state" (Phase 13's URL-only rule): a debounced input needs
+    // somewhere to hold the in-progress keystroke before it's worth committing to the URL/history.
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [raw, setRaw] = useState(() => getSearchQueryFromSearchParams(searchParams));
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            if (location.pathname === "/") {
+                setSearchParams((current) => withSearchQuery(current, raw), {replace: true});
+            } else if (raw.trim()) {
+                navigate(`/?q=${encodeURIComponent(raw.trim())}`);
+            }
+            // else: not on "/" and nothing typed — nothing to do, don't navigate for an empty box.
+        }, SEARCH_DEBOUNCE_MS);
+
+        return () => window.clearTimeout(timeoutId);
+        // Only `raw` re-arms the debounce; re-running on every location/searchParams change would
+        // fight the user's typing (see Phase 15 notes in ROADMAP.md for why this is a deliberate
+        // exception to "no sync effects", not the pattern the rest of the query state follows).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [raw]);
 
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -62,6 +92,14 @@ export function Header({count}: Props) {
         };
     }, [isMenuOpen]);
 
+    const searchInputProps = {
+        type: "search" as const,
+        placeholder: "Search models…",
+        value: raw,
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => setRaw(e.target.value),
+        "aria-label": "Search models",
+    };
+
     return (
         <header className="siteHeader">
             <div className="siteHeaderInner">
@@ -81,15 +119,14 @@ export function Header({count}: Props) {
                     ))}
                 </nav>
 
-                <label className="siteSearch">
+                <label className="siteSearch" htmlFor={searchId}>
                     <Search className="siteSearchIcon"/>
-                    <input
-                        type="search"
-                        placeholder="Search models…"
-                        disabled
-                        aria-label="Search (coming soon)"
-                        title="Search is coming in a future update"
-                    />
+                    <input id={searchId} {...searchInputProps}/>
+                    {raw && (
+                        <button type="button" className="siteSearchClear" onClick={() => setRaw("")} aria-label="Clear search">
+                            <Close width={12} height={12}/>
+                        </button>
+                    )}
                 </label>
 
                 <div className="siteHeaderActions">
@@ -131,15 +168,14 @@ export function Header({count}: Props) {
                         ))}
                     </nav>
 
-                    <label className="siteSearch siteSearchMobile">
+                    <label className="siteSearch siteSearchMobile" htmlFor={`${searchId}-mobile`}>
                         <Search className="siteSearchIcon"/>
-                        <input
-                            type="search"
-                            placeholder="Search models…"
-                            disabled
-                            aria-label="Search (coming soon)"
-                            title="Search is coming in a future update"
-                        />
+                        <input id={`${searchId}-mobile`} {...searchInputProps}/>
+                        {raw && (
+                            <button type="button" className="siteSearchClear" onClick={() => setRaw("")} aria-label="Clear search">
+                                <Close width={12} height={12}/>
+                            </button>
+                        )}
                     </label>
                 </div>
             )}

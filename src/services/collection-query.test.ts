@@ -80,6 +80,45 @@ describe("searchModels", () => {
     it("matches nothing that doesn't contain the query anywhere", () => {
         expect(searchModels(models, "zzz-not-a-real-model-zzz")).toHaveLength(0);
     });
+
+    it("matches Škoda when searching the unaccented spelling (diacritic-insensitive)", () => {
+        const results = searchModels(models, "skoda");
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.every((m) => normalizeSearchText(m.brand.name).includes("skoda"))).toBe(true);
+    });
+});
+
+describe("search relevance ranking (sortModels(..., \"relevance\", query))", () => {
+    // Hand-built, not the JSON fixtures — real model names all start with their brand, which
+    // makes it impossible to exercise "contains but doesn't start with" using real data alone.
+    const base = models[0]!;
+    const prefixMatch = {...base, slug: "z1", name: "Turbo Racer"};
+    const containsMatch = {...base, slug: "z2", name: "Super Turbo GT"};
+    const otherFieldMatch = {...base, slug: "z3", name: "Nothing Special", brand: {...base.brand, name: "Turbo Motors"}};
+    const noMatch = {...base, slug: "z4", name: "Totally Unrelated", brand: {...base.brand, name: "Random"}};
+    const shuffled = [noMatch, otherFieldMatch, containsMatch, prefixMatch];
+
+    it("searchModels keeps only the matches, regardless of tier", () => {
+        expect(searchModels(shuffled, "turbo").map((m) => m.slug).sort()).toEqual(["z1", "z2", "z3"]);
+    });
+
+    it("ranks name-prefix > name-contains > other-field matches", () => {
+        const ranked = sortModels(searchModels(shuffled, "turbo"), "relevance", "turbo");
+        expect(ranked.map((m) => m.slug)).toEqual(["z1", "z2", "z3"]);
+    });
+
+    it("is diacritic- and case-insensitive, same as searchModels", () => {
+        const accented = {...base, slug: "z5", name: "Citroën Special"};
+        const ranked = sortModels([accented, ...shuffled], "relevance", "CITROEN");
+        expect(ranked[0]!.slug).toBe("z5");
+    });
+
+    it("falls back to a stable name/slug order for an empty query", () => {
+        const ranked = sortModels(shuffled, "relevance", "");
+        for (let i = 1; i < ranked.length; i++) {
+            expect(ranked[i - 1]!.name.localeCompare(ranked[i]!.name)).toBeLessThanOrEqual(0);
+        }
+    });
 });
 
 describe("sortModels", () => {
@@ -110,6 +149,42 @@ describe("sortModels", () => {
 
         expect(sortModels(mixed, "added-desc").slice(-3).every((m) => m.addedAt === null)).toBe(true);
         expect(sortModels(mixed, "added-asc").slice(-3).every((m) => m.addedAt === null)).toBe(true);
+    });
+
+    it("gives a deterministic order for models that tie on added_at — 204+ real models share one date", () => {
+        const tied = models.slice(0, 30).map((m) => ({...m, addedAt: "2026-01-01"}));
+        const first = sortModels(tied, "added-desc").map((m) => m.slug);
+        for (let i = 0; i < 20; i++) {
+            expect(sortModels(tied, "added-desc").map((m) => m.slug)).toEqual(first);
+        }
+    });
+
+    it("sorts year-asc", () => {
+        const sorted = sortModels(models, "year-asc");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1]!.year).toBeLessThanOrEqual(sorted[i]!.year);
+        }
+    });
+
+    it("sorts name-desc", () => {
+        const sorted = sortModels(models, "name-desc");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1]!.name.localeCompare(sorted[i]!.name)).toBeGreaterThanOrEqual(0);
+        }
+    });
+
+    it("sorts by manufacturer name", () => {
+        const sorted = sortModels(models, "manufacturer");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1]!.manufacturer.name.localeCompare(sorted[i]!.manufacturer.name)).toBeLessThanOrEqual(0);
+        }
+    });
+
+    it("sorts by brand name", () => {
+        const sorted = sortModels(models, "brand");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1]!.brand.name.localeCompare(sorted[i]!.brand.name)).toBeLessThanOrEqual(0);
+        }
     });
 });
 

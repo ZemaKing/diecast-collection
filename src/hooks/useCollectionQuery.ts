@@ -1,16 +1,30 @@
-// The URL is the single source of truth for collection filters (ROADMAP Phase 13) — filters are
-// derived from `useSearchParams()` on every render via `useMemo`, and updates write straight back
-// to the URL. No `useState` mirror, no `useEffect` sync loop (the bug class the old Sidebar had).
+// The URL is the single source of truth for collection filters/search/sort (ROADMAP Phase 13,
+// extended Phase 15) — all of it is derived from `useSearchParams()` on every render via
+// `useMemo`, and updates write straight back to the URL. No `useState` mirror, no `useEffect`
+// sync loop (the bug class the old Sidebar had) for filters/sort; the search box needs its own
+// brief local staging for the 250ms debounce (see Header.tsx) since typing must feel instant.
 import {useCallback, useMemo} from "react";
 import {useSearchParams} from "react-router-dom";
 
-import {EMPTY_FILTERS, type CollectionFilters} from "../services/collection-query.ts";
-import {applyCollectionFiltersToSearchParams, getCollectionFiltersFromSearchParams} from "../utils/url-params.ts";
+import {EMPTY_FILTERS, type CollectionFilters, type SortOption} from "../services/collection-query.ts";
+import {
+    applyCollectionFiltersToSearchParams,
+    getCollectionFiltersFromSearchParams,
+    getSearchQueryFromSearchParams,
+    getSortFromSearchParams,
+    withSort,
+} from "../utils/url-params.ts";
 
 export function useCollectionQuery() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const filters = useMemo(() => getCollectionFiltersFromSearchParams(searchParams), [searchParams]);
+    const query = getSearchQueryFromSearchParams(searchParams);
+
+    // No explicit ?sort=: default to relevance while actively searching (an untouched sort
+    // shouldn't visually ignore what you just typed), otherwise the toolbar's stated default.
+    const explicitSort = getSortFromSearchParams(searchParams);
+    const sort: SortOption = explicitSort ?? (query.trim() ? "relevance" : "added-desc");
 
     const toggleFilter = useCallback((key: keyof CollectionFilters, value: string) => {
         setSearchParams((current) => {
@@ -25,5 +39,9 @@ export function useCollectionQuery() {
         setSearchParams((current) => applyCollectionFiltersToSearchParams(current, EMPTY_FILTERS), {replace: false});
     }, [setSearchParams]);
 
-    return {filters, toggleFilter, clearFilters};
+    const setSort = useCallback((value: SortOption) => {
+        setSearchParams((current) => withSort(current, value), {replace: false});
+    }, [setSearchParams]);
+
+    return {filters, query, sort, toggleFilter, clearFilters, setSort};
 }
