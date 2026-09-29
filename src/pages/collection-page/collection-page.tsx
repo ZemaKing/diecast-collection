@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams} from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
@@ -7,8 +8,12 @@ import {Sidebar} from "../../components/Sidebar/Sidebar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
-import carModelsData from "../../data/car-models.json";
 import truckModelsData from "../../data/truck-models.json";
+
+import type {AppError} from "../../lib/errors.ts";
+import {getModels} from "../../services/models.ts";
+import {toLegacyModel} from "../../services/legacy-adapter.ts";
+import type {ModelSummary} from "../../services/types.ts";
 
 import type {DiecastModel, DiecastType} from "../../types.ts";
 import {DEFAULT_FILTERS, filterModels, findModelById, type Filters} from "../../utils/collection-filters.ts";
@@ -27,11 +32,19 @@ export function CollectionPage({type}: CollectionPageProps) {
 
     const lastOpenedModelIdRef = useRef<string | null>(null);
 
+    // Cars are Supabase-backed (ROADMAP Phase 10); trucks still read the legacy JSON directly
+    // (retired in Phase 11). `enabled` keeps this from firing at all on /trucks.
+    const carsQuery = useQuery<ModelSummary[], AppError>({
+        queryKey: ["models", "cars"],
+        queryFn: getModels,
+        enabled: type === "cars",
+    });
+
     const models = useMemo(() => {
         return type === "cars"
-            ? carModelsData as DiecastModel[]
+            ? (carsQuery.data ?? []).map(toLegacyModel)
             : truckModelsData as DiecastModel[];
-    }, [type]);
+    }, [type, carsQuery.data]);
 
     const filteredModels = useMemo(() => filterModels(models, filters), [models, filters]);
 
@@ -136,7 +149,16 @@ export function CollectionPage({type}: CollectionPageProps) {
                 />
 
                 <main className="main">
-                    {filteredModels.length === 0 ? (
+                    {type === "cars" && carsQuery.isPending ? (
+                        <div className="contentEmpty">Loading the collection…</div>
+                    ) : type === "cars" && carsQuery.isError ? (
+                        <div className="contentError">
+                            <p>{carsQuery.error.message}</p>
+                            <button type="button" className="retryButton" onClick={() => carsQuery.refetch()}>
+                                Try again
+                            </button>
+                        </div>
+                    ) : filteredModels.length === 0 ? (
                         <div className="contentEmpty">No models match the selected filters.</div>
                     ) : (
                         <div className="modelGrid">

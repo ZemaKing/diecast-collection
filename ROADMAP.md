@@ -48,7 +48,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 7 | JSON → Supabase Import Tool | ✅ Done | — |
 | 8 | Migration Verification | ✅ Done | — |
 | 9 | Data Access Layer | ✅ Done | — |
-| 10 | Cars Read from Supabase | ⬜ | — |
+| 10 | Cars Read from Supabase | ✅ Done | — |
 | 11 | Retire Trucks & Runtime JSON | ⬜ | Confirm truck archive |
 | 12 | Application Shell & Routing | ⬜ | Logo asset; About content |
 | 13 | Collection Toolbar & URL State | ⬜ | — |
@@ -303,21 +303,21 @@ Services + pure query module tested; UI still on JSON (no user-visible change).
 
 ---
 
-## Phase 10 — Cars Read from Supabase
+## Phase 10 — Cars Read from Supabase ✅
 
 ### Goal
 Switch the existing UI's car data to Supabase and prove functional parity.
 
 ### Tasks
-- [ ] `CollectionPage` (type `cars`) reads through services; add minimal loading + error rendering (consolidated in Phase 29)
-- [ ] Map domain model → existing card/modal props (keep old UI intact)
-- [ ] Trucks still read JSON in this phase (removed in Phase 11)
-- [ ] Parity checklist run in the browser: card count, each filter, URL params, `?model=` deep link, modal fields
+- [x] `CollectionPage` (type `cars`) reads through services; add minimal loading + error rendering (consolidated in Phase 29) *(`useQuery<ModelSummary[], AppError>` from `services/models.ts`; `.contentEmpty`/`.contentError` branches with a Try again button calling `refetch()` — trucks are unaffected, `enabled: type === "cars"` keeps the query from ever firing on `/trucks`)*
+- [x] Map domain model → existing card/modal props (keep old UI intact) *(`src/services/legacy-adapter.ts`: `toLegacyModel(ModelSummary): DiecastModel`, unit-tested. Sidebar/ModelCard/DetailsModal/collection-filters/url-params are all untouched)*
+- [x] Trucks still read JSON in this phase (removed in Phase 11)
+- [x] Parity checklist run in the browser: card count, each filter, URL params, `?model=` deep link, modal fields *(227 cards on `/cars`; `?brand=Ford` → 22; `?brand=Chevrolet` → 4 with no separate "Corvette" option in the dropdown; color dropdown shows "Multi" not "MULTI"; `?model=abarth-124-rally-rgt-2017-altaya-green` opens the modal with the right manufacturer/category/year/scale/driver/car number/image)*
 
 ### Verification
-- [ ] 227 cards, identical filter results for every brand/manufacturer/category/color vs JSON baseline (scripted comparison)
-- [ ] Network tab: no `car-models.json` request/bundle import on `/cars`
-- [ ] Error path: kill network → error state, not blank page
+- [x] 227 cards, identical filter results for every brand/manufacturer/category/color vs JSON baseline (scripted comparison) *(scripted comparison across all 46 brands/19 manufacturers/5 categories/13 colors: 0 unexplained mismatches. The only two differences are the approved Phase 4 transforms — Corvette merges into Chevrolet (4 = 4) and "MULTI" displays as "Multi" (26 = 26) — both confirmed exact matches once accounted for)*
+- [x] Network tab: no `car-models.json` request/bundle import on `/cars` *(confirmed in both the dev network log — after these changes, only `truck-models.json` and the Supabase/services chain load, no `car-models.json` — and the production bundle: `grep` for a car slug string in `dist/assets/*.js` returns 0 matches, vs 78 postimg.cc references still present for trucks)*
+- [x] Error path: kill network → error state, not blank page *(couldn't reliably force-fail the live page's already-constructed Supabase client's bound `fetch` from outside — `supabase-js` captures `fetch` at client construction, before any in-page monkey-patch can apply — so verified the underlying path directly instead: pointed a client at an unreachable host and confirmed `unwrap()`/`toAppError()` produce `{kind: "network", message: "Can't reach the server...", retryable: true}`, which is exactly what `carsQuery.error.message` renders in the `.contentError` branch; the JSX wiring itself is typechecked and covered by `models.test.ts`'s mocked-error tests)*
 
 ### Definition of Done
 Cars are Supabase-backed with verified parity; rollback = `git revert` (JSON untouched).
