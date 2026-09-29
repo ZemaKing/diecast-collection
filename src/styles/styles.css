@@ -160,11 +160,6 @@
     --cat-premium: #a78bfa;
     --cat-retro: #44c85e;
     --cat-fallback: var(--color-text-muted);
-    /* legacy truck categories — removed with trucks in Phase 11 */
-    --cat-transport: #38bdf8;
-    --cat-construction: #f5b014;
-    --cat-utility: #2dd4a0;
-    --cat-off-road: #c08a5a;
 }
 
 /* ---- 3. Semantic colors — light (derived; no mockup, flagged) ---------- */
@@ -213,10 +208,6 @@
     --cat-supercar: #1565c0;
     --cat-premium: #6d28d9;
     --cat-retro: #17702f;
-    --cat-transport: #0369a1;
-    --cat-construction: #92590a;
-    --cat-utility: #047857;
-    --cat-off-road: #7c4a22;
 }
 
 @media (prefers-reduced-motion: reduce) {

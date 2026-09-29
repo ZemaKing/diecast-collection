@@ -49,7 +49,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 8 | Migration Verification | ✅ Done | — |
 | 9 | Data Access Layer | ✅ Done | — |
 | 10 | Cars Read from Supabase | ✅ Done | — |
-| 11 | Retire Trucks & Runtime JSON | ⬜ | Confirm truck archive |
+| 11 | Retire Trucks & Runtime JSON | ✅ Done | — |
 | 12 | Application Shell & Routing | ⬜ | Logo asset; About content |
 | 13 | Collection Toolbar & URL State | ⬜ | — |
 | 14 | Advanced Filter Panel | ⬜ | Tablet/Mobile filter mockups |
@@ -324,25 +324,25 @@ Cars are Supabase-backed with verified parity; rollback = `git revert` (JSON unt
 
 ---
 
-## Phase 11 — Retire Trucks & Runtime JSON
+## Phase 11 — Retire Trucks & Runtime JSON ✅
 
 ### Goal
 Remove trucks from the product and eliminate all runtime JSON imports.
 
 ### Tasks
-- [ ] Remove `/trucks` route, landing page, `trucks-logo.png` usage; `/` renders the collection; `/cars` and `/trucks` redirect to `/` **preserving query params** (so old `?model=`/filter links keep working)
-- [ ] Move `truck-models.json` (and keep `car-models.json`) to `archive/legacy-data/` — not bundled, not imported
-- [ ] Confirm zero `*.json` imports under `src/`
-- [ ] Update `CLAUDE.md` (no trucks, data source is Supabase)
+- [x] Remove `/trucks` route, landing page, `trucks-logo.png` usage; `/` renders the collection; `/cars` and `/trucks` redirect to `/` **preserving query params** *(and hash — `RedirectToCollection` in `App.tsx` uses `useLocation()` + `<Navigate to={{pathname:"/", search, hash}}>`, not a bare string `to="/"` which would have dropped them). `src/pages/landing-page/` deleted (only place that referenced `cars-logo.png`/`trucks-logo.png`; per the "nothing in `public/` is deleted before Phase 36" rule, the PNGs themselves stay, just unreferenced)*
+- [x] Move `truck-models.json` (and keep `car-models.json`) to `archive/legacy-data/` — not bundled, not imported *(`git mv`, so history follows the file)*
+- [x] Confirm zero `*.json` imports under `src/`
+- [x] Update `CLAUDE.md` (no trucks, data source is Supabase) *(also dropped the now-dead `DiecastType`/`type` prop from `CollectionPage` and `Sidebar` — with only one collection left, `type === "cars" ? … : …` branching was dead weight, not a redesign; `Sidebar`'s tagline is now the static "Diecast Car Collection". Also removed the 4 truck-only `--cat-*` tokens (transport/construction/utility/off-road) from `styles.css`, unreferenced by any remaining data)*
 
 ### Verification
-- [ ] `grep -r "\.json" src` shows no data imports; bundle contains no model data
-- [ ] Old links `/cars?model=<id>`, `/cars?brand=Ford`, `/trucks` all land somewhere sensible
+- [x] `grep -r "\.json" src` shows no data imports; bundle contains no model data *(`grep -rl "\.json" src --include="*.ts" --include="*.tsx" | grep -v ".test.ts" | grep -v ".test-data.ts"` → empty. Production bundle: 0 matches for a truck slug or a car slug string — car data comes from Supabase at runtime, not the bundle)*
+- [x] Old links `/cars?model=<id>`, `/cars?brand=Ford`, `/trucks` all land somewhere sensible *(verified live: `/cars?brand=Ford` → `/?brand=Ford`, 22 cards; `/cars?model=abarth-124-rally-rgt-2017-altaya-green` → `/?model=…`, modal opens with the right model; `/trucks` → `/`, 227 cards)*
 
 ### Definition of Done
 Production reads only Supabase; archives preserved; trucks gone from UI.
 
-**Manual:** confirm the 39 trucks are intentionally excluded from Supabase (archived JSON only).
+**Manual:** confirm the 39 trucks are intentionally excluded from Supabase (archived JSON only). *(Per docs/SCHEMA.md/ROADMAP architecture, this was already the decision going into Phase 4 — trucks were never imported. This phase just completes the retirement in the app: JSON archived, route removed.)*
 
 ---
 

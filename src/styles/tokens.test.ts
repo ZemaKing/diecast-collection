@@ -7,7 +7,6 @@ import {describe, expect, it} from "vitest";
 
 import tokensCss from "./styles.css?raw";
 import carModelsData from "../data/car-models.json";
-import truckModelsData from "../data/truck-models.json";
 import {BREAKPOINTS, MEDIA, breakpointFor} from "./breakpoints.ts";
 import {categorySlug} from "../utils/category.ts";
 
@@ -39,7 +38,6 @@ describe("no new hard-coded colors outside styles.css", () => {
     const ALLOWED: Record<string, number> = {
         "../components/DetailsModal/DetailsModal.css": 4,
         "../components/Header/Header.css": 2,
-        "../pages/landing-page/landing-page.css": 7,
     };
     const COLOR = /#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/g;
 
@@ -70,7 +68,7 @@ describe("breakpoints", () => {
 });
 
 describe("category color tokens", () => {
-    const categories = [...new Set([...carModelsData, ...truckModelsData].map((m) => m.category))];
+    const categories = [...new Set(carModelsData.map((m) => m.category))];
     const dark = themeBlock(":root");
     const light = themeBlock('[data-theme="light"]');
 

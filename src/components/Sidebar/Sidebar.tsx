@@ -1,21 +1,20 @@
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 
-import type {DiecastModel, DiecastType} from "../../types.ts";
+import type {DiecastModel} from "../../types.ts";
 import {ALL_VALUE, DEFAULT_FILTERS, getFilterOptions, type Filters} from "../../utils/collection-filters.ts";
 import {applyFiltersToSearchParams, filtersEqual, getFiltersFromSearchParams} from "../../utils/url-params.ts";
 
 import "./Sidebar.css";
 
 type SidebarProps = {
-    type: DiecastType;
     models: DiecastModel[];
     filteredCount: number;
     onClear?: () => void;
     onFiltersChange: (filters: Filters) => void;
 };
 
-export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
+export function Sidebar({models, filteredCount, onFiltersChange, onClear}: SidebarProps) {
     const options = useMemo(() => getFilterOptions(models), [models]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [filters, setFilters] = useState<Filters>(() => getFiltersFromSearchParams(searchParams));
@@ -58,7 +57,7 @@ export function Sidebar({type, models, filteredCount, onFiltersChange, onClear}:
                 <img src="/favicon.svg" alt="" className="siteBrandIcon" width={48} height={48}/>
                 <div className="siteBrandText">
                     <span className="siteBrandName">ZemaKing</span>
-                    <span className="siteBrandTagline">Diecast {type === "cars" ? "Car" : "Truck"} Collection</span>
+                    <span className="siteBrandTagline">Diecast Car Collection</span>
                 </div>
             </div>
 

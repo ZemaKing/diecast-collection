@@ -8,22 +8,16 @@ import {Sidebar} from "../../components/Sidebar/Sidebar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
-import truckModelsData from "../../data/truck-models.json";
-
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
 import {toLegacyModel} from "../../services/legacy-adapter.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
-import type {DiecastModel, DiecastType} from "../../types.ts";
+import type {DiecastModel} from "../../types.ts";
 import {DEFAULT_FILTERS, filterModels, findModelById, type Filters} from "../../utils/collection-filters.ts";
 import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
 
-type CollectionPageProps = {
-    type: DiecastType;
-};
-
-export function CollectionPage({type}: CollectionPageProps) {
+export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
@@ -32,19 +26,13 @@ export function CollectionPage({type}: CollectionPageProps) {
 
     const lastOpenedModelIdRef = useRef<string | null>(null);
 
-    // Cars are Supabase-backed (ROADMAP Phase 10); trucks still read the legacy JSON directly
-    // (retired in Phase 11). `enabled` keeps this from firing at all on /trucks.
+    // Cars are Supabase-backed (ROADMAP Phase 10) — trucks are retired (Phase 11).
     const carsQuery = useQuery<ModelSummary[], AppError>({
         queryKey: ["models", "cars"],
         queryFn: getModels,
-        enabled: type === "cars",
     });
 
-    const models = useMemo(() => {
-        return type === "cars"
-            ? (carsQuery.data ?? []).map(toLegacyModel)
-            : truckModelsData as DiecastModel[];
-    }, [type, carsQuery.data]);
+    const models = useMemo(() => (carsQuery.data ?? []).map(toLegacyModel), [carsQuery.data]);
 
     const filteredModels = useMemo(() => filterModels(models, filters), [models, filters]);
 
@@ -61,14 +49,6 @@ export function CollectionPage({type}: CollectionPageProps) {
 
         return getModelById(modelId) ?? null;
     }, [modelId, getModelById]);
-
-    // Legacy modal/deep-link state; replaced by the details page in ROADMAP Phase 19.
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setIsModalOpen(false);
-        lastOpenedModelIdRef.current = null;
-        window.scrollTo({top: 0, behavior: "auto"});
-    }, [type]);
 
     useEffect(() => {
         const onScroll = () => {
@@ -142,16 +122,15 @@ export function CollectionPage({type}: CollectionPageProps) {
 
             <div className="content">
                 <Sidebar
-                    type={type}
                     models={models}
                     onFiltersChange={setFilters}
                     filteredCount={filteredModels.length}
                 />
 
                 <main className="main">
-                    {type === "cars" && carsQuery.isPending ? (
+                    {carsQuery.isPending ? (
                         <div className="contentEmpty">Loading the collection…</div>
-                    ) : type === "cars" && carsQuery.isError ? (
+                    ) : carsQuery.isError ? (
                         <div className="contentError">
                             <p>{carsQuery.error.message}</p>
                             <button type="button" className="retryButton" onClick={() => carsQuery.refetch()}>
