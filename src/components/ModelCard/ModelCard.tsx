@@ -1,12 +1,14 @@
-import { ColorCircle } from "../ColorCircle/ColorCircle";
-import { CategoryLabel } from "../CategoryLabel/CategoryLabel";
+import {useState} from "react";
 
-import type { DiecastModel } from "../../types";
+import {ColorCircle} from "../ColorCircle/ColorCircle";
+import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
+
+import type {ModelSummary} from "../../services/types.ts";
 
 import "./ModelCard.css";
 
 type ModelCardProps = {
-    model: DiecastModel;
+    model: ModelSummary;
     onClick: () => void;
 };
 
@@ -15,38 +17,60 @@ const countryCodeToFlagEmoji = (countryCode: string) =>
         .toUpperCase()
         .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
 
-export function ModelCard({ model, onClick }: ModelCardProps) {
+// `logo_path` values (from the importer) are exact filenames on disk, e.g. "/brands/Aston
+// Martin.svg" — encodeURI so the space (or any other special character) round-trips in <img src>.
+function logoSrc(logoPath: string | null): string | null {
+    return logoPath ? encodeURI(logoPath) : null;
+}
+
+export function ModelCard({model, onClick}: ModelCardProps) {
+    const [imageBroken, setImageBroken] = useState(false);
+    const [manufacturerLogoBroken, setManufacturerLogoBroken] = useState(false);
+    const [brandLogoBroken, setBrandLogoBroken] = useState(false);
+
+    const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
+    const manufacturerLogo = logoSrc(model.manufacturer.logoPath);
+    const brandLogo = logoSrc(model.brand.logoPath);
+    const hasCarNumber = model.carNumber !== null;
+    const hasDriver = !!model.driver;
+
     return (
-        <div className="card" id={model.id}>
+        <button type="button" className="card" id={model.slug} onClick={onClick}>
             <div className="thumb">
-                <img
-                    src={model.thumbnail}
-                    alt={`${model.name} (${model.year})`}
-                    onClick={onClick}
-                    loading="lazy"
-                    decoding="async"
-                />
+                {imageUrl && !imageBroken ? (
+                    <img
+                        src={imageUrl}
+                        alt={`${model.name} (${model.year})`}
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => setImageBroken(true)}
+                    />
+                ) : (
+                    <div className="thumbFallback" aria-hidden="true">{model.name}</div>
+                )}
 
                 <div className="thumbTopRow">
-                    <div className="manufacturerBadge">
-                        <img src={`/manufacturers/${model.manufacturer}.svg`} alt={model.manufacturer} />
-                    </div>
+                    {manufacturerLogo && !manufacturerLogoBroken ? (
+                        <div className="manufacturerBadge">
+                            <img src={manufacturerLogo} alt={model.manufacturer.name} onError={() => setManufacturerLogoBroken(true)}/>
+                        </div>
+                    ) : (
+                        <div className="manufacturerBadge manufacturerBadgeText">{model.manufacturer.name}</div>
+                    )}
 
-                    <div className="scaleBadge">{model.scale ?? "1:43"}</div>
+                    <div className="scaleBadge">{model.scale}</div>
                 </div>
 
-                {(model.carNumber !== undefined || !!model.carDriver) && (
+                {(hasCarNumber || hasDriver) && (
                     <div className="carDetails">
-                        {model.carNumber !== undefined && (
-                            <div className="carNumberBadge">#{model.carNumber}</div>
-                        )}
+                        {hasCarNumber && <div className="carNumberBadge">#{model.carNumber}</div>}
 
-                        {model.carDriver && (
+                        {model.driver && (
                             <div className="carDriverBadge">
-                                <img className="carDriverLogo" src="/wheel.svg" alt="driver" />
-                                <span>{model.carDriver}</span>
-                                {model.driverCountry && (
-                                    <span className="countryFlag">{countryCodeToFlagEmoji(model.driverCountry)}</span>
+                                <img className="carDriverLogo" src="/wheel.svg" alt="" aria-hidden="true"/>
+                                <span>{model.driver.name}</span>
+                                {model.driver.countryCode && (
+                                    <span className="countryFlag">{countryCodeToFlagEmoji(model.driver.countryCode)}</span>
                                 )}
                             </div>
                         )}
@@ -55,19 +79,23 @@ export function ModelCard({ model, onClick }: ModelCardProps) {
             </div>
 
             <div className="cardTitle">
-                {model.name}
-                {model.hex && <ColorCircle hex={model.hex} />}
+                <span>{model.name}</span>
+                {model.liveryHex.length > 0 && <ColorCircle hex={model.liveryHex}/>}
             </div>
 
             <div className="cardMeta">
-                <img src={`/brands/${model.brand}.svg`} alt="Model Brand" className="brandLogo"/>
-                <span>•</span>
+                {brandLogo && !brandLogoBroken ? (
+                    <img src={brandLogo} alt={model.brand.name} className="brandLogo" onError={() => setBrandLogoBroken(true)}/>
+                ) : (
+                    <span className="cardMetaText">{model.brand.name}</span>
+                )}
+                <span aria-hidden="true">•</span>
                 <span>{model.year}</span>
-                <span>•</span>
-                <span>{model.manufacturer}</span>
-                <span>•</span>
-                <CategoryLabel category={model.category} />
+                <span aria-hidden="true">•</span>
+                <span>{model.manufacturer.name}</span>
+                <span aria-hidden="true">•</span>
+                <CategoryLabel category={model.category.name}/>
             </div>
-        </div>
+        </button>
     );
 }

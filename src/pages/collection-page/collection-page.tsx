@@ -6,6 +6,7 @@ import "./collection-page.css";
 import {Header} from "../../components/Header/Header";
 import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionToolbar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
+import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
@@ -19,6 +20,9 @@ import type {ModelSummary} from "../../services/types.ts";
 import type {DiecastModel} from "../../types.ts";
 import {findModelById} from "../../utils/collection-filters.ts";
 import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
+
+// A fixed key set (not an index) avoids remounting skeleton nodes on every render.
+const SKELETON_KEYS = Array.from({length: 8}, (_, i) => `skeleton-${i}`);
 
 export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -46,8 +50,9 @@ export function CollectionPage() {
     const facets = useMemo(() => getFacetCounts(summaries, filters), [summaries, filters]);
     const stats = useMemo(() => getCollectionStats(summaries), [summaries]);
 
+    // DetailsModal still needs the legacy shape (Phase 19 replaces it); ModelCard now renders
+    // straight off ModelSummary (Phase 16) — no toLegacyModel() in the render path below.
     const models = useMemo(() => summaries.map(toLegacyModel), [summaries]);
-    const filteredModels = useMemo(() => visibleSummaries.map(toLegacyModel), [visibleSummaries]);
 
     // ?model= looks up the full (unfiltered) list — a shared/deep link should open its model
     // regardless of the current filters, matching the pre-Phase-13 behavior.
@@ -77,8 +82,8 @@ export function CollectionPage() {
         };
     }, []);
 
-    const openModal = useCallback((model: DiecastModel) => {
-        setSearchParams(withModelParam(searchParams, model.id), {replace: false});
+    const openModal = useCallback((slug: string) => {
+        setSearchParams(withModelParam(searchParams, slug), {replace: false});
     }, [searchParams, setSearchParams]);
 
     const closeModal = useCallback(() => {
@@ -129,7 +134,7 @@ export function CollectionPage() {
         return () => {
             window.clearTimeout(timeoutId);
         };
-    }, [modelId, modelFromUrl, filteredModels]);
+    }, [modelId, modelFromUrl, visibleSummaries]);
 
     return (
         <div className="layout">
@@ -140,7 +145,7 @@ export function CollectionPage() {
                     <CollectionToolbar
                         filters={filters}
                         facets={facets}
-                        resultsCount={filteredModels.length}
+                        resultsCount={visibleSummaries.length}
                         onToggle={toggleFilter}
                         onClear={clearFilters}
                         sort={sort}
@@ -149,7 +154,9 @@ export function CollectionPage() {
                     />
 
                     {carsQuery.isPending ? (
-                        <div className="contentEmpty">Loading the collection…</div>
+                        <div className="modelGrid">
+                            {SKELETON_KEYS.map((key) => <ModelCardSkeleton key={key}/>)}
+                        </div>
                     ) : carsQuery.isError ? (
                         <div className="contentError">
                             <p>{carsQuery.error.message}</p>
@@ -157,17 +164,17 @@ export function CollectionPage() {
                                 Try again
                             </button>
                         </div>
-                    ) : filteredModels.length === 0 ? (
+                    ) : visibleSummaries.length === 0 ? (
                         <div className="contentEmpty">
                             {query.trim() ? `No models match "${query.trim()}".` : "No models match the selected filters."}
                         </div>
                     ) : (
                         <div className="modelGrid">
-                            {filteredModels.map((m) => (
+                            {visibleSummaries.map((m) => (
                                 <ModelCard
-                                    key={m.id}
+                                    key={m.slug}
                                     model={m}
-                                    onClick={() => openModal(m)}
+                                    onClick={() => openModal(m.slug)}
                                 />
                             ))}
                         </div>

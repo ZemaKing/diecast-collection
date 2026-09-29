@@ -54,7 +54,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 13 | Collection Toolbar & URL State | ✅ Done | — |
 | 14 | Advanced Filter Panel | ✅ Done | — |
 | 15 | Search & Sorting | ✅ Done | — |
-| 16 | Model Card Redesign | ⬜ | — |
+| 16 | Model Card Redesign | ✅ Done | — |
 | 17 | Collection Hero & Grid | ⬜ | Hero background image |
 | 18 | View Modes | ⬜ | Decide Showcase mode |
 | 19 | Model Details Page | ⬜ | Decide public "My Collection" fields |
@@ -440,24 +440,28 @@ Search and sort work, are URL-persisted, and are covered by tests.
 
 ---
 
-## Phase 16 — Model Card Redesign
+## Phase 16 — Model Card Redesign ✅
 
 ### Goal
 Photography-first card per the mockup.
 
 ### Tasks
-- [ ] Card layout: image primary; manufacturer logo (top-left), scale badge (top-right); car number + driver pill (bottom) **only when present**; title + color dot(s); meta row brand logo · year · manufacturer · category (token color)
-- [ ] Racing info handles any combination (number only, driver only, both, neither — audit D7)
-- [ ] States: default, hover, focus-visible, loading skeleton; whole card is a real link/button (fixes the non-focusable card)
-- [ ] `ColorCircle` restyled and reused; drop nested borders
-- [ ] Logo URLs via `logo_path` with `encodeURI`; image fallback hook (final visuals in Phase 29)
+- [x] Card layout: image primary; manufacturer logo (top-left), scale badge (top-right); car number + driver pill (bottom) **only when present**; title + color dot(s); meta row brand logo · year · manufacturer · category (token color) *(the existing layout already matched this closely — the real work was rebuilding it against `ModelSummary` directly instead of the legacy `DiecastModel`/`toLegacyModel()` bridge, restyling with current design tokens instead of undefined/legacy CSS vars, and the fixes below)*
+- [x] Racing info handles any combination (number only, driver only, both, neither — audit D7) *(verified live with real data: `mazda-rx-7-fd-1993-altaya-orange` (Premium, no crew) shows neither badge; `mazda-rx-7-fd-1993-deagostini-red` (Racing, `carNumber` only) shows just "#3" — the exact D7 example)*
+- [x] States: default, hover, focus-visible, loading skeleton; whole card is a real link/button (fixes the non-focusable card) *(card is now one `<button type="button">` wrapping the whole thing, not just an `onClick` on the thumbnail `<img>`; `ModelCardSkeleton.tsx` — same box model as a real card, shown instead of the old plain-text "Loading the collection…" while `getModels()` is pending)*
+- [x] `ColorCircle` restyled and reused; drop nested borders
+- [x] Logo URLs via `logo_path` with `encodeURI`; image fallback hook (final visuals in Phase 29) *(`ModelSummary.brand.logoPath`/`manufacturer.logoPath` — already resolved by the importer, e.g. `/brands/Aston Martin.svg` — through `encodeURI()`; `onError` on the main image, manufacturer badge and brand logo each fall back independently: broken main image → the model name as text; broken manufacturer/brand logo → its name as text)*
 
 ### Verification
-- [ ] Visual check vs mockup at 1440; a road car shows no racing UI; a number-only model (Mazda RX-7 FD) renders sensibly
-- [ ] Tab/Enter opens the model
+- [x] Visual check vs mockup at 1440; a road car shows no racing UI; a number-only model (Mazda RX-7 FD) renders sensibly *(checked live in both themes — matches the mockup's card treatment closely: image-first, manufacturer/scale badges, title + color dot, brand/year/manufacturer/category meta row)*
+- [x] Tab/Enter opens the model *(verified live: focused a card via real Tab key presses, pressed Enter, `?model=<slug>` was set and the modal opened with the right title)*
 
 ### Definition of Done
 New card used everywhere the old one was; old `ModelCard` styles removed.
+
+**Two real bugs found and fixed during the rebuild (verification, not assumption, is why these were caught):**
+1. The driver's steering-wheel icon rendered at full-thumbnail size on every racing card. Cause: `.thumb img { width:100%; height:100% }` (specificity 0,1,1) beats a bare `.carDriverLogo` (0,1,0) regardless of source order — the old code masked this with `!important`; the rebuild dropped that without fixing the underlying specificity. Fixed by scoping to `.carDriverBadge .carDriverLogo` (0,2,0).
+2. The keyboard focus ring was invisible on cards. Cause: `.card`'s own resting `box-shadow` and the global `:focus-visible { box-shadow: var(--focus-ring) }` rule have equal specificity (0,1,0 each), so whichever stylesheet happened to load last silently won — not the focus state. Fixed with an explicit `.card:focus-visible { box-shadow: var(--focus-ring) }` in `ModelCard.css`.
 
 ---
 

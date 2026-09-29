@@ -1,7 +1,8 @@
 .circle {
-    border: 1px solid var(--panel);
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-round);
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    flex: none;
 }
