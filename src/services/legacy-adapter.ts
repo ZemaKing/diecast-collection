@@ -1,7 +1,8 @@
 // Bridges the Supabase-backed ModelSummary domain type to the pre-redesign DiecastModel shape,
-// so Sidebar/ModelCard/DetailsModal/collection-filters/url-params keep working unmodified
-// (ROADMAP Phase 10: "map domain model -> existing card/modal props, keep old UI intact"). Goes
-// away once those components are rebuilt against ModelSummary directly (Phase 16+).
+// so ModelCard/DetailsModal keep working unmodified (ROADMAP Phase 10: "map domain model ->
+// existing card/modal props, keep old UI intact"). Filtering itself runs on ModelSummary directly
+// (collection-query.ts, Phase 13) — this only maps the already-filtered result for rendering.
+// Goes away once ModelCard/DetailsModal are rebuilt against ModelSummary directly (Phase 16+).
 import type {DiecastModel} from "../types.ts";
 
 import type {ModelSummary} from "./types.ts";

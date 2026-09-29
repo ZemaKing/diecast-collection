@@ -4,24 +4,26 @@ import {useQuery} from "@tanstack/react-query";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
-import {Sidebar} from "../../components/Sidebar/Sidebar";
+import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionToolbar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
+import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
+import {filterModels, getFacetCounts} from "../../services/collection-query.ts";
 import {toLegacyModel} from "../../services/legacy-adapter.ts";
 import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
 import type {DiecastModel} from "../../types.ts";
-import {DEFAULT_FILTERS, filterModels, findModelById, type Filters} from "../../utils/collection-filters.ts";
+import {findModelById} from "../../utils/collection-filters.ts";
 import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
 
 export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const {filters, toggleFilter, clearFilters} = useCollectionQuery();
 
-    const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -32,12 +34,19 @@ export function CollectionPage() {
         queryKey: ["models", "cars"],
         queryFn: getModels,
     });
+    const summaries = useMemo(() => carsQuery.data ?? [], [carsQuery.data]);
 
-    const models = useMemo(() => (carsQuery.data ?? []).map(toLegacyModel), [carsQuery.data]);
-    const stats = useMemo(() => getCollectionStats(carsQuery.data ?? []), [carsQuery.data]);
+    // Filtering runs on the Supabase domain shape (ModelSummary); toLegacyModel() only maps the
+    // result for the still-legacy ModelCard/DetailsModal (ROADMAP Phase 16/19 replace those).
+    const filteredSummaries = useMemo(() => filterModels(summaries, filters), [summaries, filters]);
+    const facets = useMemo(() => getFacetCounts(summaries, filters), [summaries, filters]);
+    const stats = useMemo(() => getCollectionStats(summaries), [summaries]);
 
-    const filteredModels = useMemo(() => filterModels(models, filters), [models, filters]);
+    const models = useMemo(() => summaries.map(toLegacyModel), [summaries]);
+    const filteredModels = useMemo(() => filteredSummaries.map(toLegacyModel), [filteredSummaries]);
 
+    // ?model= looks up the full (unfiltered) list — a shared/deep link should open its model
+    // regardless of the current filters, matching the pre-Phase-13 behavior.
     const getModelById = useCallback((id: string): DiecastModel | undefined => {
         return findModelById(models, id);
     }, [models]);
@@ -123,13 +132,15 @@ export function CollectionPage() {
             <Header count={stats.totalModels}/>
 
             <div className="content">
-                <Sidebar
-                    models={models}
-                    onFiltersChange={setFilters}
-                    filteredCount={filteredModels.length}
-                />
-
                 <main className="main">
+                    <CollectionToolbar
+                        filters={filters}
+                        facets={facets}
+                        resultsCount={filteredModels.length}
+                        onToggle={toggleFilter}
+                        onClear={clearFilters}
+                    />
+
                     {carsQuery.isPending ? (
                         <div className="contentEmpty">Loading the collection…</div>
                     ) : carsQuery.isError ? (

@@ -50,8 +50,8 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 9 | Data Access Layer | ✅ Done | — |
 | 10 | Cars Read from Supabase | ✅ Done | — |
 | 11 | Retire Trucks & Runtime JSON | ✅ Done | — |
-| 12 | Application Shell & Routing | 🟡 Placeholders used | Review logo reuse + About placeholder |
-| 13 | Collection Toolbar & URL State | ⬜ | — |
+| 12 | Application Shell & Routing | ✅ Done | — |
+| 13 | Collection Toolbar & URL State | ✅ Done | — |
 | 14 | Advanced Filter Panel | ⬜ | Tablet/Mobile filter mockups |
 | 15 | Search & Sorting | ⬜ | — |
 | 16 | Model Card Redesign | ⬜ | — |
@@ -346,7 +346,7 @@ Production reads only Supabase; archives preserved; trucks gone from UI.
 
 ---
 
-## Phase 12 — Application Shell & Routing 🟡
+## Phase 12 — Application Shell & Routing ✅
 
 ### Goal
 The redesigned header, navigation, page container and route table.
@@ -370,28 +370,30 @@ New shell live on all routes with real data; old content areas temporarily insid
 - **Logo**: the 687 KB `cars-logo.png` was a landing-page hero image, not a header logo, and it's now unreferenced (the landing page it was on is gone — Phase 11) — deleting it isn't this phase's call (nothing in `public/` before Phase 36). For the actual header logo, reused the existing `public/favicon.svg` (26 KB, already the app's icon and already used as the brand mark in `Sidebar`) rather than commissioning a new asset — it's already SVG, already on-brand, and already established in the UI. If a dedicated logo file exists, swap `Header.tsx`'s `<img src="/favicon.svg">`.
 - **About page**: content is a placeholder built only from copy already approved in the mockup ("More than models. A collection of automotive history in 1:43 scale.") — no biography or personal detail was invented. Flagged in-file with a comment. Replace with real copy whenever ready.
 
-**Manual:** review the About page placeholder copy and the favicon.svg-as-logo decision; supply a dedicated logo file and/or real About content if the placeholders aren't good enough to ship.
+**Manual:** review the About page placeholder copy and the favicon.svg-as-logo decision; supply a dedicated logo file and/or real About content if the placeholders aren't good enough to ship. *(Owner confirmed 2026-09-29: placeholders are fine.)*
 
 ---
 
-## Phase 13 — Collection Toolbar & URL State
+## Phase 13 — Collection Toolbar & URL State ✅
 
 ### Goal
 Replace the sidebar with the toolbar; make the URL the single source of truth for filters.
 
 ### Tasks
-- [ ] `useCollectionQuery()` hook: parse/serialize `brand`, `manufacturer`, `category`, `color`, (later `q`, `sort`) from `useSearchParams` — **no mirrored local state, no sync effects**
-- [ ] Multi-value filters via repeated params; **legacy single-value/display-name URLs (`brand=Citroën`) still parse**; canonical form uses slugs
-- [ ] Toolbar: Filters button (+active count), Brand / Manufacturer / Category / Color triggers, results count
-- [ ] Active filter **chips** (`Ixo ×`) and **Clear all**; placeholders for view toggle and Sort (wired in 15/18)
-- [ ] Delete `Sidebar`
+- [x] `useCollectionQuery()` hook: parse/serialize `brand`, `manufacturer`, `category`, `color`, (later `q`, `sort`) from `useSearchParams` — **no mirrored local state, no sync effects** *(`src/hooks/useCollectionQuery.ts` — filters are derived with `useMemo(() => getCollectionFiltersFromSearchParams(searchParams), [searchParams])` every render, updates go straight to `setSearchParams`; zero `useState`/`useEffect` in the hook, eliminating the exact bug class the old `Sidebar` had — see `src/utils/url-params.ts`)*
+- [x] Multi-value filters via repeated params; **legacy single-value/display-name URLs (`brand=Citroën`) still parse**; canonical form uses slugs *(both forms go through the same `slugify()` normalization on read — `slugify("Citroën") === slugify("citroen") === "citroen"` — so there's no separate legacy-parsing branch to keep in sync. Writes always emit sorted, deduped canonical slugs)*
+- [x] Toolbar: Filters button (+active count), Brand / Manufacturer / Category / Color triggers, results count *(`src/components/CollectionToolbar/`. Each trigger is a `<details>` popover listing every option with its facet count from `getFacetCounts()`; desktop/tablet show all four inline, mobile collapses them behind the "Filters (n)" toggle)*
+- [x] Active filter **chips** (`Ixo ×`) and **Clear all**; placeholders for view toggle and Sort (wired in 15/18) *(chip labels resolve slug → display name via the facets themselves, since `getFacetCounts()` always includes a currently-selected value's own row (counted against the other filters), so no separate name lookup was needed)*
+- [x] Delete `Sidebar`
 
 ### Verification
-- [ ] Unit tests: parse/serialize round-trip, legacy URLs, unknown values ignored safely
-- [ ] Back/forward and shared URLs reproduce the same filtered view; changing a filter never clobbers `q`/`sort`/other params
+- [x] Unit tests: parse/serialize round-trip, legacy URLs, unknown values ignored safely *(`src/utils/url-params.test.ts`, 18 tests — two real bugs caught and fixed here: (1) dedup ran before slugifying, so `["MULTI","multi"]` didn't collapse to one value; (2) the first implementation rebuilt the URL via delete-then-append, which moves filter keys to the end and broke the "already up to date" no-op check — fixed by splicing each key's new values in at its first original position, like `URLSearchParams.set()` does for a single value)*
+- [x] Back/forward and shared URLs reproduce the same filtered view; changing a filter never clobbers `q`/`sort`/other params *(verified live: toggling Ford then browser-Back restores the unfiltered 227, Forward restores the 22-model Ford view; `?model=` and other params pass through `applyCollectionFiltersToSearchParams` untouched by construction)*
 
 ### Definition of Done
 Shareable filtered URLs; sidebar gone; no effect-based state sync remains.
+
+**Note:** filtering now runs on the Supabase domain shape (`ModelSummary`, via `services/collection-query.ts`'s `filterModels`/`getFacetCounts`) instead of the legacy JSON-era `utils/collection-filters.ts`; `toLegacyModel()` only maps the already-filtered result for the still-legacy `ModelCard`/`DetailsModal`. `collection-filters.ts` itself is untouched and still used for the `?model=` lookup (`findModelById`) and its own characterization tests — cleanup of genuinely dead legacy code is Phase 36's job, not this one's.
 
 ---
 
