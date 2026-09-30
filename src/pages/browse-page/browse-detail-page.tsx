@@ -26,6 +26,7 @@ import {describeResults, pluralizeModels} from "../../utils/collection-summary.t
 import {readFocusModel} from "../../utils/model-link.ts";
 import {slugify} from "../../utils/slug.ts";
 
+import "../../components/PageIntro/PageIntro.css";
 import "../collection-page/collection-page.css";
 import "./browse-page.css";
 
@@ -113,8 +114,8 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
                             <section className="browseProfile" aria-labelledby="browse-profile-title">
                                 <BrowseLogo entry={entry} size="profile"/>
                                 <div className="browseProfileText">
-                                    <p className="browseEyebrow">{labels.singular}</p>
-                                    <h1 id="browse-profile-title" className="browseTitle">{entry.name}</h1>
+                                    <p className="pageEyebrow">{labels.singular}</p>
+                                    <h1 id="browse-profile-title" className="pageTitle">{entry.name}</h1>
                                     <p className="browseFacts">
                                         <span className="browseFactsCount">{entry.count}</span> {pluralizeModels(entry.count)}
                                         <span aria-hidden="true"> · </span>

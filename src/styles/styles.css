@@ -174,6 +174,11 @@
     --hero-glow: rgba(245, 195, 59, 0.1);
     --hero-sheen: rgba(226, 234, 245, 0.04);
     --hero-art-opacity: 0.4;
+
+    /* statistics charts (Phase 23) — one hue for every magnitude bar (≥ 3:1 on every surface, a
+       non-text mark), the meter's unfilled track a lighter step of the same gold */
+    --chart-bar: #f5c33b;
+    --chart-track: rgba(245, 195, 59, 0.16);
 }
 
 /* ---- 3. Semantic colors — light (derived; no mockup, flagged) ---------- */
@@ -226,6 +231,10 @@
     --hero-glow: rgba(245, 195, 59, 0.18);
     --hero-sheen: rgba(14, 23, 38, 0.03);
     --hero-art-opacity: 0.22;
+
+    /* the gold fill is 1.6:1 on white — a darker step of it for chart marks (3.9:1) */
+    --chart-bar: #a87a0a;
+    --chart-track: rgba(168, 122, 10, 0.16);
 }
 
 @media (prefers-reduced-motion: reduce) {

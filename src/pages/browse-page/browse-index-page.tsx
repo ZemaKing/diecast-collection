@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 
 import {BrowseTile, BrowseTileSkeleton} from "../../components/Browse/Browse.tsx";
 import {Header} from "../../components/Header/Header";
+import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import type {AppError} from "../../lib/errors.ts";
@@ -45,17 +46,13 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
 
             <div className="content">
                 <main className="main">
-                    <header className="browseIntro">
-                        <div>
-                            <p className="browseEyebrow">Browse</p>
-                            <h1 className="browseTitle">{labels.plural}</h1>
-                            <p className="browseSubtitle">
-                                {modelsQuery.isSuccess
-                                    ? `${entries.length} ${(entries.length === 1 ? labels.singular : labels.plural).toLowerCase()} · ${models.length} ${pluralizeModels(models.length)}`
-                                    : " " /* keeps the line's height while loading */}
-                            </p>
-                        </div>
-
+                    <PageIntro
+                        eyebrow="Browse"
+                        title={labels.plural}
+                        subtitle={modelsQuery.isSuccess
+                            ? `${entries.length} ${(entries.length === 1 ? labels.singular : labels.plural).toLowerCase()} · ${models.length} ${pluralizeModels(models.length)}`
+                            : null}
+                    >
                         <div className="browseOrder" role="group" aria-label="Order">
                             {ORDER_OPTIONS.map((option) => (
                                 <button
@@ -69,7 +66,7 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
                                 </button>
                             ))}
                         </div>
-                    </header>
+                    </PageIntro>
 
                     {modelsQuery.isPending ? (
                         <div className="browseGrid">

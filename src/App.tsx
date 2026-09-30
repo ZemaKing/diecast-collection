@@ -6,6 +6,7 @@ import {BrowseIndexPage} from "./pages/browse-page/browse-index-page";
 import {CollectionPage} from "./pages/collection-page/collection-page";
 import {ModelDetailsPage} from "./pages/model-details-page/model-details-page";
 import {NotFoundPage} from "./pages/not-found-page/not-found-page";
+import {StatisticsPage} from "./pages/statistics-page/statistics-page";
 
 // Dev-only token reference; the DEV guard lets Vite drop it from production builds.
 const TokensPage = import.meta.env.DEV ? lazy(() => import("./pages/dev-tokens/tokens-page")) : null;
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/manufacturers/:slug" element={<BrowseDetailRoute kind="manufacturers"/>}/>
             <Route path="/brands" element={<BrowseIndexPage key="brands" kind="brands"/>}/>
             <Route path="/brands/:slug" element={<BrowseDetailRoute kind="brands"/>}/>
+            <Route path="/statistics" element={<StatisticsPage/>}/>
             <Route path="/about" element={<AboutPage/>}/>
             <Route path="/cars" element={<RedirectToCollection/>}/>
             <Route path="/trucks" element={<RedirectToCollection/>}/>

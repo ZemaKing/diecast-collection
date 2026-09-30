@@ -44,6 +44,10 @@ describe.each([["dark", dark], ["light", light]] as const)("%s theme", (_name, t
         expect(contrastRatio(theme["--color-on-accent"], theme["--color-accent"])).toBeGreaterThanOrEqual(4.5);
     });
 
+    it.each(SURFACES)("chart bars are visible on %s (≥ 3:1, non-text)", (bg) => {
+        expect(contrastRatio(theme["--chart-bar"], theme[bg])).toBeGreaterThanOrEqual(3);
+    });
+
     it("focus ring is visible against the page (≥ 3:1, non-text)", () => {
         const ring = theme["--focus-ring-color"] ?? theme["--color-accent"];
         expect(contrastRatio(ring, theme["--color-bg"])).toBeGreaterThanOrEqual(3);

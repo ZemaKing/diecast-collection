@@ -32,6 +32,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 | Layers | `--z-base`, `--z-sticky`, `--z-dropdown`, `--z-modal`, `--z-lightbox`, `--z-toast` | |
 | Layout | `--container-max`, `--container-gutter`, `--header-height`, `--tap-target` (44px), `--card-min-width` (220px) | `--card-min-width` is the collection grid's `auto-fill` column floor (Phase 17) |
 | Hero | `--hero-glow`, `--hero-sheen`, `--hero-art-opacity` | Collection hero backdrop, per theme (Phase 17) |
+| Charts | `--chart-bar`, `--chart-track` | Statistics bars/columns/meter fill (one hue, ≥ 3:1 on every surface — tested) and the meter's unfilled track (Phase 23) |
 
 ## Breakpoints
 
@@ -62,6 +63,9 @@ Sampled from the mockups: `#F5C33B` for text ("227", nav underline, Clear all) a
 | Supercar | `#1D8BF5` | `#3B9BFF` | Mockup is 4.54:1 on the well, too tight; nudged |
 | Retro | `#44C85E` | `#44C85E` | — |
 | Premium | *(not in mockup)* | `#A78BFA` | Violet kept from the old palette, lightened for dark surfaces |
+
+### Charts (Phase 23)
+Every statistics chart compares magnitudes, so all bars share **one** hue, `--chart-bar`: the gold in dark (11:1 on the card), and `#A87A0A` in light, since the gold fill is only 1.6:1 on white and a chart mark needs ≥ 3:1 (3.85:1 on white, 3.28:1 on the sunken well). Identity comes from text labels (plus a real swatch/logo), never from bar color. The category colors are **not** a chart palette: run through the dataviz validator they fail colorblind separation (Premium ↔ Supercar ΔE 1.2 for protanopia) and the normal-vision floor (Racing ↔ Rally ΔE 11) — fine for the labelled pills and text they were made for, not for telling bars apart.
 
 ### Light theme
 No light mockup exists. The light values are **derived** (same hues, darker text variants) so the existing toggle keeps working. This is flagged for owner review; see ROADMAP open decision #3.

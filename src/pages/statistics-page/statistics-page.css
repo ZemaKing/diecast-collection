@@ -1,0 +1,223 @@
+/* Statistics page (ROADMAP Phase 23). No mockup — built from the design system (card surfaces,
+   gold accent, the hero's type scale). Chart pieces live in components/Charts/. */
+
+.statsKpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.statsHighlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.statsHighlight {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 0;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.statsHighlightLabel {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+/* ---- Top brand / manufacturer ---- */
+
+.statsTopList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.statsTop {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    min-width: 0;
+    padding-right: var(--space-xl);
+    border-radius: var(--radius-md);
+    color: inherit;
+    text-decoration: none;
+}
+
+.statsTop:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.statsTopText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    min-width: 0;
+}
+
+.statsTopName {
+    color: var(--color-text);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-extrabold);
+    overflow-wrap: anywhere;
+}
+
+.statsTop:hover .statsTopName {
+    text-decoration: underline;
+}
+
+.statsTopMeta {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+}
+
+.statsTopCount {
+    color: var(--color-accent-text);
+    font-weight: var(--weight-extrabold);
+}
+
+.statsTopArrow {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    translate: 0 -50%;
+    color: var(--color-text-subtle);
+}
+
+.statsTop:hover .statsTopArrow,
+.statsTop:focus-visible .statsTopArrow {
+    color: var(--color-accent-text);
+}
+
+/* ---- Racing vs road ---- */
+
+.statsRacingHeadline {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+}
+
+.statsRacingShare {
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+}
+
+.statsLegend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-lg);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+}
+
+.statsLegend li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.statsLegend strong {
+    color: var(--color-text);
+}
+
+.statsLegendKey {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-xs);
+}
+
+.statsLegendKeyFill {
+    background: var(--chart-bar);
+}
+
+.statsLegendKeyTrack {
+    background: var(--chart-track);
+    box-shadow: inset 0 0 0 var(--border-width) var(--color-border-strong);
+}
+
+/* ---- Charts ---- */
+
+.statsCharts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+}
+
+/* Tablet: two columns, the decade chart across both. Desktop: three — decades (two wide) beside
+   the short category list, then brands / manufacturers / colors, which are about as tall. */
+@media (min-width: 640px) {
+    .statsCharts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .statsChartWide {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (min-width: 1024px) {
+    .statsCharts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .statsChartWide {
+        grid-column: span 2;
+    }
+}
+
+.statsSeeAll {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-height: var(--tap-target);
+    color: var(--color-accent-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.statsSeeAll:hover {
+    text-decoration: underline;
+}
+
+/* ---- Loading ---- */
+
+.statsSkeleton {
+    background: linear-gradient(90deg, var(--color-surface-sunken) 25%, var(--color-surface-hover) 50%, var(--color-surface-sunken) 75%);
+    background-size: 200% 100%;
+    /* keyframes shared with the card skeleton (ModelCard.css) — Phase 29 centralizes these */
+    animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+
+.statsSkeletonTile {
+    height: 92px;
+}
+
+.statsSkeletonHighlight {
+    height: 140px;
+}
+
+.statsSkeletonChart {
+    height: 280px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .statsSkeleton {
+        animation: none;
+    }
+}

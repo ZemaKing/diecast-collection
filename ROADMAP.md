@@ -61,7 +61,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 20 | Gallery, Lightbox & Quick View | ✅ Done | — |
 | 21 | Supabase Storage Migration | 🟡 Tooling done, awaiting owner run | Apply migration `20260930120000`; run upload → flip → verify (`scripts/migrate-images/README.md`) |
 | 22 | Manufacturer & Brand Browsing | ✅ Done | Review the design (no mockup existed — built from the established system) |
-| 23 | Collection Statistics | ⬜ | Mockup (none exists) |
+| 23 | Collection Statistics | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 24 | Authentication & Admin Protection | ⬜ | Login mockup |
 | 25 | Model Form — Core & CRUD | ⬜ | — |
 | 26 | Model Form — Rich Sections | ⬜ | Decide rich-text vs plain |
@@ -613,22 +613,28 @@ Both browse experiences live; nav entries enabled. *(No mockup existed — open 
 
 ---
 
-## Phase 23 — Collection Statistics
+## Phase 23 — Collection Statistics ✅
 
 ### Goal
 Useful, data-driven statistics in the premium style.
 
 ### Tasks
-- [ ] Computed from the cached collection / a DB view — **nothing hard-coded**
-- [ ] Totals (models, manufacturers, brands, categories); top brand / manufacturer; models by decade (1960s–2020s); racing vs road (via `is_racing`); color distribution with real swatches
-- [ ] Skip meaningless charts; choose chart form per the dataviz guidance (simple bars/tiles)
+- [x] Computed from the cached collection / a DB view — **nothing hard-coded** *(`getCollectionBreakdown()` in `src/services/stats.ts`, pure over the cached `["models", "cars"]` summary list — the same list the collection, filters and browse pages use, so opening Statistics from anywhere else in the app costs no request. It reuses `getFacetCounts()` (the filter panel's counts) and `getBrowseEntries()` (the browse pages'), so the three can't disagree. No DB view was needed)*
+- [x] Totals (models, manufacturers, brands, categories); top brand / manufacturer; models by decade (1960s–2020s); racing vs road (via `is_racing`); color distribution with real swatches *(`/statistics`, `src/pages/statistics-page/`: four **stat tiles** (Models → collection, Brands → `/brands`, Manufacturers → `/manufacturers`, Categories); **Top brand** / **Top manufacturer** cards (logo, name, "22 models · 10% of the collection", link to the browse page; a tie lists everyone at the top); **Racing vs road** as a meter ("80% are race or rally cars", 182 / 45); **Models by decade** as columns — every decade from the oldest model's to the newest's, empty ones included, so the time axis has no silent gaps (1960s–2020s today); **By category** bars (each row → `/?category=`); **Top brands** / **Top manufacturers** (10 each, logos, → browse pages, "All 45 brands ›"); **By color** with each color's real `colors.hex` swatch (Multi: the filter's generic swatch), each row → `/?color=` — a two-tone livery counts once per color, exactly like the Color filter, and the card says so)*
+- [x] Skip meaningless charts; choose chart form per the dataviz guidance (simple bars/tiles) *(totals are stat tiles, one share of a whole is a meter (not a two-slice pie), everything else compares magnitudes → bars in **one hue** (`--chart-bar`), values written at the bar tips, identity from the text label plus swatch/logo, never color alone. No pies, no "by scale" chart (all 227 are 1:43), no year-by-year chart (decades say it with 7 bars instead of 50). The category colors were checked with the dataviz palette validator and **fail** as a chart palette (Premium ↔ Supercar ΔE 1.2 under protanopia; Racing ↔ Rally ΔE 11 even with full color vision), so they're deliberately not used for the bars — see docs/DESIGN-TOKENS.md § Charts)*
 
 ### Verification
-- [ ] Every number cross-checked with a SQL query
-- [ ] Updates automatically after a model is added
+- [x] Every number cross-checked with a SQL query *(new `npm run verify:stats` (`scripts/verify-stats.ts`): runs the page's own `getCollectionBreakdown()` on the live view, then recounts every number independently with a `count(*)` on the base tables (`models`, `model_colors`) — per brand, manufacturer, category, color, decade (plus before/after the range, which must be 0) and racing flag — and fails on any difference. **97/97 match** (2026-09-30). The same queries as plain SQL for the dashboard editor: `supabase/checks/statistics.sql`)*
+- [x] Updates automatically after a model is added *(nothing is stored or hard-coded — every number is recomputed from the model list on load; a unit test adds a model (new brand, 1955, road car) and sees a new 1950s column, 46 road cars and 46 brands. After `npm run import:cars -- --apply`, a reload shows it)*
 
 ### Definition of Done
-Statistics page accurate, responsive, accessible (labels/tables for chart data). **Needs a mockup.**
+Statistics page accurate, responsive, accessible (labels/tables for chart data). *(Every bar list is a real `<table>` (row header = name, cell = count) labelled by its card title; the decade columns are a list with one "1990s: 31 models" item per column; the meter is `role="meter"` with "182 of 227"; all values are visible text, so no number lives only in a tooltip. Layout: 3 columns on desktop (decades two wide beside categories, then brands / manufacturers / colors), 2 on tablet, 1 on phones — no horizontal scroll at 360 / 768 / 1280, dark + light, no console errors. New `--chart-bar` / `--chart-track` tokens; the contrast test now also requires the bar color ≥ 3:1 on every surface in both themes. 29 new tests — 600 total. Nav: "Statistics" between Brands and About, as in the mockup's order)*
+
+**Notes / deviations:**
+- No mockup existed (open decision 2), so, like Phase 22, the page is built from the established system. Review welcome.
+- The decade chart counts by the **real car's** year (the only year stored), not by when the model was made or bought — the subtitle says so.
+- Small cleanups: the page heading from Phase 22 is now a shared `PageIntro` component (browse index + Statistics); the "Multi" swatch moved to `src/utils/color.ts` (`colorSwatchHex()`), shared by the Color filter and the color chart.
+- Phase 22's category-mix bar (browse tiles/profiles) uses the category colors that fail the validator. It's backed by the labelled pills and visually-hidden text there, so nothing is color-only, but if you'd like it to follow the same rule, it can become a single-hue bar in the Phase 30 fidelity pass.
 
 ---
 
@@ -905,7 +911,7 @@ Owner go/no-go recorded; site stable on Supabase.
 | # | Question | Needed by |
 | --- | --- | --- |
 | 1 | **Tablet & Mobile mockups**: the supplied images only include small insets of the collection page. Please provide full-page Tablet and Mobile references (collection, filter sheet, details, add/edit), ideally as separate images per device | Ph 14 (filter sheet), 31, 32 |
-| 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? *(Phase 22 designed Manufacturers/Brands from the system — review them)* | Ph 22, 23, 24 |
+| 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? *(Phases 22–23 designed Manufacturers/Brands/Statistics from the system — review them)* | Ph 22, 23, 24 |
 | 3 | **Light theme**: keep (derived from tokens, no mockup) or dark-only? *Phase 3 kept it, with derived values that pass contrast. Confirm, or say dark-only* | Ph 3 |
 | 4 | ~~Confirm trucks are excluded~~ → excluded; schema has no truck data (Phase 4) | Ph 4 / 11 |
 | 5 | ~~Public "My Collection" fields~~ → condition, added, location **public**; notes private; **no collected/status field** (all owned) (Phase 4) | Ph 4 |

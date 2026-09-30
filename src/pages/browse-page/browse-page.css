@@ -1,43 +1,7 @@
 /* Manufacturer & brand pages (ROADMAP Phase 22) — index + detail. Uses the collection page's
    `.layout` / `.content` / `.main` container, grid and results header (collection-page.css). */
 
-/* ---- Index intro ---- */
-
-.browseIntro {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-lg);
-    padding: var(--space-xl) 0 var(--space-lg);
-    margin-bottom: var(--space-lg);
-    border-bottom: var(--border-width) solid var(--color-border);
-}
-
-.browseEyebrow {
-    margin: 0 0 var(--space-xs);
-    color: var(--color-accent-text);
-    font-size: var(--text-xs);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-}
-
-.browseTitle {
-    margin: 0 0 var(--space-xs);
-    color: var(--color-text);
-    font-size: var(--text-3xl);
-    font-weight: var(--weight-extrabold);
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-tight);
-    overflow-wrap: anywhere;
-}
-
-.browseSubtitle {
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: var(--text-md);
-}
+/* ---- Index order (the intro heading is the shared PageIntro, Phase 23) ---- */
 
 /* Most models / A–Z — the view-mode buttons' segmented look. */
 .browseOrder {
@@ -102,7 +66,7 @@
     min-width: 0;
 }
 
-.browseProfileText .browseTitle {
+.browseProfileText .pageTitle {
     margin: 0;
 }
 
@@ -157,7 +121,7 @@
         padding: var(--space-sm);
     }
 
-    .browseProfile .browseTitle {
+    .browseProfile .pageTitle {
         font-size: var(--text-2xl);
     }
 }

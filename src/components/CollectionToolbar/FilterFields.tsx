@@ -2,12 +2,8 @@ import {useState} from "react";
 
 import {ColorCircle} from "../ColorCircle/ColorCircle.tsx";
 import {categoryColorVar} from "../../utils/category.ts";
+import {colorSwatchHex} from "../../utils/color.ts";
 import type {FacetCount} from "../../services/collection-query.ts";
-
-// The DB's `colors.hex` is NULL for "Multi" (a livery is multiple colors, not one) — there's no
-// single real hex to show, so this is a generic representative swatch (existing feedback tokens,
-// not tied to any one model's actual livery).
-const MULTI_SWATCH_HEX = ["var(--color-danger)", "var(--color-warning)", "var(--color-info)", "var(--color-success)"];
 
 type ToggleHandler = (value: string) => void;
 
@@ -102,7 +98,7 @@ export function ColorSwatchList({options, selected, onToggle, hexBySlug}: {
                         onClick={() => onToggle(option.slug)}
                         title={`${option.name} (${option.count})`}
                     >
-                        <ColorCircle hex={hex ? [hex] : MULTI_SWATCH_HEX}/>
+                        <ColorCircle hex={colorSwatchHex(hex)}/>
                         <span className="colorSwatchName">{option.name}</span>
                         <span className="filterOptionCount">{option.count}</span>
                     </button>

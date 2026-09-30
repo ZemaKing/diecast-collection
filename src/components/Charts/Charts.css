@@ -1,0 +1,287 @@
+/* Statistics charts (ROADMAP Phase 23) — per the dataviz guidance: thin single-hue bars
+   (`--chart-bar`), 4px rounded data end / square baseline, values at the tips in text tokens,
+   recessive baseline, nothing loud but the data. No mockup exists; built from the design system. */
+
+/* ---- Stat tiles ---- */
+
+.statTile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    min-width: 0;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: inherit;
+    text-decoration: none;
+}
+
+.statTileLink {
+    transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.statTileLink:hover {
+    border-color: var(--color-border-strong);
+}
+
+.statTileLink:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.statTileLabel {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.statTileValue {
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--leading-tight);
+}
+
+.statTileHint {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.statTileArrow {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    color: var(--color-text-subtle);
+}
+
+.statTileLink:hover .statTileArrow,
+.statTileLink:focus-visible .statTileArrow {
+    color: var(--color-accent-text);
+}
+
+/* ---- Chart card ---- */
+
+.chartCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 0;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.chartCardHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+}
+
+.chartCardTitle {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+}
+
+.chartCardSubtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.chartCardFooter {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    border-top: var(--border-width) solid var(--color-border-subtle);
+}
+
+/* ---- Bar list ---- */
+
+.barList {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.barListRow th,
+.barListRow td {
+    padding: 0;
+}
+
+.barListLabel {
+    width: 38%;
+    text-align: left;
+    font-weight: var(--weight-regular);
+}
+
+.barListLink {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 0;
+    min-height: 32px;
+    padding-right: var(--space-sm);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    text-decoration: none;
+}
+
+a.barListLink:hover .barListName {
+    color: var(--color-text);
+    text-decoration: underline;
+}
+
+a.barListLink:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.barListName {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Hover layer: the whole row lights up, so bar and label read as one (values are always shown). */
+.barListRow:hover > * {
+    background: var(--state-hover);
+}
+
+.barListRow:hover .barListName {
+    color: var(--color-text);
+}
+
+.barListCell {
+    vertical-align: middle;
+}
+
+.barListTrack {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    /* room for the value at the tip of the longest bar */
+    padding-right: var(--space-2xl);
+}
+
+.barListBar {
+    flex: none;
+    min-width: 2px;
+    height: 12px;
+    background: var(--chart-bar);
+    border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+}
+
+.barListValue {
+    flex: none;
+    margin-right: calc(-1 * var(--space-2xl));
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+.barListSwatch {
+    flex: none;
+}
+
+/* A stronger ring than the card's own swatch border, so Black (dark theme) and White (light)
+   don't dissolve into the card. */
+.barListSwatch .circle {
+    border-color: var(--color-border-strong);
+}
+
+.barListLogo {
+    flex: none;
+    width: 24px;
+    height: 18px;
+    object-fit: contain;
+}
+
+/* ---- Column chart ---- */
+
+.columnChart {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.columnChartItem {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.columnChartPlot {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 180px;
+    padding-top: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+}
+
+.columnChartBar {
+    width: min(100%, 24px);
+    min-height: 2px;
+    background: var(--chart-bar);
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+}
+
+.columnChartItem:hover .columnChartPlot {
+    background: var(--state-hover);
+}
+
+.columnChartItem:hover .columnChartLabel {
+    color: var(--color-text);
+}
+
+.columnChartValue {
+    margin-bottom: var(--space-2xs);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.columnChartLabel {
+    padding-top: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ---- Meter ---- */
+
+.meter {
+    display: flex;
+    height: 12px;
+    overflow: hidden;
+    background: var(--chart-track);
+    border-radius: var(--radius-pill);
+}
+
+.meterFill {
+    background: var(--chart-bar);
+    border-radius: var(--radius-pill);
+}
+
+@media (max-width: 639px) {
+    .columnChart {
+        gap: var(--space-2xs);
+    }
+
+    .columnChartLabel {
+        font-size: var(--text-2xs);
+    }
+}
