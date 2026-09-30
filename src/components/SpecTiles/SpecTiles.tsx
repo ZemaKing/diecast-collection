@@ -9,6 +9,7 @@ import {Car} from "../../icons/Car.tsx";
 import {ChevronRight} from "../../icons/ChevronRight.tsx";
 import {Scale} from "../../icons/Scale.tsx";
 import type {ModelSummary} from "../../services/types.ts";
+import {browsePath} from "../../utils/browse-link.ts";
 import {logoSrc} from "../../utils/model-display.ts";
 import {formatColors} from "../../utils/model-details.ts";
 
@@ -18,28 +19,30 @@ type SpecTilesModel = Pick<ModelSummary, "brand" | "manufacturer" | "category" |
 
 type SpecTilesProps = {
     model: SpecTilesModel;
-    // Details page: Brand/Manufacturer/Category open the collection filtered to that value.
-    // Quick View: plain tiles — a link there would change the page behind the dialog.
-    linked?: boolean;
+    // "all" (details page): Brand/Manufacturer open their browse pages (Phase 22), Category the
+    // collection filtered to it. "browse" (Quick View): only the browse links — they leave the
+    // collection, so the dialog closes with it; a category link would instead re-filter the page
+    // behind the still-open dialog. Omitted: plain tiles.
+    linked?: "all" | "browse";
 };
 
-function collectionFilterPath(key: "brand" | "manufacturer" | "category", slug: string): string {
-    return `/?${key}=${encodeURIComponent(slug)}`;
+function categoryFilterPath(slug: string): string {
+    return `/?category=${encodeURIComponent(slug)}`;
 }
 
 // The six key facts (ROADMAP Phase 19; shared with Quick View in Phase 20).
-export function SpecTiles({model, linked = false}: SpecTilesProps) {
+export function SpecTiles({model, linked}: SpecTilesProps) {
     return (
         <ul className="specTiles" aria-label="Key specifications">
-            <SpecTile label="Brand" to={linked ? collectionFilterPath("brand", model.brand.slug) : undefined} linkHint={`all ${model.brand.name} models`}>
+            <SpecTile label="Brand" to={linked ? browsePath("brands", model.brand.slug) : undefined} linkHint={`all ${model.brand.name} models`}>
                 <TileLogo logoPath={model.brand.logoPath}/>
                 <span>{model.brand.name}</span>
             </SpecTile>
-            <SpecTile label="Manufacturer" to={linked ? collectionFilterPath("manufacturer", model.manufacturer.slug) : undefined} linkHint={`all ${model.manufacturer.name} models`}>
+            <SpecTile label="Manufacturer" to={linked ? browsePath("manufacturers", model.manufacturer.slug) : undefined} linkHint={`all ${model.manufacturer.name} models`}>
                 <TileLogo logoPath={model.manufacturer.logoPath}/>
                 <span>{model.manufacturer.name}</span>
             </SpecTile>
-            <SpecTile label="Category" to={linked ? collectionFilterPath("category", model.category.slug) : undefined} linkHint={`all ${model.category.name} models`}>
+            <SpecTile label="Category" to={linked === "all" ? categoryFilterPath(model.category.slug) : undefined} linkHint={`all ${model.category.name} models`}>
                 <Car className="specTileIcon" width={18} height={18}/>
                 <CategoryLabel category={model.category.name}/>
             </SpecTile>

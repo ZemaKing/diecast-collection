@@ -60,7 +60,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 19 | Model Details Page | ✅ Done | Heart / "Add to Collection" meaning (open decision 7) |
 | 20 | Gallery, Lightbox & Quick View | ✅ Done | — |
 | 21 | Supabase Storage Migration | 🟡 Tooling done, awaiting owner run | Apply migration `20260930120000`; run upload → flip → verify (`scripts/migrate-images/README.md`) |
-| 22 | Manufacturer & Brand Browsing | ⬜ | Mockups (none exist) |
+| 22 | Manufacturer & Brand Browsing | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 23 | Collection Statistics | ⬜ | Mockup (none exists) |
 | 24 | Authentication & Admin Protection | ⬜ | Login mockup |
 | 25 | Model Form — Core & CRUD | ⬜ | — |
@@ -588,23 +588,28 @@ All 227 models' images served from Storage; postimg URLs retained only as `legac
 
 ---
 
-## Phase 22 — Manufacturer & Brand Browsing
+## Phase 22 — Manufacturer & Brand Browsing ✅
 
 ### Goal
 Browse the collection by manufacturer and by brand.
 
 ### Tasks
-- [ ] Index pages (`/manufacturers`, `/brands`): logo, name, model count
-- [ ] Detail pages (`/manufacturers/:slug`, `/brands/:slug`): logo, count, categories represented, model grid reusing the card + collection query
-- [ ] Shared components for both (same pattern, different data)
-- [ ] Links from cards, details spec tiles and filter panel
+- [x] Index pages (`/manufacturers`, `/brands`): logo, name, model count *(`src/pages/browse-page/browse-index-page.tsx`. Eyebrow "Browse", title, "19 manufacturers · 227 models", then a tile per entry: logo on a sunken plate, name, gold count, a **category-mix bar** (each category's share in its `--cat-*` color; the same numbers as visually-hidden text), year range and the other dimension ("42 brands" / "4 manufacturers"). Order: **Most models** (default) or **A–Z**, in `?order=name` (not `?sort=`, which is the model sort). Only brands/manufacturers that have models are listed — 19 and 45 today)*
+- [x] Detail pages (`/manufacturers/:slug`, `/brands/:slug`): logo, count, categories represented, model grid reusing the card + collection query *(`browse-detail-page.tsx`: breadcrumb `Collection › Manufacturers › Altaya`, a profile (large logo plate, "Manufacturer" eyebrow, `<h1>`, "130 models · 1969–2023 · 42 brands"), then **Categories**: the mix bar plus the collection's own `CategoryPills` with counts — they double as the bar's legend and as this page's filter (`?category=`). Below: "N models" / "2 of 4 models · Clear", **Open in collection ›** (`/?manufacturer=altaya` plus any picked categories — the rest of the filters, search and view modes live there) and the toolbar's `SortTrigger` (`?sort=`, the brand/manufacturer option hidden on its own page). The grid is `ModelCard` + Quick View. It reuses `useCollectionQuery()` and `filterModels`/`getFacetCounts`/`sortModels` with the page's brand/manufacturer pinned. A non-canonical slug (`/brands/Citroën`, `/brands/Ford`) redirects to the slug; an unknown one → 404)*
+- [x] Shared components for both (same pattern, different data) *(one index and one detail page component, `kind: "brands" | "manufacturers"` picks the data; `src/components/Browse/` (`BrowseTile`, `BrowseLogo`, `CategoryMixBar`, skeleton). Data: `src/services/browse.ts` — `getBrowseEntries()`/`getBrowseEntry()`/`getBrowseModels()`/`sortBrowseEntries()`, pure over the cached `["models", "cars"]` summary list, so arriving from the collection costs no request. Routes are keyed per kind/slug so switching between two browse pages never reuses a component instance. The breadcrumb is now a shared `Breadcrumb` component (styles moved out of the details page))*
+- [x] Links from cards, details spec tiles and filter panel *(details page: the Brand/Manufacturer **spec tiles** and the **brand crumb** open the browse pages (Category still opens the filtered collection); the brand crumb carries `focusModel`, so the brand page brings the model's card into view and focuses it. **Cards**: a card is one `<Link>` to its model, and links can't nest, so the card's secondary links live in its **Quick View** — its Brand/Manufacturer tiles now link to the browse pages (`SpecTiles linked="browse"`; not Category, which would re-filter the page behind the open dialog). Navigating closes the dialog; on a browse page Quick View is tied to its history entry, so a tile linking to the same page closes it too. **Filter panel**: the Brand and Manufacturer fields end with "Browse all brands ›" / "Browse all manufacturers ›" (popover and mobile sheet). **Nav**: Manufacturers and Brands added to the header (desktop + drawer))*
 
 ### Verification
-- [ ] Counts match filter-panel counts; Altaya = 130, Ixo = 29, Ford = 22
-- [ ] Unknown slug → 404; logos with accents/spaces load
+- [x] Counts match filter-panel counts; Altaya = 130, Ixo = 29, Ford = 22 *(by construction — both come from the same summary list, and `getBrowseModels()` is literally the `?manufacturer=`/`?brand=` filter; a unit test asserts every entry equals the unfiltered facet counts. Live: the index's 19 manufacturer counts equal the Manufacturer filter popover's, Altaya 130 / Ixo 29 cards, Ford 22 cards, Mazda + Racing = 2 of 4)*
+- [x] Unknown slug → 404; logos with accents/spaces load *(`/brands/not-a-brand` → 404 page; `/brands/Citro%C3%ABn` → `/brands/citroen` with its logo; `/brands/aston-martin` loads `/brands/Aston%20Martin.svg`. All 45 brand and 19 manufacturer logos load, no text fallbacks. No horizontal scroll at 360 / 768 / 1280, dark + light; no console errors. 19 new unit tests: `browse.test.ts`, `browse-link.test.ts`, `browse-display.test.ts` — 571 total)*
 
 ### Definition of Done
-Both browse experiences live; nav entries enabled. **Needs mockups** (none supplied).
+Both browse experiences live; nav entries enabled. *(No mockup existed — open decision 2 — so the pages are designed from the established system: the card surface, gold accent, category colors, the hero's eyebrow/title type and the toolbar's controls. Review welcome.)*
+
+**Notes / deviations:**
+- The mockup's nav shows *Manufacturers* only; *Brands* sits next to it as its twin, since the roadmap asks for both pages. Say if you'd rather reach Brands only from the Manufacturers page / filters.
+- Logos: the SVGs are drawn in a fixed light grey (`#A9B1BF`), so in the light theme they're low-contrast here just as they already are on the cards and details page. A theme-aware logo treatment belongs in the Phase 30 fidelity pass.
+- The browse detail page shows the grid only (no List/Compact) and filters by category only; "Open in collection" hands over to the full toolbar.
 
 ---
 
@@ -900,7 +905,7 @@ Owner go/no-go recorded; site stable on Supabase.
 | # | Question | Needed by |
 | --- | --- | --- |
 | 1 | **Tablet & Mobile mockups**: the supplied images only include small insets of the collection page. Please provide full-page Tablet and Mobile references (collection, filter sheet, details, add/edit), ideally as separate images per device | Ph 14 (filter sheet), 31, 32 |
-| 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? | Ph 22, 23, 24 |
+| 2 | **No mockups exist** for Manufacturers, Brands, Statistics, About, Login. Generate them, or should I design them from the established system? *(Phase 22 designed Manufacturers/Brands from the system — review them)* | Ph 22, 23, 24 |
 | 3 | **Light theme**: keep (derived from tokens, no mockup) or dark-only? *Phase 3 kept it, with derived values that pass contrast. Confirm, or say dark-only* | Ph 3 |
 | 4 | ~~Confirm trucks are excluded~~ → excluded; schema has no truck data (Phase 4) | Ph 4 / 11 |
 | 5 | ~~Public "My Collection" fields~~ → condition, added, location **public**; notes private; **no collected/status field** (all owned) (Phase 4) | Ph 4 |

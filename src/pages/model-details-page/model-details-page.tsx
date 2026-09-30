@@ -1,7 +1,8 @@
 import {useId, useRef, type KeyboardEvent} from "react";
-import {Link, useLocation, useParams, useSearchParams} from "react-router-dom";
+import {useLocation, useParams, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
+import {Breadcrumb} from "../../components/Breadcrumb/Breadcrumb.tsx";
 import {Header} from "../../components/Header/Header";
 import {CategoryLabel} from "../../components/CategoryLabel/CategoryLabel";
 import {Lightbox} from "../../components/Gallery/Lightbox.tsx";
@@ -13,8 +14,6 @@ import {NotFoundPage} from "../not-found-page/not-found-page";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {Check} from "../../icons/Check.tsx";
-import {ChevronRight} from "../../icons/ChevronRight.tsx";
-import {Home} from "../../icons/Home.tsx";
 import type {AppError} from "../../lib/errors.ts";
 import {getModelBySlug, getModels} from "../../services/models.ts";
 import type {Model, ModelImage} from "../../services/types.ts";
@@ -30,6 +29,7 @@ import {
     type DetailTab,
     type SpecRow,
 } from "../../utils/model-details.ts";
+import {browsePath} from "../../utils/browse-link.ts";
 import {collectionPath, readCollectionSearch, type ModelLinkState} from "../../utils/model-link.ts";
 
 // The page reuses the card's photo badges (manufacturer/scale) and skeleton shimmer — imported
@@ -51,10 +51,6 @@ import "./model-details-page.css";
 //   Phases 24/25, visible to the admin only.
 
 const TAB_PARAM = "tab";
-
-function brandFilterPath(slug: string): string {
-    return `/?brand=${encodeURIComponent(slug)}`;
-}
 
 export function ModelDetailsPage() {
     const {slug = ""} = useParams();
@@ -82,32 +78,15 @@ export function ModelDetailsPage() {
             <Header count={summariesQuery.data?.length ?? 0}/>
 
             <div className="content">
-                <nav className="breadcrumb" aria-label="Breadcrumb">
-                    <ol>
-                        <li>
-                            {/* Returns to the filters/search/sort the model was opened from. */}
-                            <Link to={collectionPath(collectionSearch)} state={backState} className="breadcrumbLink">
-                                <Home width={16} height={16}/>
-                                <span>Collection</span>
-                            </Link>
-                        </li>
-                        {modelQuery.data && (
-                            <>
-                                <li>
-                                    <ChevronRight className="breadcrumbSeparator" width={14} height={14}/>
-                                    {/* No brand page until Phase 22 — the collection filtered to the brand is the real equivalent. */}
-                                    <Link to={brandFilterPath(modelQuery.data.brand.slug)} className="breadcrumbLink">
-                                        {modelQuery.data.brand.name}
-                                    </Link>
-                                </li>
-                                <li>
-                                    <ChevronRight className="breadcrumbSeparator" width={14} height={14}/>
-                                    <span aria-current="page" className="breadcrumbCurrent">{modelQuery.data.name}</span>
-                                </li>
-                            </>
-                        )}
-                    </ol>
-                </nav>
+                {/* "Collection" returns to the filters/search/sort the model was opened from; the
+                    brand crumb is the brand's page (Phase 22). Both bring this model back into view. */}
+                <Breadcrumb
+                    home={{to: collectionPath(collectionSearch), state: backState}}
+                    trail={modelQuery.data ? [
+                        {label: modelQuery.data.brand.name, to: browsePath("brands", modelQuery.data.brand.slug), state: backState},
+                        {label: modelQuery.data.name},
+                    ] : []}
+                />
 
                 <main className="main">
                     {modelQuery.isPending ? (
@@ -188,7 +167,7 @@ function ModelDetails({model}: {model: Model}) {
                         <span className="detailsRule" aria-hidden="true"/>
                     </header>
 
-                    <SpecTiles model={model} linked/>
+                    <SpecTiles model={model} linked="all"/>
                 </div>
             </article>
 

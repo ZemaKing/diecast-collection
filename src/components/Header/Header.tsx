@@ -16,13 +16,16 @@ type Props = {
     count: number;
 };
 
-// Only routes that actually resolve to a real page today — Manufacturers/Statistics/Login land
-// in Phases 22-24, and adding a nav link before then would violate "nav only links to pages that
-// exist" (ROADMAP Phase 12).
+// Only routes that actually resolve to a real page today — Statistics/Login land in Phases 23-24,
+// and adding a nav link before then would violate "nav only links to pages that exist" (ROADMAP
+// Phase 12). Manufacturers and Brands arrived in Phase 22 (the mockup's nav has only
+// Manufacturers; Brands sits next to it as its twin).
 // `section`: other paths that belong to the same nav item — a model page (Phase 19) is part of the
 // Collection, so it stays highlighted there (without claiming aria-current="page").
 const NAV_LINKS = [
     {to: "/", label: "Collection", end: true, section: "/models/"},
+    {to: "/manufacturers", label: "Manufacturers", end: false, section: null},
+    {to: "/brands", label: "Brands", end: false, section: null},
     {to: "/about", label: "About", end: false, section: null},
 ];
 

@@ -1,5 +1,8 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
+import {Link} from "react-router-dom";
+
+import {ChevronRight} from "../../icons/ChevronRight.tsx";
 
 import {Close} from "../../icons/Close.tsx";
 import {Filter} from "../../icons/Filter.tsx";
@@ -7,8 +10,10 @@ import {ViewCompact} from "../../icons/ViewCompact.tsx";
 import {ViewGrid} from "../../icons/ViewGrid.tsx";
 import {ViewList} from "../../icons/ViewList.tsx";
 import {getColors} from "../../services/lookups.ts";
+import type {BrowseKind} from "../../services/browse.ts";
 import type {CollectionFilters, FacetCount, FacetCounts, SortOption} from "../../services/collection-query.ts";
 import {MEDIA} from "../../styles/breakpoints.ts";
+import {BROWSE_LABELS, browseIndexPath} from "../../utils/browse-link.ts";
 import type {ViewMode} from "../../utils/view-mode.ts";
 import {CategoryPills, ColorSwatchList, SearchableCheckboxList} from "./FilterFields.tsx";
 import {useDetailsPopover} from "./useDetailsPopover.ts";
@@ -31,9 +36,10 @@ type CollectionToolbarProps = {
     onViewModeChange: (mode: ViewMode) => void;
 };
 
-const GROUPS: {key: FilterKey; label: string; variant: Variant}[] = [
-    {key: "brands", label: "Brand", variant: "search"},
-    {key: "manufacturers", label: "Manufacturer", variant: "search"},
+// `browse`: the field ends with a link to that dimension's index page (Phase 22).
+const GROUPS: {key: FilterKey; label: string; variant: Variant; browse?: BrowseKind}[] = [
+    {key: "brands", label: "Brand", variant: "search", browse: "brands"},
+    {key: "manufacturers", label: "Manufacturer", variant: "search", browse: "manufacturers"},
     {key: "categories", label: "Category", variant: "pills"},
     {key: "colors", label: "Color", variant: "swatches"},
     // Scale: hidden until a second scale exists in the data (ROADMAP Phase 14).
@@ -57,18 +63,29 @@ const SORT_OPTIONS: {value: SortOption; label: string}[] = [
     {value: "brand", label: "Brand"},
 ];
 
-function FilterFieldContent({variant, options, selected, onToggle, label, hexBySlug}: {
+function FilterFieldContent({variant, options, selected, onToggle, label, hexBySlug, browse}: {
     variant: Variant;
     options: FacetCount[];
     selected: string[];
     onToggle: (value: string) => void;
     label: string;
     hexBySlug: Map<string, string | null>;
+    browse?: BrowseKind;
 }) {
     if (options.length === 0) return <p className="filterTriggerEmpty">No options</p>;
     if (variant === "pills") return <CategoryPills options={options} selected={selected} onToggle={onToggle}/>;
     if (variant === "swatches") return <ColorSwatchList options={options} selected={selected} onToggle={onToggle} hexBySlug={hexBySlug}/>;
-    return <SearchableCheckboxList options={options} selected={selected} onToggle={onToggle} searchLabel={label}/>;
+    return (
+        <>
+            <SearchableCheckboxList options={options} selected={selected} onToggle={onToggle} searchLabel={label}/>
+            {browse && (
+                <Link to={browseIndexPath(browse)} className="filterBrowseLink">
+                    Browse all {BROWSE_LABELS[browse].plural.toLowerCase()}
+                    <ChevronRight width={14} height={14}/>
+                </Link>
+            )}
+        </>
+    );
 }
 
 // Grid / List / Compact (ROADMAP Phase 18). A toggle-button group: each button reports its own
@@ -94,8 +111,9 @@ function ViewModeSwitcher({viewMode, onChange}: {viewMode: ViewMode; onChange: (
 }
 
 // A desktop/tablet popover for one field.
-function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug}: {
+function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug, browse}: {
     label: string;
+    browse?: BrowseKind;
     variant: Variant;
     options: FacetCount[];
     selected: string[];
@@ -111,21 +129,24 @@ function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug}:
                 {selected.length > 0 && <span className="filterTriggerCount">{selected.length}</span>}
             </summary>
             <div className="filterTriggerPanel">
-                <FilterFieldContent variant={variant} options={options} selected={selected} onToggle={onToggle} label={label} hexBySlug={hexBySlug}/>
+                <FilterFieldContent variant={variant} options={options} selected={selected} onToggle={onToggle} label={label} hexBySlug={hexBySlug} browse={browse}/>
             </div>
         </details>
     );
 }
 
 // The toolbar's sort dropdown — single-select, closes itself as soon as an option is picked
-// (unlike FilterTrigger's checkboxes, which stay open for multiple picks).
-function SortTrigger({sort, onChange, showRelevance}: {
+// (unlike FilterTrigger's checkboxes, which stay open for multiple picks). Also used by the
+// brand/manufacturer pages (Phase 22), which hide the sort that's constant on their page.
+export function SortTrigger({sort, onChange, showRelevance, hiddenOptions = []}: {
     sort: SortOption;
     onChange: (sort: SortOption) => void;
     showRelevance: boolean;
+    hiddenOptions?: SortOption[];
 }) {
     const {open, setOpen, ref} = useDetailsPopover();
-    const options = showRelevance ? [{value: "relevance" as const, label: "Relevance"}, ...SORT_OPTIONS] : SORT_OPTIONS;
+    const options = (showRelevance ? [{value: "relevance" as const, label: "Relevance"}, ...SORT_OPTIONS] : SORT_OPTIONS)
+        .filter((o) => !hiddenOptions.includes(o.value));
     const currentLabel = options.find((o) => o.value === sort)?.label ?? options[0]!.label;
 
     return (
@@ -215,11 +236,12 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                 </button>
 
                 <div className="toolbarTriggers">
-                    {GROUPS.map(({key, label, variant}) => (
+                    {GROUPS.map(({key, label, variant, browse}) => (
                         <FilterTrigger
                             key={key}
                             label={label}
                             variant={variant}
+                            browse={browse}
                             options={facets[key]}
                             selected={filters[key]}
                             onToggle={(value) => onToggle(key, value)}
@@ -277,7 +299,7 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                         </div>
 
                         <div className="sheetBody">
-                            {GROUPS.map(({key, label, variant}) => (
+                            {GROUPS.map(({key, label, variant, browse}) => (
                                 <div key={key} className="sheetSection">
                                     <h3 className="sheetSectionTitle">{label}</h3>
                                     <FilterFieldContent
@@ -287,6 +309,7 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                                         onToggle={(value) => onToggle(key, value)}
                                         label={label}
                                         hexBySlug={hexBySlug}
+                                        browse={browse}
                                     />
                                 </div>
                             ))}

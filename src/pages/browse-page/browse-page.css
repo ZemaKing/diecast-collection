@@ -1,0 +1,200 @@
+/* Manufacturer & brand pages (ROADMAP Phase 22) — index + detail. Uses the collection page's
+   `.layout` / `.content` / `.main` container, grid and results header (collection-page.css). */
+
+/* ---- Index intro ---- */
+
+.browseIntro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding: var(--space-xl) 0 var(--space-lg);
+    margin-bottom: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.browseEyebrow {
+    margin: 0 0 var(--space-xs);
+    color: var(--color-accent-text);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+}
+
+.browseTitle {
+    margin: 0 0 var(--space-xs);
+    color: var(--color-text);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    overflow-wrap: anywhere;
+}
+
+.browseSubtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+}
+
+/* Most models / A–Z — the view-mode buttons' segmented look. */
+.browseOrder {
+    display: inline-flex;
+    padding: var(--space-2xs);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.browseOrderButton {
+    min-height: var(--tap-target);
+    padding: 0 var(--space-md);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.browseOrderButton:hover {
+    color: var(--color-text);
+    background: var(--color-surface-hover);
+}
+
+.browseOrderButtonActive,
+.browseOrderButtonActive:hover {
+    background: var(--color-accent-soft);
+    color: var(--color-accent-text);
+}
+
+.browseOrderButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.browseList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* ---- Detail profile ---- */
+
+.browseProfile {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-lg) var(--space-xl);
+    padding: var(--space-md) 0 var(--space-xl);
+    margin-bottom: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.browseProfileText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    min-width: 0;
+}
+
+.browseProfileText .browseTitle {
+    margin: 0;
+}
+
+.browseFacts {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+}
+
+.browseFactsCount {
+    color: var(--color-accent-text);
+    font-weight: var(--weight-extrabold);
+}
+
+.browseCategories {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.browseCategories .categoryMix {
+    max-width: 480px;
+}
+
+.browseCategoriesTitle {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+/* Desktop: categories sit to the right of the name, like the hero's tagline. */
+@media (min-width: 1024px) {
+    .browseProfile {
+        grid-template-columns: auto minmax(0, 1fr) minmax(0, auto);
+    }
+
+    .browseCategories {
+        grid-column: auto;
+        max-width: 480px;
+    }
+}
+
+/* Phones: a smaller plate, so the name keeps most of the row. */
+@media (max-width: 639px) {
+    .browseProfile .browseLogo-profile {
+        width: 96px;
+        height: 72px;
+        padding: var(--space-sm);
+    }
+
+    .browseProfile .browseTitle {
+        font-size: var(--text-2xl);
+    }
+}
+
+/* ---- Results bar ---- */
+
+.browseResultsBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.browseResultsBar .resultsHeader {
+    align-items: center;
+    margin: 0;
+}
+
+.browseResultsActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.browseCollectionLink {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-height: var(--tap-target);
+    color: var(--color-accent-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.browseCollectionLink:hover {
+    text-decoration: underline;
+}

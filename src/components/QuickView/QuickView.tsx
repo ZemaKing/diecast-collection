@@ -69,7 +69,7 @@ export function QuickView({model, linkState, onClose}: QuickViewProps) {
                         {model.liveryHex.length > 0 && <ColorCircle hex={model.liveryHex}/>}
                     </div>
 
-                    <SpecTiles model={model}/>
+                    <SpecTiles model={model} linked="browse"/>
 
                     <Link to={modelPath(model.slug)} state={linkState} className="quickViewDetailsLink">
                         <span>View Details</span>

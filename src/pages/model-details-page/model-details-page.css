@@ -1,54 +1,6 @@
 /* Model details page (ROADMAP Phase 19) — "Mockup Details.png". Uses the collection page's
-   `.layout` / `.content` / `.main` container (collection-page.css), so it lines up with the header. */
-
-/* ---- Breadcrumb ---- */
-
-.breadcrumb {
-    padding: var(--space-lg) 0 var(--space-md);
-    font-size: var(--text-sm);
-}
-
-.breadcrumb ol {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2xs) var(--space-xs);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.breadcrumb li {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    min-width: 0;
-}
-
-.breadcrumbLink {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    border-radius: var(--radius-xs);
-}
-
-.breadcrumbLink:hover {
-    color: var(--color-text);
-    text-decoration: underline;
-}
-
-.breadcrumbSeparator {
-    color: var(--color-text-subtle);
-    flex: none;
-}
-
-.breadcrumbCurrent {
-    color: var(--color-text);
-    font-weight: var(--weight-semibold);
-    overflow-wrap: anywhere;
-}
+   `.layout` / `.content` / `.main` container (collection-page.css), so it lines up with the header.
+   The breadcrumb's styles moved to components/Breadcrumb/ in Phase 22. */
 
 /* ---- Top: photo + header/spec tiles ---- */
 
