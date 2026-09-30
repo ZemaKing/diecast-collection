@@ -41,6 +41,7 @@ For each new file in `supabase/migrations/`, in filename order: paste the whole 
 - Authentication → Users → **Add user** (Auto Confirm) for the owner.
 - SQL Editor: `insert into diecast.admin_users (user_id) select id from auth.users where email = '<owner-email>';`
 - Current admin: 1 row (the owner), verified 2026-09-27.
+- Signs in at `/login` with email + password (Phase 24). Optional: set the user's **display name** to "ZemaKing" (Users → the user) — the header avatar shows its initials ("ZK"); without one it shows the email's first letter.
 
 ### 5. RLS verification (after every migration that touches tables or policies)
 Needs `RLS_ADMIN_EMAIL/PASSWORD` (the owner) and `RLS_USER_EMAIL/PASSWORD` (a separate **non-admin** test user) in `.env.local`.

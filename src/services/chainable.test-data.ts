@@ -5,13 +5,20 @@
 export type QueryResult<T> = {data: T; error: null} | {data: null; error: {message: string; code?: string; status?: number}};
 
 export function chainable<T>(result: QueryResult<T>) {
+    // Every chain call, in order — so a test can assert e.g. ["eq", ["is_published", true]].
+    const calls: [string, unknown[]][] = [];
+    const record = (name: string) => (...args: unknown[]) => {
+        calls.push([name, args]);
+        return self;
+    };
     const self: Record<string, unknown> = {
-        select: () => self,
-        eq: () => self,
-        order: () => self,
-        limit: () => self,
-        single: () => self,
-        maybeSingle: () => self,
+        calls,
+        select: record("select"),
+        eq: record("eq"),
+        order: record("order"),
+        limit: record("limit"),
+        single: record("single"),
+        maybeSingle: record("maybeSingle"),
         then: (onFulfilled: (r: QueryResult<T>) => unknown, onRejected?: (e: unknown) => unknown) =>
             Promise.resolve(result).then(onFulfilled, onRejected),
     };

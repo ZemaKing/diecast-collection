@@ -19,7 +19,9 @@ export const supabase = createClient<Database, typeof DB_SCHEMA>(supabaseEnv.url
     auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true,
+        // Email + password only (Phase 24): no magic-link/OAuth redirect ever carries a token in the
+        // URL, so the client shouldn't look for one there either.
+        detectSessionInUrl: false,
         // App-specific key instead of the default sb-<ref>-auth-token, so it's easy to spot and clear.
         storageKey: "zk-diecast-auth",
     },

@@ -7,8 +7,18 @@ import {mapModel, mapModelSummary, type ModelColorRow, type ModelTagRow, type Mo
 import {unwrap} from "./supabase-query.ts";
 import type {Model, ModelSummary} from "./types.ts";
 
+// Published models only — explicitly, not just via RLS. The view runs with the caller's rights, so
+// for a signed-in admin RLS would also return unpublished drafts; every public page (collection,
+// browse, statistics, the header count) must show exactly what a visitor sees, whoever is signed
+// in (Phase 24). Drafts are the admin dashboard's business: getDraftModels().
 export async function getModels(): Promise<ModelSummary[]> {
-    const rows = await unwrap(supabase.from("model_summaries").select("*").order("name"));
+    const rows = await unwrap(supabase.from("model_summaries").select("*").eq("is_published", true).order("name"));
+    return rows.map(mapModelSummary);
+}
+
+// Unpublished models — only ever non-empty for an admin (RLS hides drafts from everyone else).
+export async function getDraftModels(): Promise<ModelSummary[]> {
+    const rows = await unwrap(supabase.from("model_summaries").select("*").eq("is_published", false).order("updated_at", {ascending: false}));
     return rows.map(mapModelSummary);
 }
 
@@ -17,6 +27,7 @@ export async function getRecentlyAddedModels(limit = 8): Promise<ModelSummary[]>
         supabase
             .from("model_summaries")
             .select("*")
+            .eq("is_published", true)
             .order("added_at", {ascending: false, nullsFirst: false})
             .order("name")
             .limit(limit),

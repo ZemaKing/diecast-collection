@@ -1,10 +1,14 @@
 import {lazy, Suspense} from "react";
 import {Navigate, Route, Routes, useLocation, useParams} from "react-router-dom";
+import {AdminRoute} from "./components/AdminRoute/AdminRoute";
+import {useResetQueriesOnUserChange} from "./hooks/useSession";
 import {AboutPage} from "./pages/about-page/about-page";
+import {AdminHomePage} from "./pages/admin/admin-home-page";
 import {BrowseDetailPage} from "./pages/browse-page/browse-detail-page";
 import {BrowseIndexPage} from "./pages/browse-page/browse-index-page";
 import {CollectionPage} from "./pages/collection-page/collection-page";
 import {ModelDetailsPage} from "./pages/model-details-page/model-details-page";
+import {LoginPage} from "./pages/login-page/login-page";
 import {NotFoundPage} from "./pages/not-found-page/not-found-page";
 import {StatisticsPage} from "./pages/statistics-page/statistics-page";
 
@@ -28,6 +32,9 @@ function BrowseDetailRoute({kind}: {kind: "brands" | "manufacturers"}) {
 }
 
 export default function App() {
+    // Cached reads depend on who's asking (RLS) — reset them when the signed-in user changes.
+    useResetQueriesOnUserChange();
+
     return (
         <Routes>
             <Route path="/" element={<CollectionPage/>}/>
@@ -40,6 +47,12 @@ export default function App() {
             <Route path="/brands/:slug" element={<BrowseDetailRoute kind="brands"/>}/>
             <Route path="/statistics" element={<StatisticsPage/>}/>
             <Route path="/about" element={<AboutPage/>}/>
+            {/* Owner sign-in and the guarded admin area (Phase 24). Public pages never need auth. */}
+            <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/admin" element={<AdminRoute/>}>
+                <Route index element={<AdminHomePage/>}/>
+                <Route path="*" element={<NotFoundPage/>}/>
+            </Route>
             <Route path="/cars" element={<RedirectToCollection/>}/>
             <Route path="/trucks" element={<RedirectToCollection/>}/>
             {TokensPage && (

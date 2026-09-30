@@ -1,0 +1,66 @@
+/* The /admin guard's own states (Phase 24): "Checking access…" and the 403 card. */
+
+.adminGate {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3xl) var(--container-gutter);
+    text-align: center;
+}
+
+.adminGateChecking {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.adminGateCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    max-width: 440px;
+}
+
+.adminGateCode {
+    color: var(--color-accent-text);
+    font-size: var(--text-display);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+}
+
+.adminGateTitle {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+}
+
+.adminGateBody {
+    margin: 0 0 var(--space-md);
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.adminGateButton {
+    min-height: var(--tap-target);
+    padding: 0 var(--space-xl);
+    background: transparent;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: var(--weight-semibold);
+}
+
+.adminGateButton:hover {
+    background: var(--color-surface-hover);
+}
+
+.adminGateButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}

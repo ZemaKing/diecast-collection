@@ -62,7 +62,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 21 | Supabase Storage Migration | 🟡 Tooling done, awaiting owner run | Apply migration `20260930120000`; run upload → flip → verify (`scripts/migrate-images/README.md`) |
 | 22 | Manufacturer & Brand Browsing | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 23 | Collection Statistics | ✅ Done | Review the design (no mockup existed — built from the established system) |
-| 24 | Authentication & Admin Protection | ⬜ | Login mockup |
+| 24 | Authentication & Admin Protection | ✅ Done | Optional: set your display name to "ZemaKing" (avatar shows "ZK"); apply the Phase 21 storage migration (3 storage RLS checks wait on it) |
 | 25 | Model Form — Core & CRUD | ⬜ | — |
 | 26 | Model Form — Rich Sections | ⬜ | Decide rich-text vs plain |
 | 27 | Image Management CRUD | ⬜ | — |
@@ -638,24 +638,31 @@ Statistics page accurate, responsive, accessible (labels/tables for chart data).
 
 ---
 
-## Phase 24 — Authentication & Admin Protection
+## Phase 24 — Authentication & Admin Protection ✅
 
 ### Goal
 Owner sign-in; admin actions gated.
 
 ### Tasks
-- [ ] Supabase Auth (email+password or magic link — owner's choice), sign-ups disabled
-- [ ] `useSession`, `/login`, sign-out, avatar menu ("ZK"), `AdminRoute` guard for `/admin/*`
-- [ ] Admin-only affordances (Edit / Delete / "…" / Add Model) rendered only for admins — **UI hiding is convenience; RLS is the real gate**
-- [ ] Public browsing never requires auth
+- [x] Supabase Auth (email+password or magic link — owner's choice), sign-ups disabled *(**email + password**, the owner's choice (2026-09-30): the owner account already had one, and it needs no email delivery or redirect-URL setup. Sign-ups were already off (Phase 5). `src/services/auth.ts`: `signInWithPassword()`, `signOut()` (this browser only), `getIsAdmin()` = `rpc("is_admin")` — the very function every RLS policy checks, so the UI can't disagree with the database about who may write. Wrong credentials → "Wrong email or password." (`toAppError`). The client's `detectSessionInUrl` is now **off**: no flow here ever puts a token in a URL, so the client doesn't look for one)*
+- [x] `useSession`, `/login`, sign-out, avatar menu ("ZK"), `AdminRoute` guard for `/admin/*` *(`useSession()` (`src/hooks/useSession.ts`) reads a tiny store over Supabase's auth events via `useSyncExternalStore`; it's `loading` until the stored session is restored, so a guarded page never bounces to /login on refresh. `useAdminState()`/`useIsAdmin()` wrap the `is_admin()` query. **`/login`**: email + password card, native validation, error in a `role="alert"`, password cleared after a failed attempt; no sign-up or "forgot password" (accounts and resets live in the dashboard); nothing public links to it. After sign-in it returns to the guarded page that sent you (`safeRedirectPath()` — in-app paths only, never `//host` or back to /login), else `/admin`. **`AdminRoute`** (layout route for `/admin` + `/admin/*`): signed out → `/login` (with `from`), signed in but not admin → a "403 · No admin access" page with Sign out (no redirect loop), admin → the page. **`/admin`** dashboard: signed-in email, Sign out, Published count and **Drafts** (unpublished models, admin-only through RLS — none today). **Avatar menu** (header, signed-in only): initials from the account's display name ("ZemaKing" → "ZK"; no name → the email's first letter), role, Dashboard (admins), Sign out — a disclosure, closes on Escape (focus back to the avatar), outside click or navigation. `useSignOut()` leaves `/admin` for the collection *before* ending the session, so sign-out never bounces through /login. When the signed-in user changes (sign-in, sign-out, other tab), the whole query cache is reset — reads depend on who's asking)*
+- [x] Admin-only affordances (Edit / Delete / "…" / Add Model) rendered only for admins — **UI hiding is convenience; RLS is the real gate** *(the gate is built and used: `useIsAdmin()` shows the Dashboard entry, `AdminRoute` guards `/admin/*`. Edit / Delete / Add Model themselves arrive with their targets in Phase 25 — the model form doesn't exist yet, and the details page's marked slot stays empty until it does, rather than showing buttons that go nowhere. RLS is unchanged and remains the gate)*
+- [x] Public browsing never requires auth *(no public page reads the session to decide what to show except the avatar. And **public reads now ask for published models explicitly**: `model_summaries` runs with the caller's rights, so for a signed-in admin RLS would have added drafts to the collection, browse pages, statistics and header count. `getModels()`/`getRecentlyAddedModels()` add `is_published = true`; the dashboard's `getDraftModels()` asks for the rest)*
 
 ### Verification
-- [ ] Logged-out: admin routes redirect to login; no admin UI
-- [ ] Non-admin authenticated user can sign in but every write is rejected by RLS (test)
-- [ ] Session persists across refresh; token never in URL
+- [x] Logged-out: admin routes redirect to login; no admin UI *(live: `/admin` → `/login`, and `/admin/whatever?x=1` → `/login` remembering `from` — after signing in, the owner landed back on `/admin/whatever?x=1` (the admin area's 404, which renders only past the guard). No avatar, no stored session, no account UI when signed out)*
+- [x] Non-admin authenticated user can sign in but every write is rejected by RLS (test) *(`npm run verify:rls` — signs in as the non-admin test user: `is_admin()` is false, drafts/private notes/admin list invisible, every INSERT into all 12 tables denied, UPDATE/DELETE change nothing; the owner: `is_admin()` true. 72/75 — the 3 failures are the Phase 21 Storage checks ("Bucket not found"): that migration isn't applied yet)*
+- [x] Session persists across refresh; token never in URL *(live, owner signed in by hand in the browser pane — Claude never handles the password: `/admin` survives a reload (session restored from `localStorage["zk-diecast-auth"]`, no new sign-in call); every Supabase request URL is token-free (`/rest/v1/model_summaries?select=*&is_published=eq.true…`, `/rest/v1/rpc/is_admin` — the token travels in the header); signed in, the collection, Statistics and header still show exactly 227 models. Sign out (avatar menu) → session key removed, avatar gone, `/admin` → `/login` again. 17 new unit tests (`auth-state.test.ts`: session mapping, token-refresh dedupe, initials, redirect safety; published/draft filters in `models.test.ts`) — 617 total)*
 
 ### Definition of Done
 Admin gating works end-to-end and is proven by RLS tests.
+
+**Notes / deviations:**
+- No login mockup existed — the login card, 403 page, dashboard and avatar menu are built from the design system (open decision 2).
+- The avatar shows "Z" today: the owner account has no display name. Set it to "ZemaKing" (Authentication → Users → the user → display name / `user_metadata.display_name`) to get the mockup's "ZK".
+- **Header layout fix (found here, caused in Phases 22–23):** with five nav links plus the avatar, the inline search box was squeezed to ~25px between 640 and ~1100px (no horizontal scroll, so earlier checks missed it). The nav links now move into the hamburger drawer below **1024px** (tablet keeps the inline search and count; the drawer's duplicate search is phone-only). Search is now 229px at 768, 157px at 1024, 320px at 1280.
+- **Contrast fix (pre-existing):** the 404 page's button and three toolbar spots (filter count badge, chip hover, mobile "Show N models") used `--color-text-inverse` (white in the light theme, 1.6:1 on gold) as text on gold; they now use `--color-on-accent`.
+- Sign-out from the dashboard's own button and the 403 page use the same `useSignOut()` as the avatar menu (verified live from the menu); a non-admin sign-in in the browser was not exercised live — `verify:rls` covers that account at the database level, and the 403 branch is plain rendering.
 
 ---
 

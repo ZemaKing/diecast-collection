@@ -5,7 +5,7 @@ import {chainable} from "./chainable.test-data.ts";
 const from = vi.fn();
 vi.mock("../lib/supabase.ts", () => ({supabase: {from: (...args: unknown[]) => from(...args)}}));
 
-const {getModelBySlug, getModels, getRecentlyAddedModels} = await import("./models.ts");
+const {getDraftModels, getModelBySlug, getModels, getRecentlyAddedModels} = await import("./models.ts");
 
 const summaryRow = {
     id: "11111111-1111-1111-1111-111111111111",
@@ -51,6 +51,27 @@ const summaryRow = {
 describe("getModels / getRecentlyAddedModels", () => {
     beforeEach(() => {
         from.mockReset();
+    });
+
+    it("public reads ask for published models explicitly — an admin's RLS would also return drafts", async () => {
+        const published = chainable({data: [summaryRow], error: null});
+        from.mockReturnValue(published);
+        await getModels();
+        expect(published.calls).toContainEqual(["eq", ["is_published", true]]);
+
+        const recent = chainable({data: [summaryRow], error: null});
+        from.mockReturnValue(recent);
+        await getRecentlyAddedModels();
+        expect(recent.calls).toContainEqual(["eq", ["is_published", true]]);
+    });
+
+    it("getDraftModels asks for unpublished models only", async () => {
+        const drafts = chainable({data: [{...summaryRow, is_published: false}], error: null});
+        from.mockReturnValue(drafts);
+        const models = await getDraftModels();
+        expect(from).toHaveBeenCalledWith("model_summaries");
+        expect(drafts.calls).toContainEqual(["eq", ["is_published", false]]);
+        expect(models).toHaveLength(1);
     });
 
     it("getModels reads model_summaries and maps every row", async () => {

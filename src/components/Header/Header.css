@@ -156,6 +156,125 @@
     white-space: nowrap;
 }
 
+/* Account avatar + menu (Phase 24) — only rendered while signed in. */
+.accountMenu {
+    position: relative;
+}
+
+.accountAvatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: var(--color-accent);
+    border: 0;
+    border-radius: var(--radius-round);
+    color: var(--color-on-accent);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+}
+
+.accountAvatar:hover {
+    background: var(--color-accent-hover);
+}
+
+.accountAvatar:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.accountPanel {
+    position: absolute;
+    top: calc(100% + var(--space-sm));
+    right: 0;
+    z-index: var(--z-dropdown);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: max-content;
+    min-width: 200px;
+    max-width: min(300px, calc(100vw - 2 * var(--container-gutter)));
+    padding: var(--space-md);
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.accountIdentity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    padding-bottom: var(--space-sm);
+    border-bottom: var(--border-width) solid var(--color-border-subtle);
+}
+
+.accountRole {
+    color: var(--color-accent-text);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+.accountEmail {
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+}
+
+.accountLinks {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.accountLink {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: var(--tap-target);
+    padding: 0 var(--space-sm);
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-align: left;
+    text-decoration: none;
+}
+
+.accountLink:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.accountLink:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.accountLink:disabled {
+    cursor: default;
+    opacity: var(--state-disabled-opacity);
+}
+
+.accountError {
+    margin: 0;
+    color: var(--color-danger);
+    font-size: var(--text-xs);
+}
+
 .socialLink {
     display: flex;
     align-items: center;
@@ -240,10 +359,23 @@
     max-width: none;
 }
 
+/* Tablet: search + count inline, the nav links stay in the drawer (five links, the search and
+   the actions don't fit one row below desktop — Phase 24, when the avatar joined the row).
+   Desktop: everything inline, no drawer. */
 @media (min-width: 640px) {
-    .siteNav,
     .siteSearch,
     .modelCountPill {
+        display: flex;
+    }
+
+    /* The drawer's own search box is for phones only — tablet has the inline one. */
+    .siteSearchMobile {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .siteNav {
         display: flex;
     }
 

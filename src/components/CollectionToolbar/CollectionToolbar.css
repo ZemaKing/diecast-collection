@@ -41,7 +41,7 @@
     padding: 0 var(--space-2xs);
     border-radius: var(--radius-pill);
     background: var(--color-accent);
-    color: var(--color-text-inverse);
+    color: var(--color-on-accent);
     font-size: var(--text-2xs);
     font-weight: var(--weight-bold);
 }
@@ -395,7 +395,7 @@
 
 .chip:hover {
     background: var(--color-accent);
-    color: var(--color-text-inverse);
+    color: var(--color-on-accent);
 }
 
 /* Mobile bottom sheet ("Filters" button) ------------------------------------ */
@@ -496,7 +496,7 @@
     background: var(--color-accent);
     border: 0;
     border-radius: var(--radius-md);
-    color: var(--color-text-inverse);
+    color: var(--color-on-accent);
     cursor: pointer;
     font-family: var(--font-sans);
     font-size: var(--text-base);

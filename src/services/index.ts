@@ -4,3 +4,5 @@ export * from "./lookups.ts";
 export * from "./collection-query.ts";
 export * from "./stats.ts";
 export * from "./browse.ts";
+export * from "./auth-state.ts";
+export * from "./auth.ts";

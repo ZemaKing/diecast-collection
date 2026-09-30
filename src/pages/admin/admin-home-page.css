@@ -1,0 +1,110 @@
+/* /admin (Phase 24). No mockup — the design system's cards. */
+
+.adminSignOut {
+    min-height: var(--tap-target);
+    padding: 0 var(--space-lg);
+    background: transparent;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: var(--weight-semibold);
+}
+
+.adminSignOut:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+}
+
+.adminSignOut:focus-visible,
+.adminLink:focus-visible,
+.adminLinkButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.adminSignOut:disabled {
+    opacity: var(--state-disabled-opacity);
+}
+
+.adminError {
+    margin: 0 0 var(--space-md);
+    color: var(--color-danger);
+    font-size: var(--text-sm);
+}
+
+.adminGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-md);
+}
+
+.adminCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.adminCardTitle {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+.adminCardValue {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--leading-tight);
+}
+
+.adminCardBody {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+}
+
+.adminLink,
+.adminLinkButton {
+    border-radius: var(--radius-xs);
+    color: var(--color-accent-text);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.adminLink:hover,
+.adminLinkButton:hover {
+    text-decoration: underline;
+}
+
+.adminLinkButton {
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: inherit;
+}
+
+.adminDraftList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+}
+
+.adminDraftMeta {
+    color: var(--color-text-muted);
+}

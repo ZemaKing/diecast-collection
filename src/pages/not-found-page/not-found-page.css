@@ -40,7 +40,8 @@
     min-height: var(--tap-target);
     padding: 0 var(--space-xl);
     background: var(--color-accent);
-    color: var(--color-text-inverse);
+    /* on-accent, not text-inverse: text-inverse is white in the light theme (1.6:1 on gold) */
+    color: var(--color-on-accent);
     border-radius: var(--radius-md);
     font-weight: var(--weight-semibold);
     text-decoration: none;

@@ -9,6 +9,7 @@ import {Search} from "../../icons/Search.tsx";
 import {MEDIA} from "../../styles/breakpoints.ts";
 import {getSearchQueryFromSearchParams, withSearchQuery} from "../../utils/url-params.ts";
 import {ThemeToggle} from "../ThemeToggle/ThemeToggle.tsx";
+import {AccountMenu} from "./AccountMenu.tsx";
 
 import "./Header.css";
 
@@ -85,17 +86,17 @@ export function Header({count}: Props) {
         };
         document.addEventListener("keydown", onKeyDown);
 
-        // The drawer is mobile-only content; if a resize (or rotation) crosses into
-        // tablet/desktop, the inline nav takes over and a stuck-open drawer would double up.
-        const tabletUp = window.matchMedia(MEDIA.tabletUp);
-        const onTabletUp = (e: MediaQueryListEvent) => {
+        // The drawer is below-desktop content; if a resize (or rotation) crosses into desktop, the
+        // inline nav takes over and a stuck-open drawer would double up.
+        const desktopUp = window.matchMedia(MEDIA.desktopUp);
+        const onDesktopUp = (e: MediaQueryListEvent) => {
             if (e.matches) setIsMenuOpen(false);
         };
-        tabletUp.addEventListener("change", onTabletUp);
+        desktopUp.addEventListener("change", onDesktopUp);
 
         return () => {
             document.removeEventListener("keydown", onKeyDown);
-            tabletUp.removeEventListener("change", onTabletUp);
+            desktopUp.removeEventListener("change", onDesktopUp);
         };
     }, [isMenuOpen]);
 
@@ -138,6 +139,7 @@ export function Header({count}: Props) {
 
                 <div className="siteHeaderActions">
                     <span className="modelCountPill">{count} models</span>
+                    <AccountMenu/>
                     <ThemeToggle/>
                     <a
                         className="socialLink"
