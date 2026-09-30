@@ -23,6 +23,7 @@
     "verify:rls": "node --env-file-if-exists=.env.local scripts/verify-rls.mjs",
     "verify:migration": "tsx --env-file-if-exists=.env.local scripts/verify-migration.ts",
     "verify:stats": "tsx --env-file-if-exists=.env.local scripts/verify-stats.ts",
+    "verify:model-form": "tsx --env-file-if-exists=.env.local scripts/verify-model-form.ts",
     "images:migrate": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts upload",
     "images:check": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts verify",
     "images:flip": "tsx --env-file-if-exists=.env.local scripts/migrate-images/flip.ts",

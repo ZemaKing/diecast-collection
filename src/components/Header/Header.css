@@ -291,6 +291,17 @@
     background: var(--color-accent-soft);
 }
 
+.headerSocial {
+    display: none;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.mobileSocial {
+    display: flex;
+    gap: var(--space-sm);
+}
+
 .menuButton {
     display: flex;
     align-items: center;
@@ -368,9 +379,14 @@
         display: flex;
     }
 
-    /* The drawer's own search box is for phones only — tablet has the inline one. */
-    .siteSearchMobile {
+    /* The drawer's own search box and social links are for phones only — tablet has them inline. */
+    .siteSearchMobile,
+    .mobileSocial {
         display: none;
+    }
+
+    .headerSocial {
+        display: flex;
     }
 }
 

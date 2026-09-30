@@ -1,10 +1,10 @@
-// Lookup-table reads: brands, manufacturers, categories, colors. Small, rarely-changing tables —
+// Lookup-table reads: brands, manufacturers, categories, colors, drivers. Small, rarely-changing tables —
 // each is one unfiltered `select *`.
 import {supabase} from "../lib/supabase.ts";
 
 import {mapCategory} from "./mappers.ts";
 import {unwrap} from "./supabase-query.ts";
-import type {Category, LookupRef} from "./types.ts";
+import type {Category, Driver, LookupRef} from "./types.ts";
 
 export async function getBrands(): Promise<LookupRef[]> {
     const rows = await unwrap(supabase.from("brands").select("*").order("name"));
@@ -24,4 +24,10 @@ export async function getCategories(): Promise<Category[]> {
 export async function getColors(): Promise<{slug: string; name: string; hex: string | null}[]> {
     const rows = await unwrap(supabase.from("colors").select("*").order("sort_order"));
     return rows.map((r) => ({slug: r.slug, name: r.name, hex: r.hex}));
+}
+
+// Every driver, for the admin form's driver picker (Phase 25). ~140 rows — one small read.
+export async function getDrivers(): Promise<Driver[]> {
+    const rows = await unwrap(supabase.from("drivers").select("*").order("name"));
+    return rows.map((r) => ({slug: r.slug, name: r.name, countryCode: r.country_code}));
 }

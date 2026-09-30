@@ -7,12 +7,14 @@ import {Header} from "../../components/Header/Header";
 import {CategoryLabel} from "../../components/CategoryLabel/CategoryLabel";
 import {Lightbox} from "../../components/Gallery/Lightbox.tsx";
 import {ModelGallery} from "../../components/Gallery/ModelGallery.tsx";
+import {ModelAdminActions} from "../../components/ModelAdminActions/ModelAdminActions.tsx";
 import {modelPhotoLabel, useGallery} from "../../components/Gallery/useGallery.ts";
 import {LogoOrText} from "../../components/ModelCard/LogoOrText.tsx";
 import {SpecTiles, SpecTilesSkeleton} from "../../components/SpecTiles/SpecTiles.tsx";
 import {NotFoundPage} from "../not-found-page/not-found-page";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
+import {useIsAdmin} from "../../hooks/useSession.ts";
 import {Check} from "../../icons/Check.tsx";
 import type {AppError} from "../../lib/errors.ts";
 import {getModelBySlug, getModels} from "../../services/models.ts";
@@ -30,7 +32,7 @@ import {
     type SpecRow,
 } from "../../utils/model-details.ts";
 import {browsePath} from "../../utils/browse-link.ts";
-import {collectionPath, readCollectionSearch, type ModelLinkState} from "../../utils/model-link.ts";
+import {collectionPath, readAdminNotice, readCollectionSearch, type ModelLinkState} from "../../utils/model-link.ts";
 
 // The page reuses the card's photo badges (manufacturer/scale) and skeleton shimmer — imported
 // explicitly, since a direct load of /models/:slug never renders a ModelCard.
@@ -47,8 +49,8 @@ import "./model-details-page.css";
 // Deliberately not rendered (see the Phase 19 notes in ROADMAP.md):
 // - the heart / "Add to Collection" button — its meaning on a single-owner site is still open;
 // - the "Notes" tab and the "Collected" badge — notes are admin-private, and every model is owned;
-// - admin Edit / Delete / "…" — there is no auth yet; they go in the header's action slot below in
-//   Phases 24/25, visible to the admin only.
+// - the mockup's "…" menu — Edit and Delete (Phase 25) sit in the header as plain buttons, for the
+//   admin only (ModelAdminActions).
 
 const TAB_PARAM = "tab";
 
@@ -71,6 +73,7 @@ export function ModelDetailsPage() {
     }
 
     const collectionSearch = readCollectionSearch(location.state);
+    const adminNotice = readAdminNotice(location.state);
     const backState: ModelLinkState = {focusModel: slug};
 
     return (
@@ -89,6 +92,7 @@ export function ModelDetailsPage() {
                 />
 
                 <main className="main">
+                    {adminNotice && <p className="adminNotice" role="status">{adminNotice}</p>}
                     {modelQuery.isPending ? (
                         <DetailsSkeleton/>
                     ) : modelQuery.isError ? (
@@ -114,6 +118,7 @@ function ModelDetails({model}: {model: Model}) {
     const hasRacingBadges = model.isRacing && (model.carNumber !== null || !!model.driver);
     const gallery = useGallery(model.images);
     const photoLabel = modelPhotoLabel(model);
+    const isAdmin = useIsAdmin();
 
     return (
         <>
@@ -135,7 +140,7 @@ function ModelDetails({model}: {model: Model}) {
                             <span className="detailsBrandLogo">
                                 <LogoOrText logoPath={model.brand.logoPath} name={model.brand.name} textClassName="detailsBrandText"/>
                             </span>
-                            {/* Admin actions slot (Edit / Delete / …) — Phases 24/25. */}
+                            {isAdmin && <ModelAdminActions model={model}/>}
                         </div>
 
                         <h1 id="model-title" className="detailsTitle">{model.name}</h1>

@@ -62,6 +62,13 @@ describe("toAppError", () => {
         expect(toAppError(once)).toBe(once);
     });
 
+    it("shows the message of our own user-facing SQL errors (class ZK) as-is", () => {
+        const taken = toAppError({code: "ZK409", message: 'A model with the address "x-2020" already exists.', status: 400});
+        expect(taken).toMatchObject({kind: "conflict", message: 'A model with the address "x-2020" already exists.', retryable: false});
+        expect(toAppError({code: "ZK422", message: "Choose a category."})).toMatchObject({kind: "validation", message: "Choose a category."});
+        expect(toAppError({code: "ZK404", message: ""})).toMatchObject({kind: "not_found", message: "That item couldn't be found."});
+    });
+
     it("gives a specific message for bad credentials", () => {
         expect(toAppError({name: "AuthApiError", status: 400, code: "invalid_credentials"}).message).toBe("Wrong email or password.");
     });

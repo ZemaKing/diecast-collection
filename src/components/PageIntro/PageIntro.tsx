@@ -9,15 +9,17 @@ type PageIntroProps = {
     subtitle?: string | null;
     // Controls on the right (e.g. the browse index's order toggle).
     children?: ReactNode;
+    // For a form or section labelled by this heading (the model form, Phase 25).
+    titleId?: string;
 };
 
 // The heading block of a top-level page: eyebrow, <h1>, subtitle (Phase 22/23).
-export function PageIntro({eyebrow, title, subtitle, children}: PageIntroProps) {
+export function PageIntro({eyebrow, title, subtitle, children, titleId}: PageIntroProps) {
     return (
         <header className="pageIntro">
             <div>
                 <p className="pageEyebrow">{eyebrow}</p>
-                <h1 className="pageTitle">{title}</h1>
+                <h1 id={titleId} className="pageTitle">{title}</h1>
                 <p className="pageSubtitle">{subtitle ?? " "}</p>
             </div>
             {children}

@@ -141,18 +141,11 @@ export function Header({count}: Props) {
                     <span className="modelCountPill">{count} models</span>
                     <AccountMenu/>
                     <ThemeToggle/>
-                    <a
-                        className="socialLink"
-                        href="https://www.instagram.com/zemaking89/"
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Instagram"
-                    >
-                        <Instagram width={18} height={18}/>
-                    </a>
-                    <a className="socialLink" href="mailto:zematule@gmail.com" aria-label="Email">
-                        <Email width={18} height={18}/>
-                    </a>
+                    {/* Below 640px they move into the drawer: with the signed-in avatar the row
+                        otherwise pushed the menu button off a 360px screen. */}
+                    <span className="headerSocial">
+                        <SocialLinks/>
+                    </span>
                     <button
                         ref={menuButtonRef}
                         type="button"
@@ -186,8 +179,31 @@ export function Header({count}: Props) {
                             </button>
                         )}
                     </label>
+
+                    <div className="mobileSocial">
+                        <SocialLinks/>
+                    </div>
                 </div>
             )}
         </header>
+    );
+}
+
+function SocialLinks() {
+    return (
+        <>
+            <a
+                className="socialLink"
+                href="https://www.instagram.com/zemaking89/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+            >
+                <Instagram width={18} height={18}/>
+            </a>
+            <a className="socialLink" href="mailto:zematule@gmail.com" aria-label="Email">
+                <Email width={18} height={18}/>
+            </a>
+        </>
     );
 }

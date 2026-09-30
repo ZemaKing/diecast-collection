@@ -1,5 +1,5 @@
-// `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6 (and the Phase 21 Storage
-// bucket policies) against a live project,
+// `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6, the Phase 21 Storage bucket
+// policies and the Phase 25 model-form write path (diecast.save_model) against a live project,
 // using only the PUBLIC anon key plus two real logins (never the service-role key):
 //
 //   RLS_ADMIN_EMAIL / RLS_ADMIN_PASSWORD  — the owner (row in diecast.admin_users)
@@ -69,6 +69,8 @@ async function createFixtures(admin) {
 
 async function cleanup(admin, f) {
     if (!f) return;
+    // Models created through save_model (Phase 25 checks) — their colors cascade.
+    await admin.from("models").delete().like("slug", `zz-rls-form%-${suffix}`);
     await admin.from("models").delete().in("id", [f.published?.id, f.draft?.id].filter(Boolean));
     await admin.from("tags").delete().in("id", [f.tag?.id, f.spareTag?.id].filter(Boolean));
     await admin.from("colors").delete().in("id", [f.color?.id, f.spareColor?.id].filter(Boolean));
@@ -129,6 +131,58 @@ async function checkOutsider(who, c, f, uid) {
     check(who, "DELETE models removes nothing", !!delError || deleted.length === 0, delError?.code ?? `${deleted?.length} rows`);
     const {data: lookupDel, error: lookupErr} = await c.from("brands").delete().eq("id", f.brand.id).select();
     check(who, "DELETE brands removes nothing", !!lookupErr || lookupDel.length === 0, lookupErr?.code ?? `${lookupDel?.length} rows`);
+
+    // The model form's write path (Phase 25): save_model() runs with the caller's rights.
+    const {error: createErr} = await c.rpc("save_model", {p_model: formPayload(f, slug(`form-${who}`))});
+    check(who, "save_model create denied", denied(createErr), createErr ? createErr.code : "CREATE SUCCEEDED");
+    const {error: editErr} = await c.rpc("save_model", {
+        p_model: {...formPayload(f, f.published.slug), name: "HACKED", is_published: true},
+        p_original_slug: f.published.slug,
+    });
+    check(who, "save_model update denied", denied(editErr), editErr ? editErr.code : "UPDATE SUCCEEDED");
+    const {count: created} = await c.from("models").select("id", {count: "exact", head: true}).eq("slug", slug(`form-${who}`));
+    check(who, "save_model left no model behind", !created, `${created} rows`);
+}
+
+// A valid save_model payload built on the fixtures (a non-racing Rally draft).
+function formPayload(f, modelSlug) {
+    return {
+        slug: modelSlug, name: "ZZ RLS Form", year: 2001, scale: "1:43",
+        brand: {slug: f.brand.slug}, manufacturer: {slug: f.manufacturer.slug}, category_slug: "rally",
+        color_slugs: [f.color.slug], livery_hex: ["#123ABC"], is_racing: false, driver: null, is_published: false,
+    };
+}
+
+// Admin side of the model form (Phase 25): create a draft, anon can't see it, a duplicate slug is
+// refused with a clear message, edits apply, an unchanged save writes nothing, delete cascades.
+async function checkModelForm(admin, anon, f) {
+    const formSlug = slug("form");
+    const {data: created, error: createErr} = await admin.rpc("save_model", {p_model: formPayload(f, formSlug)});
+    check("admin", "save_model creates a draft", !createErr && created?.created === true, createErr?.message ?? JSON.stringify(created));
+    if (createErr) return;
+
+    const {data: anonSees} = await anon.from("model_summaries").select("id").eq("slug", formSlug);
+    check("anon", "does NOT see a draft saved with the form", anonSees?.length === 0, `${anonSees?.length} rows`);
+    // Separate reads: embedding model_colors from models is ambiguous (the view shares its FK).
+    const {data: formModel} = await admin.from("models").select("id").eq("slug", formSlug).single();
+    const {count: colorCount} = await admin.from("model_colors").select("model_id", {count: "exact", head: true}).eq("model_id", formModel?.id ?? "");
+    check("admin", "save_model writes the colors in the same call", colorCount === 1, `${colorCount} colors`);
+
+    const {error: dupErr} = await admin.rpc("save_model", {p_model: formPayload(f, formSlug)});
+    check("admin", "duplicate slug rejected with a clear message", dupErr?.code === "ZK409" && /already exists/.test(dupErr.message), dupErr ? `${dupErr.code} ${dupErr.message}` : "DUPLICATE SAVED");
+
+    const edited = {...formPayload(f, formSlug), name: "ZZ RLS Form Edited", color_slugs: [f.spareColor.slug, f.color.slug]};
+    const {data: edit, error: editErr} = await admin.rpc("save_model", {p_model: edited, p_original_slug: formSlug});
+    check("admin", "save_model edits", !editErr && edit?.changed === true, editErr?.message ?? JSON.stringify(edit));
+    const {data: again} = await admin.rpc("save_model", {p_model: edited, p_original_slug: formSlug});
+    check("admin", "an unchanged save writes nothing", again?.changed === false, JSON.stringify(again));
+    const {data: renamed} = await admin.rpc("save_model", {p_model: {...edited, slug: "zz-rls-renamed"}, p_original_slug: formSlug});
+    check("admin", "the slug is stable after creation", renamed?.slug === formSlug, JSON.stringify(renamed));
+
+    const {data: gone, error: delErr} = await admin.from("models").delete().eq("slug", formSlug).select("id");
+    check("admin", "DELETE models works", !delErr && gone?.length === 1, delErr?.message ?? `${gone?.length} rows`);
+    const {count: leftColors} = await admin.from("model_colors").select("model_id", {count: "exact", head: true}).eq("model_id", formModel?.id ?? "");
+    check("admin", "deleting a model removes its colors (cascade)", leftColors === 0, `${leftColors} left`);
 }
 
 async function checkAdmin(admin, f) {
@@ -197,6 +251,7 @@ try {
     await checkOutsider("anon", client(), fixtures, userId);
     await checkOutsider("user", user, fixtures, userId);
     await checkAdmin(admin, fixtures);
+    await checkModelForm(admin, client(), fixtures);
 } catch (error) {
     check("setup", "fixtures / run", false, error.message);
 } finally {

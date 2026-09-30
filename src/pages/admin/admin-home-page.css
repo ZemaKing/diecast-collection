@@ -108,3 +108,31 @@
 .adminDraftMeta {
     color: var(--color-text-muted);
 }
+
+.adminIntroActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+/* Add Model (Phase 25) — the dashboard's primary action, gold like the form's Save. */
+.adminPrimary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding: 0 var(--space-lg);
+    background: var(--color-accent);
+    border-radius: var(--radius-md);
+    color: var(--color-on-accent);
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+}
+
+.adminPrimary:hover {
+    background: var(--color-accent-hover);
+}
+
+.adminPrimary:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}

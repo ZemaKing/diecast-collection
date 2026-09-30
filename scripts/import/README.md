@@ -28,7 +28,7 @@ Needs `VITE_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`. The s
   - driver country codes.
 - **Never deletes models.** Models in the database but not in the JSON are listed as a warning.
 
-> Once models are edited in the admin UI (Phase 25+), **don't re-run the import**: it would reset the owned columns above to the JSON values. The JSON is archived in Phase 11.
+> **Models are edited in the admin UI now (Phase 25, `/admin`), so don't re-run the import with `--apply`**: it would reset the owned columns above to the JSON values, undoing those edits. `car-models.json` is a frozen snapshot of 2026-09-28 (migration source, test fixture, backup). A dry run still works as a comparison, and warns when `--apply` would revert anything.
 
 ## Inputs (versioned, reviewed)
 

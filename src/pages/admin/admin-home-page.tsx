@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
 import {Header} from "../../components/Header/Header";
@@ -9,15 +9,16 @@ import {useSession, useSignOut} from "../../hooks/useSession.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getDraftModels} from "../../services/models.ts";
 import type {ModelSummary} from "../../services/types.ts";
-import {modelPath} from "../../utils/model-link.ts";
+import {editModelPath, modelPath, NEW_MODEL_PATH, readAdminNotice} from "../../utils/model-link.ts";
 
 import "../collection-page/collection-page.css";
+import "../../components/ModelAdminActions/ModelAdminActions.css";
 import "./admin-home-page.css";
 
-// `/admin` (ROADMAP Phase 24) — the owner's landing page behind AdminRoute. Today it holds the
-// one admin-only thing that exists: unpublished drafts (RLS shows them to admins only; every
-// public page asks for published models explicitly). The model form (Add / Edit / Delete) lands
-// here in Phase 25.
+// `/admin` (ROADMAP Phase 24) — the owner's landing page behind AdminRoute: Add Model (Phase 25),
+// and unpublished drafts (RLS shows them to admins only; every public page asks for published
+// models explicitly). Edit / Delete live on each model's page, and after a delete the owner lands
+// here with the confirmation.
 export function AdminHomePage() {
     const session = useSession();
     const count = useModelCount();
@@ -25,6 +26,7 @@ export function AdminHomePage() {
 
     const draftsQuery = useQuery<ModelSummary[], AppError>({queryKey: ["models", "drafts"], queryFn: getDraftModels});
     const signOutMutation = useSignOut();
+    const notice = readAdminNotice(useLocation().state);
 
     return (
         <div className="layout">
@@ -33,15 +35,20 @@ export function AdminHomePage() {
             <div className="content">
                 <main className="main">
                     <PageIntro eyebrow="Admin" title="Dashboard" subtitle={email ? `Signed in as ${email}` : null}>
-                        <button
-                            type="button"
-                            className="adminSignOut"
-                            onClick={() => signOutMutation.mutate()}
-                            disabled={signOutMutation.isPending}
-                        >
-                            {signOutMutation.isPending ? "Signing out…" : "Sign out"}
-                        </button>
+                        <div className="adminIntroActions">
+                            <Link to={NEW_MODEL_PATH} className="adminPrimary">+ Add Model</Link>
+                            <button
+                                type="button"
+                                className="adminSignOut"
+                                onClick={() => signOutMutation.mutate()}
+                                disabled={signOutMutation.isPending}
+                            >
+                                {signOutMutation.isPending ? "Signing out…" : "Sign out"}
+                            </button>
+                        </div>
                     </PageIntro>
+
+                    {notice && <p className="adminNotice" role="status">{notice}</p>}
 
                     {signOutMutation.isError && (
                         <p className="adminError" role="alert">{signOutMutation.error.message}</p>
@@ -66,7 +73,7 @@ export function AdminHomePage() {
                             ) : draftsQuery.data.length === 0 ? (
                                 <>
                                     <p className="adminCardValue">0</p>
-                                    <p className="adminCardBody">No drafts — every model is published.</p>
+                                    <p className="adminCardBody">No drafts — every model is published. “Save as Draft” in the model form keeps one here until it's ready.</p>
                                 </>
                             ) : (
                                 <>
@@ -76,7 +83,8 @@ export function AdminHomePage() {
                                         {draftsQuery.data.map((m) => (
                                             <li key={m.slug}>
                                                 <Link to={modelPath(m.slug)} className="adminLink">{m.name}</Link>
-                                                <span className="adminDraftMeta"> · {m.year} · {m.manufacturer.name}</span>
+                                                <span className="adminDraftMeta"> · {m.year} · {m.manufacturer.name} · </span>
+                                                <Link to={editModelPath(m.slug)} className="adminLink" aria-label={`Edit ${m.name}`}>Edit</Link>
                                             </li>
                                         ))}
                                     </ul>

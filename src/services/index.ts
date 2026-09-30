@@ -6,3 +6,4 @@ export * from "./stats.ts";
 export * from "./browse.ts";
 export * from "./auth-state.ts";
 export * from "./auth.ts";
+export * from "./model-admin.ts";

@@ -1,0 +1,170 @@
+/* Searchable picker (Phase 25) — the "select" fields of the Create/Edit mockup (Brand, Manufacturer,
+   Color, Driver), with the same box as the form's text inputs (.formInput). */
+
+.combobox {
+    position: relative;
+    min-width: 0;
+}
+
+.comboboxField {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: var(--tap-target);
+    padding: 0 var(--space-xs) 0 var(--space-md);
+    background: var(--color-surface-sunken);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+}
+
+.comboboxField:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: var(--focus-ring);
+}
+
+.comboboxInvalid .comboboxField {
+    border-color: var(--color-danger);
+}
+
+.comboboxDisabled .comboboxField {
+    opacity: var(--state-disabled-opacity);
+}
+
+.comboboxLeading {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.comboboxInput {
+    flex: 1;
+    min-width: 0;
+    height: calc(var(--tap-target) - 2 * var(--border-width));
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+}
+
+/* The field box around it shows the focus ring (:focus-within) — not the bare input too. */
+.comboboxInput:focus,
+.comboboxInput:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.comboboxInput::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.comboboxIconButton {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.comboboxIconButton:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.comboboxIconButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.comboboxChevron,
+.comboboxChevronOpen {
+    transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.comboboxChevron {
+    transform: rotate(90deg);
+}
+
+.comboboxChevronOpen {
+    transform: rotate(-90deg);
+}
+
+.comboboxList {
+    position: absolute;
+    z-index: var(--z-dropdown);
+    top: calc(100% + var(--space-2xs));
+    left: 0;
+    right: 0;
+    max-height: 280px;
+    margin: 0;
+    padding: var(--space-2xs);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.comboboxList[hidden] {
+    display: none;
+}
+
+.comboboxOption {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 36px;
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: var(--text-sm);
+}
+
+.comboboxOptionActive {
+    background: var(--color-surface-hover);
+}
+
+.comboboxOption[aria-selected="true"] {
+    color: var(--color-accent-text);
+    font-weight: var(--weight-bold);
+}
+
+.comboboxOptionIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.comboboxOptionLabel {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.comboboxOptionHint {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.comboboxCreate {
+    border-top: var(--border-width) solid var(--color-border-subtle);
+    color: var(--color-accent-text);
+    font-weight: var(--weight-semibold);
+}
+
+.comboboxEmpty {
+    padding: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}

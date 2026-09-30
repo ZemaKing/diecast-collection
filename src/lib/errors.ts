@@ -47,6 +47,14 @@ const PG_CODES: Record<string, AppErrorKind> = {
     "42501": "permission", // insufficient_privilege / RLS violation
 };
 
+// Errors our own SQL functions raise for the user (class ZK — e.g. diecast.save_model(), Phase 25).
+// Their message is written for people, so it's shown as-is instead of the generic one.
+const ZK_CODES: Record<string, AppErrorKind> = {
+    ZK404: "not_found",
+    ZK409: "conflict",
+    ZK422: "validation",
+};
+
 // PostgREST codes. https://postgrest.org/en/stable/references/errors.html
 const PGRST_CODES: Record<string, AppErrorKind> = {
     PGRST116: "not_found", // .single() matched 0 rows
@@ -109,6 +117,10 @@ export function toAppError(error: unknown): AppError {
     const base = {code, status, cause: error};
 
     if (isNetworkFailure(e)) return make("network", base);
+    if (code && ZK_CODES[code]) {
+        const message = typeof e.message === "string" && e.message.trim() ? e.message : undefined;
+        return make(ZK_CODES[code], message ? {...base, message} : base);
+    }
     if (code && PG_CODES[code]) return make(PG_CODES[code], base);
     if (code && PGRST_CODES[code]) return make(PGRST_CODES[code], base);
 

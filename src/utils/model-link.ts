@@ -4,6 +4,22 @@ export function modelPath(slug: string): string {
     return `/models/${encodeURIComponent(slug)}`;
 }
 
+// The admin model form (Phase 25). The slug is stable, so an edit link never goes stale.
+export const NEW_MODEL_PATH = "/admin/models/new";
+
+export function editModelPath(slug: string): string {
+    return `/admin/models/${encodeURIComponent(slug)}/edit`;
+}
+
+// A one-line confirmation an admin action hands to the page it lands on ("Saved …", "Deleted …"),
+// carried in router state — never in the URL, so it can't be shared or bookmarked.
+export type AdminNoticeState = {adminNotice?: string};
+
+export function readAdminNotice(state: unknown): string | null {
+    const value = (state as AdminNoticeState | null)?.adminNotice;
+    return typeof value === "string" && value ? value : null;
+}
+
 // Router location state carried from the collection to a model and back:
 // - `collectionSearch`: the collection's query string when the model was opened, so "Collection"
 //   in the breadcrumb returns to the same filters/search/sort.

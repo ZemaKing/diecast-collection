@@ -1,6 +1,15 @@
 import {describe, expect, it} from "vitest";
 
-import {collectionPath, getLegacyModelRedirect, modelPath, readCollectionSearch, readFocusModel} from "./model-link.ts";
+import {
+    collectionPath,
+    editModelPath,
+    getLegacyModelRedirect,
+    modelPath,
+    NEW_MODEL_PATH,
+    readAdminNotice,
+    readCollectionSearch,
+    readFocusModel,
+} from "./model-link.ts";
 
 describe("modelPath", () => {
     it("builds the details route, encoding the slug", () => {
@@ -66,5 +75,19 @@ describe("getLegacyModelRedirect", () => {
         const params = new URLSearchParams("model=x&brand=ford");
         getLegacyModelRedirect(params);
         expect(params.toString()).toBe("model=x&brand=ford");
+    });
+});
+
+describe("admin model paths & notices (Phase 25)", () => {
+    it("builds the form's URLs", () => {
+        expect(NEW_MODEL_PATH).toBe("/admin/models/new");
+        expect(editModelPath("ferrari-499p-2023-burago-red")).toBe("/admin/models/ferrari-499p-2023-burago-red/edit");
+    });
+
+    it("reads a notice only when it's a non-empty string", () => {
+        expect(readAdminNotice({adminNotice: "Changes saved."})).toBe("Changes saved.");
+        expect(readAdminNotice({adminNotice: ""})).toBeNull();
+        expect(readAdminNotice({adminNotice: 42})).toBeNull();
+        expect(readAdminNotice(null)).toBeNull();
     });
 });

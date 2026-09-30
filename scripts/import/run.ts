@@ -91,4 +91,15 @@ console.log(
     ` · drivers ${result.totals.drivers} · model_colors ${result.totals.model_colors} · images ${result.totals.model_images}` +
     ` · changes ${changes} · Warnings: ${warnings.length} · Failed: 0`,
 );
+// Since Phase 25 models are edited in the admin form; the JSON is a frozen snapshot. An update
+// here means the database differs from that snapshot — most likely an edit made in the UI, which
+// --apply would silently revert.
+const updatedModels = (result.models?.updated ?? 0) + (result.model_colors?.deleted ?? 0);
+if (updatedModels > 0) {
+    console.log(
+        `
+⚠ ${updatedModels} model/color change(s) would ${result.dry_run ? "be" : "have been"} reverted to the JSON values.` +
+        " Models are edited in the admin form now (/admin) — don't --apply unless you mean to undo those edits.",
+    );
+}
 if (result.dry_run) console.log("Nothing was written. Re-run with --apply to import.");

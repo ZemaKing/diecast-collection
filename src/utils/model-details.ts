@@ -63,8 +63,9 @@ export function formatColors(model: Pick<Model, "colors">): string | null {
     return model.colors.length > 0 ? model.colors.map((c) => c.name).join(" / ") : null;
 }
 
-// Values are the `models.condition` check constraint (docs/SCHEMA.md §4.1).
-const CONDITION_LABELS: Record<string, string> = {
+// Values are the `models.condition` check constraint (docs/SCHEMA.md §4.1), best first — also the
+// admin form's option order (Phase 25).
+export const CONDITION_LABELS: Record<string, string> = {
     mint: "Mint",
     near_mint: "Near Mint",
     excellent: "Excellent",

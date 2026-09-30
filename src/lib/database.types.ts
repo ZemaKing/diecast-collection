@@ -532,6 +532,11 @@ export type Database = {
             }
             is_admin: {Args: never; Returns: boolean}
             is_hex_palette: {Args: {p: string[]}; Returns: boolean}
+            resolve_model_lookup: {Args: {p_ref: Json; p_table: string}; Returns: string}
+            save_model: {
+                Args: {p_dry_run?: boolean; p_model: Json; p_original_slug?: string}
+                Returns: Json
+            }
             set_image_storage: {Args: {p_dry_run?: boolean; p_rows: Json}; Returns: Json}
         }
         Enums: {

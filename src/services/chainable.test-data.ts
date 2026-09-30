@@ -19,6 +19,8 @@ export function chainable<T>(result: QueryResult<T>) {
         limit: record("limit"),
         single: record("single"),
         maybeSingle: record("maybeSingle"),
+        delete: record("delete"),
+        in: record("in"),
         then: (onFulfilled: (r: QueryResult<T>) => unknown, onRejected?: (e: unknown) => unknown) =>
             Promise.resolve(result).then(onFulfilled, onRejected),
     };
