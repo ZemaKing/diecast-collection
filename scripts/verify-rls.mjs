@@ -1,4 +1,5 @@
-// `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6 against a live project,
+// `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6 (and the Phase 21 Storage
+// bucket policies) against a live project,
 // using only the PUBLIC anon key plus two real logins (never the service-role key):
 //
 //   RLS_ADMIN_EMAIL / RLS_ADMIN_PASSWORD  — the owner (row in diecast.admin_users)
@@ -147,6 +148,45 @@ async function checkAdmin(admin, f) {
     check("admin", "cannot write admin_users via API (SQL editor only)", denied(insErr), insErr?.code ?? "INSERT SUCCEEDED");
 }
 
+// Storage bucket `model-images` (Phase 21): public read via public URLs, admin-only writes, and
+// nobody but the admin can LIST it. The throw-away object lives under zz-rls/.
+const BUCKET = "model-images";
+const objectPath = `zz-rls/${suffix}.webp`;
+const webp = () => new Blob([new Uint8Array([82, 73, 70, 70])], {type: "image/webp"});
+
+async function checkStorage(anon, user, admin) {
+    for (const [who, c] of [["anon", anon], ["user", user]]) {
+        const {error} = await c.storage.from(BUCKET).upload(`zz-rls/${who}-${suffix}.webp`, webp(), {contentType: "image/webp"});
+        check(who, "storage upload denied", !!error, error?.message ?? "UPLOAD SUCCEEDED");
+    }
+    const {error: upErr} = await admin.storage.from(BUCKET).upload(objectPath, webp(), {contentType: "image/webp"});
+    check("admin", "storage upload works", !upErr, upErr?.message ?? "");
+    const {error: typeErr} = await admin.storage.from(BUCKET).upload(`zz-rls/${suffix}.txt`, new Blob(["x"]), {contentType: "text/plain"});
+    check("admin", "storage rejects non-image types", !!typeErr, typeErr?.message ?? "UPLOAD SUCCEEDED");
+
+    const publicUrl = admin.storage.from(BUCKET).getPublicUrl(objectPath).data.publicUrl;
+    const response = await fetch(publicUrl);
+    check("anon", "reads the object via its public URL", response.status === 200, `HTTP ${response.status}`);
+
+    for (const [who, c] of [["anon", anon], ["user", user]]) {
+        const {data} = await c.storage.from(BUCKET).list("zz-rls");
+        check(who, "cannot list the bucket", !data?.some((o) => objectPath.endsWith(o.name)), `${data?.length} listed`);
+        const {data: removed} = await c.storage.from(BUCKET).remove([objectPath]);
+        check(who, "storage delete removes nothing", !removed?.length, `${removed?.length} removed`);
+        const {error: overwrite} = await c.storage.from(BUCKET).upload(objectPath, webp(), {contentType: "image/webp", upsert: true});
+        check(who, "storage overwrite denied", !!overwrite, overwrite?.message ?? "OVERWRITE SUCCEEDED");
+    }
+    const {data: listed} = await admin.storage.from(BUCKET).list("zz-rls");
+    check("admin", "lists the bucket", !!listed?.some((o) => objectPath.endsWith(o.name)));
+}
+
+async function cleanupStorage(admin) {
+    const {data} = await admin.storage.from(BUCKET).list("zz-rls");
+    if (data?.length) await admin.storage.from(BUCKET).remove(data.map((o) => `zz-rls/${o.name}`));
+    const {data: left} = await admin.storage.from(BUCKET).list("zz-rls");
+    if (left?.length) console.warn(`⚠ ${left.length} object(s) left under ${BUCKET}/zz-rls/ — delete them in the dashboard.`);
+}
+
 const admin = await signIn(env.RLS_ADMIN_EMAIL, env.RLS_ADMIN_PASSWORD, "Admin");
 const user = await signIn(env.RLS_USER_EMAIL, env.RLS_USER_PASSWORD, "Non-admin user");
 const userId = (await user.auth.getUser()).data.user.id;
@@ -161,6 +201,13 @@ try {
     check("setup", "fixtures / run", false, error.message);
 } finally {
     await cleanup(admin, fixtures);
+}
+try {
+    await checkStorage(client(), user, admin);
+} catch (error) {
+    check("setup", "storage checks", false, error.message);
+} finally {
+    await cleanupStorage(admin);
 }
 
 const failed = results.filter((r) => !r.ok);

@@ -22,7 +22,11 @@
     "verify:types": "node --env-file-if-exists=.env.local scripts/verify-types.mjs",
     "verify:rls": "node --env-file-if-exists=.env.local scripts/verify-rls.mjs",
     "verify:migration": "tsx --env-file-if-exists=.env.local scripts/verify-migration.ts",
-    "db:types": "supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
+    "images:migrate": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts upload",
+    "images:check": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts verify",
+    "images:flip": "tsx --env-file-if-exists=.env.local scripts/migrate-images/flip.ts",
+    "images:verify": "tsx --env-file-if-exists=.env.local scripts/migrate-images/verify.ts",
+    "db:types":"supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
     "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"
   },
   "dependencies": {
@@ -43,6 +47,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^30.1.1",
+    "sharp": "^0.35.5",
     "supabase": "^2.118.0",
     "tsx": "^4.23.15",
     "typescript": "~5.9.3",

@@ -59,7 +59,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 18 | View Modes | ✅ Done | — (Showcase deferred by owner) |
 | 19 | Model Details Page | ✅ Done | Heart / "Add to Collection" meaning (open decision 7) |
 | 20 | Gallery, Lightbox & Quick View | ✅ Done | — |
-| 21 | Supabase Storage Migration | ⬜ | Run image migration |
+| 21 | Supabase Storage Migration | 🟡 Tooling done, awaiting owner run | Apply migration `20260930120000`; run upload → flip → verify (`scripts/migrate-images/README.md`) |
 | 22 | Manufacturer & Brand Browsing | ⬜ | Mockups (none exist) |
 | 23 | Collection Statistics | ⬜ | Mockup (none exists) |
 | 24 | Authentication & Admin Protection | ⬜ | Login mockup |
@@ -556,30 +556,35 @@ Gallery + lightbox + Quick View shipped; `DetailsModal` deleted or unreferenced.
 
 ---
 
-## Phase 21 — Supabase Storage Migration
+## Phase 21 — Supabase Storage Migration 🟡
 
 ### Goal
 Move images off postimg.cc into Supabase Storage safely.
 
 ### Tasks
-- [ ] Bucket `model-images`: public read, admin-only write policies; path scheme `models/{slug}/{position}-{full|thumb}.webp|png`
-- [ ] Resumable migration script with **retries** (audit saw transient fetch failures), checksums, `--dry-run`, skip-already-done
-- [ ] Keep `legacy_url` on `model_images` until verification; flip to `storage_path` only after checks
-- [ ] Thumbnails: check if Storage image transformations are available on the plan; otherwise generate at import (and at upload in Phase 27)
-- [ ] **WebP pipeline, reusable across apps (owner decision 2026-09-27, option A):** image transformations are a paid feature, and free egress is ~5 GB/month (~40 MB per full collection view with today's ~177 KB thumbnails). So generate WebP ourselves: thumbnail ~400 px / ~20–30 KB, full ~1600 px. Build it app-agnostic so the **games and recipes apps can copy it**:
-  - `scripts/images/`: config-driven batch converter (`sharp`): source list → sizes/quality → bucket + path pattern, with retries, resume and `--dry-run`. No diecast-specific code
-  - `src/lib/image-resize.ts`: self-contained browser helper (canvas → WebP) reused by the Phase 27 upload form
+- [x] Bucket `model-images`: public read, admin-only write policies; path scheme `models/{slug}/{position}-{full|thumb}.webp|png` *(migration `20260930120000_diecast_storage.sql` — **not applied yet**: public bucket, WebP/PNG/JPEG only, 5 MB limit; `storage.objects` INSERT/UPDATE/DELETE **and SELECT** only for `diecast.is_admin()` — public URLs need no policy, and without a SELECT policy anon can't list the bucket. `npm run verify:rls` gained 12 storage checks (75 total). Paths are `models/{slug}/{position}-full.webp` / `-thumb.webp`; `.png` is only the browser helper's fallback where a browser can't encode WebP)*
+- [x] Resumable migration script with **retries** (audit saw transient fetch failures), checksums, `--dry-run`, skip-already-done *(`npm run images:migrate` — dry run by default, `--apply` to upload. Retries: exponential backoff + jitter on network errors/timeouts/408/425/429/5xx, never on 404 — a 6-image trial run hit and recovered from a real `fetch failed`. Resume: a manifest (`scripts/migrate-images/manifest.json`) is rewritten after every source; a source is skipped when both variants are recorded from the same URL with the same settings **and** Storage still has them at the recorded size. Checksums: sha256 of every original and every output; each upload is followed by a size check, and `npm run images:check -- --full` downloads every object and compares sha256 + dimensions. One bad source never stops the batch; re-running retries only what failed)*
+- [x] Keep `legacy_url` on `model_images` until verification; flip to `storage_path` only after checks *(`legacy_url` = `external_url`/`thumb_external_url`, which nothing ever clears. `npm run images:flip` first re-verifies every object against the manifest (download + sha256 + dimensions) and refuses if any row isn't uploaded from its current URL, then sets `storage_path`, `thumb_storage_path`, `width`, `height` for all rows in **one transaction** via `diecast.set_image_storage()` (service role only; dry run by default, like the importer). The app needs no change — Phase 20's `resolveImageUrl()` already prefers `storage_path`)*
+- [x] Thumbnails: check if Storage image transformations are available on the plan; otherwise generate at import (and at upload in Phase 27) *(transformations are a paid feature → generated here: both variants from the full-size original, the old postimg thumbnails aren't used)*
+- [x] **WebP pipeline, reusable across apps (owner decision 2026-09-27, option A):** image transformations are a paid feature, and free egress is ~5 GB/month (~40 MB per full collection view with today's ~177 KB thumbnails). So generate WebP ourselves: thumbnail ~400 px / ~20–30 KB, full ~1600 px. Build it app-agnostic so the **games and recipes apps can copy it**:
+  - `scripts/images/`: config-driven batch converter (`sharp`): source list → sizes/quality → bucket + path pattern, with retries, resume and `--dry-run`. No diecast-specific code *(an app default-exports an `ImageJob` {bucket, pathPattern, variants, manifest, sources()} and runs `scripts/images/cli.ts <job> upload|verify`. Variants fit inside the box, never enlarge, EXIF-rotate, strip metadata, keep transparency. The diecast job + flip + verify live in `scripts/migrate-images/`. 37 unit tests (`scripts/images/*.test.ts`, `scripts/migrate-images/plan.test.ts`, `src/lib/image-resize.test.ts`) — real sharp conversions against a fake network/Storage: dry run uploads nothing, resume skips, vanished objects/changed URLs/changed settings are redone, 503s retried, 404s not, a size mismatch after upload fails the source, corrupted bytes are caught by the sha256 check)*
+  - `src/lib/image-resize.ts`: self-contained browser helper (canvas → WebP) reused by the Phase 27 upload form *(no imports; `resizeImageVariants(file, variants)` decodes once (`createImageBitmap`, EXIF-aware), halves step-wise before the final draw to avoid aliasing, `OffscreenCanvas` with a `<canvas>` fallback; reports `ext: "png"` where the browser has no WebP encoder)*
   - README in `scripts/images/` on how to adopt it in another repo. Extract into a shared package later only if the three copies start diverging
-- [ ] Verify total size fits the plan (est. ~230 MB); no base64 in Postgres
+- [x] Verify total size fits the plan (est. ~230 MB); no base64 in Postgres *(full dry run, 2026-09-30, all 227 originals: 198.7 MB of PNG → **30.7 MB** of WebP (full 227 × avg 114 KB, 1047–1280 px wide — no original exceeds 1600, so none is downscaled; thumb 227 × avg 24.7 KB, 9–32 KB), well inside the free plan's 1 GB. A full collection view drops from ~40 MB to ~5.5 MB of thumbnails. Postgres stores only paths)*
 
 ### Verification
-- [ ] Every image row resolves (HEAD 200); byte/dimension spot checks; page renders with Storage URLs
-- [ ] Rollback path documented (`legacy_url` still valid)
+- [ ] Every image row resolves (HEAD 200); byte/dimension spot checks; page renders with Storage URLs *(tooling ready: `npm run images:verify -- --legacy --sample=all` resolves each row with the app's own `resolveImageUrl()` and HEADs full + thumb, compares sampled objects with the manifest, and HEADs every postimg URL. Run today, before the migration: 227 rows, 454 URLs → all 200 (all still postimg). Pending the owner's run, then a browser check that images load from Storage)*
+- [x] Rollback path documented (`legacy_url` still valid) *(`scripts/migrate-images/README.md` § Rollback: `npm run images:flip -- --rollback --apply` clears both storage paths in one transaction and the app falls back to postimg with no deploy; objects stay in Storage for a re-flip. All 454 postimg URLs answered 200 on 2026-09-30)*
 
 ### Definition of Done
-All 227 models' images served from Storage; postimg URLs retained only as `legacy_url`.
+All 227 models' images served from Storage; postimg URLs retained only as `legacy_url`. *(pending the owner's run)*
 
-**Manual:** run the migration script locally with the service-role key.
+**Manual:** run the migration script locally with the service-role key. → **Runbook: [`scripts/migrate-images/README.md`](scripts/migrate-images/README.md)** — apply the migration, `npm run verify:rls`, `npm run images:migrate -- --apply`, `npm run images:check -- --full`, `npm run images:flip -- --apply`, `npm run images:verify -- --legacy --sample=all`, commit `scripts/migrate-images/manifest.json`.
+
+**Notes / deviations:**
+- New dev dependency **`sharp`** (0.35): the only maintained Node library that resizes and encodes WebP with good quality; prebuilt binaries, no install script, used by scripts only (never bundled).
+- Objects are served with `Cache-Control: max-age=604800` (a week) to save egress. Replacing a photo in Phase 27 should therefore write a **new path** rather than overwrite one.
+- `tsconfig.scripts.json` now includes `src/vite-env.d.ts`, so scripts can share `src/services/image-url.ts` (the bucket name) with the app.
 
 ---
 

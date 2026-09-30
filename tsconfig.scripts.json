@@ -26,6 +26,8 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    // Typed import.meta.env, for app modules the scripts share (src/services/image-url.ts).
+    "src/vite-env.d.ts"
   ]
 }

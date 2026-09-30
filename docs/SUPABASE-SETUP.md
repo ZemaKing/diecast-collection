@@ -47,7 +47,7 @@ Needs `RLS_ADMIN_EMAIL/PASSWORD` (the owner) and `RLS_USER_EMAIL/PASSWORD` (a se
 ```bash
 npm run verify:rls
 ```
-63 checks: anon and a non-admin user can read only published models, their children and lookups; they can't see drafts, private notes or the admin list; every INSERT/UPDATE/DELETE is denied; the admin can do everything except write `admin_users` through the API. The script creates temporary `zz-rls-*` rows as admin and deletes them again.
+75 checks: anon and a non-admin user can read only published models, their children and lookups; they can't see drafts, private notes or the admin list; every INSERT/UPDATE/DELETE is denied; the admin can do everything except write `admin_users` through the API. The script creates temporary `zz-rls-*` rows as admin and deletes them again. Since Phase 21 it also proves the `model-images` bucket (12 of the 75): anon/user can't upload, overwrite, delete or list, the admin can, non-image types are rejected, and the public URL serves (temporary objects under `zz-rls/`, deleted again).
 ```bash
 npm run verify:types
 ```
@@ -63,7 +63,10 @@ Log in with the **second** account. `link` asks for the database password; type 
 ### Exposed schema
 Project Settings → **Data API → Exposed schemas** includes `diecast` (done 2026-09-27).
 
-### 6. Vercel (Phase 10 / 37)
+### 6. Storage (Phase 21)
+Bucket `model-images` (public read, admin-only writes, WebP/PNG/JPEG up to 5 MB) is created by migration `20260930120000_diecast_storage.sql`. Moving the images there is a local, service-role run: see [`scripts/migrate-images/README.md`](../scripts/migrate-images/README.md) (upload → verify → flip, and the rollback).
+
+### 7. Vercel (Phase 10 / 37)
 Add the same two `VITE_` variables to Vercel when the site starts reading from Supabase (Phase 10). Until then production doesn't need them: nothing in the shipped UI imports the client.
 
 ## Scripts
@@ -73,7 +76,11 @@ Add the same two `VITE_` variables to Vercel when the site starts reading from S
 | `npm run supabase:check` | Checks `.env.local` against `/auth/v1/health` (URL reachable + key accepted) |
 | `npm run build` → `postbuild` | Scans `dist/` for service_role JWTs, `sb_secret_` keys and `SUPABASE_SERVICE_ROLE_KEY`, and fails the build if found |
 | `npm run import:cars` | JSON → Supabase import (dry run by default; `-- --apply` writes in one transaction). See `scripts/import/README.md`. Needs `SUPABASE_SERVICE_ROLE_KEY` |
-| `npm run verify:rls` | Live RLS proof as anon / non-admin / admin (63 checks) |
+| `npm run verify:rls` | Live RLS + Storage policy proof as anon / non-admin / admin (75 checks) |
+| `npm run images:migrate` | postimg → WebP → Storage (dry run by default; `-- --apply` uploads, resumable). See `scripts/migrate-images/README.md`. Needs `SUPABASE_SERVICE_ROLE_KEY` |
+| `npm run images:check` | Every uploaded object vs the manifest (`-- --full`: sha256 + dimensions) |
+| `npm run images:flip` | Verifies, then points `model_images` at Storage in one transaction (dry run by default; `-- --rollback` undoes it) |
+| `npm run images:verify` | Every image row resolves like the app does and answers HEAD 200; spot checks; `-- --legacy` checks the postimg rollback URLs |
 | `npm run verify:types` | Checks `database.types.ts` columns against the live schema |
 | `npm run db:push` | CLI-only alternative to the SQL editor; **repair the history first** (see Migrations) |
 | `npm run db:types` | Regenerates `src/lib/database.types.ts` for schema `diecast` (`db:types:local` for the Docker stack) |

@@ -154,8 +154,8 @@ After the alias map (D5): **138 drivers** (143 distinct strings − 5 merges). F
 | `model_id` | `uuid` | no | FK `models` CASCADE | |
 | `position` | `smallint` | no | ≥ 0, unique `(model_id, position)` | Gallery order |
 | `is_primary` | `boolean` | no | `false`; **partial unique index** `(model_id) where is_primary` | Exactly one primary is a Phase 27 UI rule; at most one is DB-enforced |
-| `storage_path` | `text` | yes | | Supabase Storage key for the full image (Phase 21+) |
-| `thumb_storage_path` | `text` | yes | | |
+| `storage_path` | `text` | yes | | Supabase Storage key for the full image (Phase 21+): `models/{slug}/{position}-full.webp` in bucket `model-images` |
+| `thumb_storage_path` | `text` | yes | | `models/{slug}/{position}-thumb.webp` (≤ 400 px) |
 | `external_url` | `text` | yes | check `^https://` | Today's postimg URL. **This is the roadmap's `legacy_url`.** It is kept after Phase 21 as the rollback path |
 | `thumb_external_url` | `text` | yes | check `^https://` | |
 | `alt` | `text` | yes | ≤ 200 | Defaults to the model name in the UI when NULL |
@@ -167,6 +167,8 @@ Row check: `storage_path is not null or external_url is not null`.
 **URL resolution (one function in the service layer — `resolveImageUrl()` in `src/services/image-url.ts`, Phase 20):** `storage_path` → public Storage URL, else `external_url`. Same for thumbnails, then fall back to the full image. No base64 or binary data in Postgres.
 
 Import: one row per model (position 0, `is_primary = true`, both postimg URLs) → **227 rows**.
+
+**Storage (Phase 21):** bucket `model-images` is public-read, admin-only write (migration `20260930120000_diecast_storage.sql`). Rows are flipped to Storage by `diecast.set_image_storage()` (service role, one transaction) only after every object is verified against the upload manifest; clearing the two `*_storage_path` columns rolls back to `external_url`. Runbook: `scripts/migrate-images/README.md`.
 
 ### 4.7 `tags` and `model_tags`
 

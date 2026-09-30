@@ -532,6 +532,7 @@ export type Database = {
             }
             is_admin: {Args: never; Returns: boolean}
             is_hex_palette: {Args: {p: string[]}; Returns: boolean}
+            set_image_storage: {Args: {p_dry_run?: boolean; p_rows: Json}; Returns: Json}
         }
         Enums: {
             [_ in never]: never
