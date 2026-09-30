@@ -56,7 +56,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 15 | Search & Sorting | ✅ Done | — |
 | 16 | Model Card Redesign | ✅ Done | — |
 | 17 | Collection Hero & Grid | ✅ Done | Hero background image (optional — slot ready) |
-| 18 | View Modes | ⬜ | Decide Showcase mode |
+| 18 | View Modes | ✅ Done | — (Showcase deferred by owner) |
 | 19 | Model Details Page | ⬜ | Decide public "My Collection" fields |
 | 20 | Gallery, Lightbox & Quick View | ⬜ | — |
 | 21 | Supabase Storage Migration | ⬜ | Run image migration |
@@ -487,22 +487,22 @@ Hero + grid match the Desktop mockup; usable on narrow widths. *(checked at 1440
 
 ---
 
-## Phase 18 — Alternative Collection Views
+## Phase 18 — Alternative Collection Views ✅
 
 ### Goal
 View modes defined by the mockup toolbar.
 
 ### Tasks
-- [ ] Grid (default), List, Compact (the three toolbar icons); each reuses card data
-- [ ] Persist choice in `localStorage` (guarded), not in the URL
-- [ ] **Showcase** carousel view is "optional" in the mockup — decide at phase start (build or defer)
+- [x] Grid (default), List, Compact (the three toolbar icons); each reuses card data *(all three render straight off `ModelSummary`, whole item = one `<button>` with `id={slug}` like the card, so `?model=` deep-link scroll and the modal keep working in every mode. **List** (`ModelListRow`): photo-led row — thumbnail, title + color dot, the card's meta row, inline racing info (number/driver only when present, audit D7), manufacturer logo + scale on the right. **Compact** (`ModelCompactRow`): dense table-like rows in one bordered block — small thumb · name · brand · year · manufacturer · racing · category, columns aligned via a shared grid template (racing column desktop-only, brand/manufacturer/year collapse into a sub-line on mobile). Both in `src/components/ModelCard/ModelRow.tsx`; the logo-with-text-fallback logic the card had inline is now a shared `LogoOrText` component, and `logoSrc()`/`countryCodeToFlagEmoji()` moved to `src/utils/model-display.ts`. Toolbar: the Phase 13 disabled placeholder icons are now a real `role="group"` of `aria-pressed` toggle buttons with SVG icons)*
+- [x] Persist choice in `localStorage` (guarded), not in the URL *(`src/utils/view-mode.ts` — `readViewMode()`/`writeViewMode()` take the storage as an argument and swallow every failure (missing storage, throwing getter/setter, unknown stored value → `grid`); `useViewMode()` hook on top. Key `zk-view-mode`, alongside the theme's `zk-theme`)*
+- [x] **Showcase** carousel view is "optional" in the mockup — decide at phase start (build or defer) → **deferred by the owner** (2026-09-30). It works best with the curated photography/`model_images` gallery that arrives in Phases 20–21; revisit then. An old/garbage `showcase` value in storage just falls back to Grid (tested)
 
 ### Verification
-- [ ] Switching preserves filters/search/sort/scroll sensibly; refresh keeps the mode
-- [ ] Each mode usable at 360 px
+- [x] Switching preserves filters/search/sort/scroll sensibly; refresh keeps the mode *(filters/search/sort are untouched — they live in the URL, the mode doesn't. Scroll: switching anchors on the first on-screen model and restores its viewport offset in a `useLayoutEffect` (before paint), so you stay on the same model even though every item's height changes — measured live: compact→grid −21.95→−22.33px, grid→list −13.48→−13.95px for the same model. Refresh on `?manufacturer=ixo` in Compact came back in Compact with the URL unchanged. Skeletons follow the mode too, so loading → loaded doesn't reflow)*
+- [x] Each mode usable at 360 px *(checked live at 360 in dark theme: `scrollWidth` = 360 in every mode; Filters · 3 view buttons · Sort fit on one row — the view buttons are 36px wide (full 44px tap height) below tablet and the sort trigger shows just "Sort ▾" there (current option kept for screen readers), per the mobile mockup. At 360 the List row drops its right column and puts the scale on the photo like the grid card. Also no overflow at 768/1440; keyboard Tab → Enter on a compact row opens the model, focus ring visible, focus returns to the row on close. 22 new unit tests: `view-mode.test.ts`, `model-display.test.ts`)*
 
 ### Definition of Done
-Approved view modes implemented and persisted; Showcase built or explicitly deferred.
+Approved view modes implemented and persisted; Showcase built or explicitly deferred. *(Showcase explicitly deferred)*
 
 ---
 

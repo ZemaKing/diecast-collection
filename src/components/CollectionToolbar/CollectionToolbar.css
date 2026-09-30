@@ -162,15 +162,18 @@
     text-decoration: underline;
 }
 
-.toolbarPlaceholders {
+.toolbarEnd {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
     margin-left: auto;
 }
 
+/* View modes (Phase 18): visible at every width — each mode has to be reachable at 360px. Below
+   tablet the buttons are narrower (still full tap-target height) so Filters · views · Sort fit on
+   one 360px row. */
 .viewModeGroup {
-    display: none;
+    display: flex;
     align-items: center;
     gap: var(--space-2xs);
 }
@@ -179,18 +182,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: transparent;
+    width: 36px;
+    height: var(--tap-target);
+    background: var(--color-surface-sunken);
     border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-sm);
-    color: var(--color-text-subtle);
-    cursor: not-allowed;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
 }
 
-.viewModeButtonActive {
+.viewModeButton:hover {
     color: var(--color-text);
+    background: var(--color-surface-hover);
+}
+
+.viewModeButtonActive,
+.viewModeButtonActive:hover {
+    color: var(--color-accent-text);
     border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+}
+
+/* Visually hidden below tablet, still read out ("Sort: Recently added"). */
+.sortTriggerCurrent {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 /* Sort: same <details> popover mechanics as a filter trigger, but single-select and right-
@@ -474,8 +495,16 @@
         display: none;
     }
 
-    .viewModeGroup {
-        display: flex;
+    .viewModeButton {
+        width: var(--tap-target);
+    }
+
+    .sortTriggerCurrent {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip-path: none;
     }
 
     /* The sheet is unreachable at this width (its only trigger is hidden above), but hide it

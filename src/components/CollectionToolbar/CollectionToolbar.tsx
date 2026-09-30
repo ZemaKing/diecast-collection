@@ -3,9 +3,13 @@ import {useQuery} from "@tanstack/react-query";
 
 import {Close} from "../../icons/Close.tsx";
 import {Filter} from "../../icons/Filter.tsx";
+import {ViewCompact} from "../../icons/ViewCompact.tsx";
+import {ViewGrid} from "../../icons/ViewGrid.tsx";
+import {ViewList} from "../../icons/ViewList.tsx";
 import {getColors} from "../../services/lookups.ts";
 import type {CollectionFilters, FacetCount, FacetCounts, SortOption} from "../../services/collection-query.ts";
 import {MEDIA} from "../../styles/breakpoints.ts";
+import type {ViewMode} from "../../utils/view-mode.ts";
 import {CategoryPills, ColorSwatchList, SearchableCheckboxList} from "./FilterFields.tsx";
 import {useDetailsPopover} from "./useDetailsPopover.ts";
 
@@ -23,6 +27,8 @@ type CollectionToolbarProps = {
     sort: SortOption;
     onSortChange: (sort: SortOption) => void;
     hasQuery: boolean;
+    viewMode: ViewMode;
+    onViewModeChange: (mode: ViewMode) => void;
 };
 
 const GROUPS: {key: FilterKey; label: string; variant: Variant}[] = [
@@ -31,6 +37,12 @@ const GROUPS: {key: FilterKey; label: string; variant: Variant}[] = [
     {key: "categories", label: "Category", variant: "pills"},
     {key: "colors", label: "Color", variant: "swatches"},
     // Scale: hidden until a second scale exists in the data (ROADMAP Phase 14).
+];
+
+const VIEW_MODE_OPTIONS: {value: ViewMode; label: string; Icon: typeof ViewGrid}[] = [
+    {value: "grid", label: "Grid view", Icon: ViewGrid},
+    {value: "list", label: "List view", Icon: ViewList},
+    {value: "compact", label: "Compact view", Icon: ViewCompact},
 ];
 
 // "Relevance" only makes sense (and only appears) while a search is active — see useCollectionQuery.ts.
@@ -57,6 +69,28 @@ function FilterFieldContent({variant, options, selected, onToggle, label, hexByS
     if (variant === "pills") return <CategoryPills options={options} selected={selected} onToggle={onToggle}/>;
     if (variant === "swatches") return <ColorSwatchList options={options} selected={selected} onToggle={onToggle} hexBySlug={hexBySlug}/>;
     return <SearchableCheckboxList options={options} selected={selected} onToggle={onToggle} searchLabel={label}/>;
+}
+
+// Grid / List / Compact (ROADMAP Phase 18). A toggle-button group: each button reports its own
+// pressed state, so screen readers hear "Grid view, pressed".
+function ViewModeSwitcher({viewMode, onChange}: {viewMode: ViewMode; onChange: (mode: ViewMode) => void}) {
+    return (
+        <div className="viewModeGroup" role="group" aria-label="View">
+            {VIEW_MODE_OPTIONS.map(({value, label, Icon}) => (
+                <button
+                    key={value}
+                    type="button"
+                    className={`viewModeButton${value === viewMode ? " viewModeButtonActive" : ""}`}
+                    aria-pressed={value === viewMode}
+                    aria-label={label}
+                    title={label}
+                    onClick={() => onChange(value)}
+                >
+                    <Icon aria-hidden="true"/>
+                </button>
+            ))}
+        </div>
+    );
 }
 
 // A desktop/tablet popover for one field.
@@ -96,7 +130,12 @@ function SortTrigger({sort, onChange, showRelevance}: {
 
     return (
         <details ref={ref} className="filterTrigger sortTrigger" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
-            <summary className="filterTriggerSummary sortTriggerSummary">Sort: {currentLabel} ▾</summary>
+            {/* Below tablet the current option is visually hidden (the mobile mockup shows just
+                "Sort"), which leaves room for the view-mode buttons on a 360px row. */}
+            <summary className="filterTriggerSummary sortTriggerSummary">
+                {/* One inline span, so the summary's flex gap doesn't split "Sort" from ": …". */}
+                <span>Sort<span className="sortTriggerCurrent">: {currentLabel}</span> ▾</span>
+            </summary>
             <div className="filterTriggerPanel">
                 {options.map((option) => (
                     <button
@@ -116,7 +155,7 @@ function SortTrigger({sort, onChange, showRelevance}: {
     );
 }
 
-export function CollectionToolbar({filters, facets, resultsCount, onToggle, onClear, sort, onSortChange, hasQuery}: CollectionToolbarProps) {
+export function CollectionToolbar({filters, facets, resultsCount, onToggle, onClear, sort, onSortChange, hasQuery, viewMode, onViewModeChange}: CollectionToolbarProps) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const filtersToggleRef = useRef<HTMLButtonElement>(null);
     const activeCount = GROUPS.reduce((n, {key}) => n + filters[key].length, 0);
@@ -197,13 +236,8 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
 
                 {/* The results count moved to the page's results header (Phase 17); resultsCount
                     now only feeds the mobile sheet's "Show N models" button. */}
-                <div className="toolbarPlaceholders">
-                    {/* View modes: visual placeholder only — wired in Phase 18. */}
-                    <div className="viewModeGroup" aria-hidden="true">
-                        <button type="button" className="viewModeButton viewModeButtonActive" disabled title="Grid view">⊞</button>
-                        <button type="button" className="viewModeButton" disabled title="List view — coming soon">☰</button>
-                        <button type="button" className="viewModeButton" disabled title="Compact view — coming soon">≡</button>
-                    </div>
+                <div className="toolbarEnd">
+                    <ViewModeSwitcher viewMode={viewMode} onChange={onViewModeChange}/>
                     <SortTrigger sort={sort} onChange={onSortChange} showRelevance={hasQuery}/>
                 </div>
             </div>

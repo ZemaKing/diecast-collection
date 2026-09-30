@@ -2,8 +2,10 @@ import {useState} from "react";
 
 import {ColorCircle} from "../ColorCircle/ColorCircle";
 import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
+import {LogoOrText} from "./LogoOrText.tsx";
 
 import type {ModelSummary} from "../../services/types.ts";
+import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
 
 import "./ModelCard.css";
 
@@ -12,25 +14,10 @@ type ModelCardProps = {
     onClick: () => void;
 };
 
-const countryCodeToFlagEmoji = (countryCode: string) =>
-    countryCode
-        .toUpperCase()
-        .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
-
-// `logo_path` values (from the importer) are exact filenames on disk, e.g. "/brands/Aston
-// Martin.svg" — encodeURI so the space (or any other special character) round-trips in <img src>.
-function logoSrc(logoPath: string | null): string | null {
-    return logoPath ? encodeURI(logoPath) : null;
-}
-
 export function ModelCard({model, onClick}: ModelCardProps) {
     const [imageBroken, setImageBroken] = useState(false);
-    const [manufacturerLogoBroken, setManufacturerLogoBroken] = useState(false);
-    const [brandLogoBroken, setBrandLogoBroken] = useState(false);
 
     const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
-    const manufacturerLogo = logoSrc(model.manufacturer.logoPath);
-    const brandLogo = logoSrc(model.brand.logoPath);
     const hasCarNumber = model.carNumber !== null;
     const hasDriver = !!model.driver;
 
@@ -50,13 +37,9 @@ export function ModelCard({model, onClick}: ModelCardProps) {
                 )}
 
                 <div className="thumbTopRow">
-                    {manufacturerLogo && !manufacturerLogoBroken ? (
-                        <div className="manufacturerBadge">
-                            <img src={manufacturerLogo} alt={model.manufacturer.name} onError={() => setManufacturerLogoBroken(true)}/>
-                        </div>
-                    ) : (
-                        <div className="manufacturerBadge manufacturerBadgeText">{model.manufacturer.name}</div>
-                    )}
+                    <div className="manufacturerBadge">
+                        <LogoOrText logoPath={model.manufacturer.logoPath} name={model.manufacturer.name} textClassName="manufacturerBadgeText"/>
+                    </div>
 
                     <div className="scaleBadge">{model.scale}</div>
                 </div>
@@ -84,11 +67,7 @@ export function ModelCard({model, onClick}: ModelCardProps) {
             </div>
 
             <div className="cardMeta">
-                {brandLogo && !brandLogoBroken ? (
-                    <img src={brandLogo} alt={model.brand.name} className="brandLogo" onError={() => setBrandLogoBroken(true)}/>
-                ) : (
-                    <span className="cardMetaText">{model.brand.name}</span>
-                )}
+                <LogoOrText logoPath={model.brand.logoPath} name={model.brand.name} imgClassName="brandLogo" textClassName="cardMetaText"/>
                 <span aria-hidden="true">•</span>
                 <span>{model.year}</span>
                 <span aria-hidden="true">•</span>

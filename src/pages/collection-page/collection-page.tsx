@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import "./collection-page.css";
@@ -8,9 +8,11 @@ import {CollectionHero} from "../../components/CollectionHero/CollectionHero";
 import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionToolbar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
+import {ModelCompactRow, ModelListRow, ModelRowSkeleton} from "../../components/ModelCard/ModelRow.tsx";
 import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
+import {useViewMode} from "../../hooks/useViewMode.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
 import {filterModels, getFacetCounts, searchModels, sortModels} from "../../services/collection-query.ts";
@@ -22,6 +24,7 @@ import type {DiecastModel} from "../../types.ts";
 import {findModelById} from "../../utils/collection-filters.ts";
 import {describeResults} from "../../utils/collection-summary.ts";
 import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
+import type {ViewMode} from "../../utils/view-mode.ts";
 
 // A fixed key set (not an index) avoids remounting skeleton nodes on every render. 10 = two full
 // rows at the mockup's 5-column desktop grid.
@@ -31,14 +34,41 @@ const SKELETON_KEYS = Array.from({length: 10}, (_, i) => `skeleton-${i}`);
 // `public/` and point this at it; until then the hero renders its token-only gradient backdrop.
 const HERO_ART_URL: string | null = null;
 
+// One container class per view mode (ROADMAP Phase 18) — the skeletons share it, so loading →
+// loaded never reflows.
+const RESULTS_CLASS: Record<ViewMode, string> = {
+    grid: "modelGrid",
+    list: "modelList",
+    compact: "modelCompactList",
+};
+
+type ScrollAnchor = {id: string; top: number};
+
+// The first result still (at least partly) on screen, and where it sits in the viewport. Switching
+// view modes changes every item's height, so restoring this keeps the reader on the same model
+// instead of teleporting them to wherever the old scroll offset lands in the new layout.
+function findScrollAnchor(container: HTMLElement | null): ScrollAnchor | null {
+    if (!container) return null;
+
+    for (const child of container.children) {
+        const rect = child.getBoundingClientRect();
+        if (child.id && rect.bottom > 0) return {id: child.id, top: rect.top};
+    }
+
+    return null;
+}
+
 export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const {filters, query, sort, toggleFilter, clearFilters, setSort} = useCollectionQuery();
+    const {viewMode, setViewMode} = useViewMode();
 
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const lastOpenedModelIdRef = useRef<string | null>(null);
+    const resultsRef = useRef<HTMLDivElement>(null);
+    const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
 
     // Cars are Supabase-backed (ROADMAP Phase 10) — trucks are retired (Phase 11).
     const carsQuery = useQuery<ModelSummary[], AppError>({
@@ -101,6 +131,22 @@ export function CollectionPage() {
 
         setSearchParams(withoutModelParam(searchParams), {replace: false});
     }, [searchParams, setSearchParams]);
+
+    const changeViewMode = useCallback((mode: ViewMode) => {
+        if (mode === viewMode) return;
+        scrollAnchorRef.current = findScrollAnchor(resultsRef.current);
+        setViewMode(mode);
+    }, [viewMode, setViewMode]);
+
+    // Runs before paint, so the jump to the anchored model is never visible.
+    useLayoutEffect(() => {
+        const anchor = scrollAnchorRef.current;
+        scrollAnchorRef.current = null;
+        if (!anchor) return;
+
+        const element = document.getElementById(anchor.id);
+        if (element) window.scrollBy(0, element.getBoundingClientRect().top - anchor.top);
+    }, [viewMode]);
 
     const scrollToTop = () => {
         window.scrollTo({top: 0, behavior: "smooth"});
@@ -167,6 +213,8 @@ export function CollectionPage() {
                         sort={sort}
                         onSortChange={setSort}
                         hasQuery={!!query.trim()}
+                        viewMode={viewMode}
+                        onViewModeChange={changeViewMode}
                     />
 
                     {/* Results header (Phase 17): what the grid below is showing, and why. Polite
@@ -186,8 +234,10 @@ export function CollectionPage() {
                     )}
 
                     {carsQuery.isPending ? (
-                        <div className="modelGrid">
-                            {SKELETON_KEYS.map((key) => <ModelCardSkeleton key={key}/>)}
+                        <div className={RESULTS_CLASS[viewMode]}>
+                            {SKELETON_KEYS.map((key) => viewMode === "grid"
+                                ? <ModelCardSkeleton key={key}/>
+                                : <ModelRowSkeleton key={key} variant={viewMode}/>)}
                         </div>
                     ) : carsQuery.isError ? (
                         <div className="contentError">
@@ -201,14 +251,13 @@ export function CollectionPage() {
                             {query.trim() ? `No models match "${query.trim()}".` : "No models match the selected filters."}
                         </div>
                     ) : (
-                        <div className="modelGrid">
-                            {visibleSummaries.map((m) => (
-                                <ModelCard
-                                    key={m.slug}
-                                    model={m}
-                                    onClick={() => openModal(m.slug)}
-                                />
-                            ))}
+                        <div ref={resultsRef} className={RESULTS_CLASS[viewMode]}>
+                            {visibleSummaries.map((m) => {
+                                const onClick = () => openModal(m.slug);
+                                if (viewMode === "list") return <ModelListRow key={m.slug} model={m} onClick={onClick}/>;
+                                if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} onClick={onClick}/>;
+                                return <ModelCard key={m.slug} model={m} onClick={onClick}/>;
+                            })}
                         </div>
                     )}
 

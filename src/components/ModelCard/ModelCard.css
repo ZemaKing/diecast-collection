@@ -87,6 +87,8 @@
 }
 
 .manufacturerBadgeText {
+    display: block;
+    min-width: 0;
     background: var(--color-overlay);
     border-radius: var(--radius-sm);
     padding: var(--space-2xs) var(--space-xs);
