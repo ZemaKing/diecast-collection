@@ -828,3 +828,298 @@
 .checklistRecommended {
     color: var(--color-text-muted);
 }
+
+/* ---- images (Phase 27, mockup section "Images") ------------------------------------------- */
+
+.photosEditor {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    border-radius: var(--radius-md);
+    outline: var(--border-width) dashed transparent;
+    outline-offset: var(--space-xs);
+}
+
+.photosEditor:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* A file dragged over the section. */
+.photosEditorDrop {
+    outline-color: var(--color-accent);
+    background: var(--color-accent-soft);
+}
+
+.photosLayout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.photosMain,
+.photosMore {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+}
+
+.photosCount {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-regular);
+}
+
+.photoList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.photoListGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm);
+}
+
+.photoTile {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-width: 0;
+    background: var(--color-surface-sunken);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.photoTileMain {
+    aspect-ratio: 4 / 3;
+    border-color: var(--color-border-strong);
+    border-radius: var(--radius-md);
+}
+
+.photoTile[draggable="true"] {
+    cursor: grab;
+}
+
+.photoTileDragging {
+    opacity: var(--state-disabled-opacity);
+}
+
+.photoTileDropTarget {
+    border-color: var(--color-accent);
+    box-shadow: var(--focus-ring);
+}
+
+.photoView {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+    background: none;
+    border: 0;
+    border-radius: inherit;
+    cursor: zoom-in;
+}
+
+.photoView:focus-visible,
+.photoMenuButton:focus-visible,
+.photoMenuItem:focus-visible,
+.photoDropzone:focus-visible,
+.photoAddButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.photoImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.photoMissing {
+    padding: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    text-align: center;
+}
+
+.photoSkeleton {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.photoBadge {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-bold);
+    pointer-events: none;
+}
+
+.photoBadgePrimary {
+    top: var(--space-sm);
+    left: var(--space-sm);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.photoBadgeNew {
+    bottom: var(--space-xs);
+    left: var(--space-xs);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    text-transform: uppercase;
+}
+
+.photoMenu {
+    position: absolute;
+    top: var(--space-2xs);
+    right: var(--space-2xs);
+}
+
+.photoMenuButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.photoMenuButton:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+}
+
+.photoMenuButton:disabled {
+    cursor: default;
+    opacity: var(--state-disabled-opacity);
+}
+
+.photoMenuPanel {
+    position: absolute;
+    top: calc(100% + var(--space-2xs));
+    right: 0;
+    z-index: var(--z-dropdown);
+    display: flex;
+    flex-direction: column;
+    min-width: 11rem;
+    margin: 0;
+    padding: var(--space-xs);
+    list-style: none;
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.photoMenuItem {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 var(--space-sm);
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.photoMenuItem:hover {
+    background: var(--color-surface-hover);
+}
+
+.photoMenuItemDanger {
+    color: var(--color-danger);
+}
+
+/* Empty main slot and the "Add Images" tile: dashed drop targets. */
+.photoDropzone,
+.photoAddButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    width: 100%;
+    background: transparent;
+    border: var(--border-width) dashed var(--color-border-strong);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+}
+
+.photoDropzone {
+    aspect-ratio: 4 / 3;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.photoAddButton {
+    height: 100%;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+}
+
+.photoTileAdd {
+    background: none;
+    border: 0;
+}
+
+.photoDropzone:hover:not(:disabled),
+.photoAddButton:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.photoDropzone:disabled,
+.photoAddButton:disabled {
+    cursor: default;
+    opacity: var(--state-disabled-opacity);
+}
+
+.photoDropzoneIcon {
+    font-size: var(--text-xl);
+    line-height: 1;
+}
+
+.photoDropzoneText {
+    text-align: center;
+}
+
+.photosStatus {
+    margin: 0;
+    color: var(--color-accent-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.photosProblems {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    color: var(--color-danger);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    list-style: none;
+}

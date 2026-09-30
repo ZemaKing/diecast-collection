@@ -45,7 +45,7 @@ describe("saveModel", () => {
         const result = await saveModel(payload);
         expect(rpc).toHaveBeenCalledTimes(1);
         expect(rpc).toHaveBeenCalledWith("save_model", {p_model: payload, p_original_slug: undefined, p_dry_run: false});
-        expect(result).toEqual({slug: payload.slug, created: true, changed: true, dryRun: false});
+        expect(result).toEqual({slug: payload.slug, created: true, changed: true, removedFiles: [], dryRun: false});
     });
 
     it("updates by the original slug", async () => {

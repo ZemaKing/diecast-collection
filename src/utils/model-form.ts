@@ -1,10 +1,11 @@
-// Pure logic behind the admin model form (ROADMAP Phases 25–26): the form's values, how a stored
+// Pure logic behind the admin model form (ROADMAP Phases 25–27): the form's values, how a stored
 // model becomes form values and form values become a save payload, the generated slug,
 // validation, the completeness checklist and the live-preview card. The rules mirror the `diecast.models` CHECK constraints (docs/SCHEMA.md §4.1), so a
 // form that validates here is one the database accepts; the database still re-checks everything.
 import type {LookupInput, ModelSavePayload} from "../services/model-admin.ts";
 import type {Category, Driver, LookupRef, Model, ModelSummary} from "../services/types.ts";
 import {CONDITION_LABELS, formatAddedDate} from "./model-details.ts";
+import {MAX_IMAGES, toFormImages, type FormImage} from "./model-images.ts";
 import {SLUG_PATTERN, slugify} from "./slug.ts";
 
 // A picked brand / manufacturer / driver: an existing row, or a name typed into the picker that
@@ -38,6 +39,9 @@ export type ModelFormValues = {
     tags: LookupChoice[];
     // Admin-only (`model_private_notes`); never shown to visitors.
     notes: string;
+    // Phase 27. The photo list in gallery order — the first is the main photo. New photos are held
+    // in the browser (already resized) and uploaded when the form is saved.
+    images: FormImage[];
     // New models only; stable after creation. `slugEdited` = the owner typed their own, so it no
     // longer follows the generated one.
     slug: string;
@@ -91,6 +95,7 @@ export function emptyModelForm(today: string): ModelFormValues {
         keyFeatures: [],
         tags: [],
         notes: "",
+        images: [],
         slug: "",
         slugEdited: false,
     };
@@ -121,6 +126,7 @@ export function modelToFormValues(model: Model, notes: string | null = null): Mo
         keyFeatures: [...model.keyFeatures],
         tags: model.tags.map(existing),
         notes: notes ?? "",
+        images: toFormImages(model.images),
         slug: model.slug,
         slugEdited: true,
     };
@@ -223,6 +229,7 @@ export function validateModelForm(values: ModelFormValues, context: {isNew: bool
         if (tagError) errors.tags = tagError;
     }
     if (values.notes.trim().length > LIMITS.notes) errors.notes = `Keep the notes under ${LIMITS.notes.toLocaleString("en")} characters.`;
+    if (values.images.length > MAX_IMAGES) errors.images = `Use at most ${MAX_IMAGES} photos — remove ${values.images.length - MAX_IMAGES}.`;
 
     if (context.isNew) {
         const slug = values.slug.trim();
@@ -238,7 +245,7 @@ export function validateModelForm(values: ModelFormValues, context: {isNew: bool
 export const FIELD_ORDER: ModelFormField[] = [
     "name", "year", "brand", "manufacturer", "categorySlug", "scale", "colorSlugs", "liveryHex", "series",
     "carNumber", "driver", "team", "event", "condition", "addedAt", "location", "description", "keyFeatures",
-    "notes", "tags", "slug",
+    "notes", "images", "tags", "slug",
 ];
 
 export function firstErrorField(errors: ModelFormErrors): ModelFormField | undefined {
@@ -251,7 +258,8 @@ function lookupInput(choice: LookupChoice): LookupInput {
     return choice.isNew ? {slug: choice.slug, name: choice.name.trim(), create: true} : {slug: choice.slug, name: choice.name};
 }
 
-// Valid form values → what save_model() stores. Racing details only for racing models: turning
+// Valid form values → what save_model() stores — except the photos: new ones must be uploaded
+// first, so saveModelWithImages() (services/model-images.ts) adds the `images` key. Racing details only for racing models: turning
 // "This is a racing model" off clears them (the form keeps them until save, so toggling back
 // restores what was typed).
 export function toSavePayload(values: ModelFormValues, isPublished: boolean): ModelSavePayload {
@@ -302,10 +310,10 @@ export function localDateString(date: Date): string {
 
 export type ChecklistItem = {key: string; label: string; done: boolean; recommended?: boolean};
 
-// What a finished model has. Required items mirror validation; the main image comes with Phase 27
-// (until then it's only ever done for a model that already has a photo), and the description is
-// recommended, not required — 227 imported models have none.
-export function getChecklist(values: ModelFormValues, context: {currentYear: number; hasMainImage: boolean}): ChecklistItem[] {
+// What a finished model has. Required items mirror validation; the main image is any photo in the
+// list (the first one is the main photo), and the description is recommended, not required — 227
+// imported models have none.
+export function getChecklist(values: ModelFormValues, context: {currentYear: number}): ChecklistItem[] {
     const errors = validateModelForm(values, {isNew: false, currentYear: context.currentYear});
     return [
         {key: "name", label: "Model name", done: !errors.name},
@@ -315,7 +323,7 @@ export function getChecklist(values: ModelFormValues, context: {currentYear: num
         {key: "category", label: "Category", done: !errors.categorySlug},
         {key: "scale", label: "Scale", done: !errors.scale},
         {key: "color", label: "Color", done: !errors.colorSlugs},
-        {key: "image", label: "Main image", done: context.hasMainImage},
+        {key: "image", label: "Main image", done: values.images.length > 0},
         {key: "description", label: "Description", done: values.description.trim().length > 0, recommended: true},
     ];
 }
@@ -329,8 +337,6 @@ export type PreviewContext = {
     categories: Category[];
     drivers: Driver[];
     colors: {slug: string; name: string}[];
-    // The model's current primary photo (editing), or null.
-    image: ModelSummary["image"];
 };
 
 // A ModelSummary built from the form as it stands, so the preview is the collection card itself.
@@ -369,7 +375,14 @@ export function toPreviewSummary(values: ModelFormValues, context: PreviewContex
         category,
         driver,
         colors: values.colorSlugs.map((slug) => ({slug, name: context.colors.find((c) => c.slug === slug)?.name ?? slug})),
-        image: context.image,
-        imageCount: context.image ? 1 : 0,
+        image: previewImage(values.images[0]),
+        imageCount: values.images.length,
     };
+}
+
+// The main photo as the card shows it: a new photo's resized preview, or the stored one.
+function previewImage(image: FormImage | undefined): ModelSummary["image"] {
+    if (!image) return null;
+    if (image.kind === "new") return {url: image.previewUrl, thumbUrl: image.thumbPreviewUrl, width: image.full.width, height: image.full.height};
+    return {url: image.url, thumbUrl: image.thumbUrl, width: image.width, height: image.height};
 }

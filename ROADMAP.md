@@ -59,13 +59,13 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 18 | View Modes | ✅ Done | — (Showcase deferred by owner) |
 | 19 | Model Details Page | ✅ Done | Heart / "Add to Collection" meaning (open decision 7) |
 | 20 | Gallery, Lightbox & Quick View | ✅ Done | — |
-| 21 | Supabase Storage Migration | 🟡 Tooling done, awaiting owner run | Apply migration `20260930120000`; run upload → flip → verify (`scripts/migrate-images/README.md`) |
+| 21 | Supabase Storage Migration | ✅ Done | Commit `scripts/migrate-images/manifest.json` |
 | 22 | Manufacturer & Brand Browsing | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 23 | Collection Statistics | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 24 | Authentication & Admin Protection | ✅ Done | Optional: set your display name to "ZemaKing" (avatar shows "ZK"); apply the Phase 21 storage migration (3 storage RLS checks wait on it) |
 | 25 | Model Form — Core & CRUD | ✅ Done | Review the form (migration `20260930150000` applied) |
 | 26 | Model Form — Rich Sections | ✅ Done | — (markdown-lite chosen; migration `20260930180000` applied) |
-| 27 | Image Management CRUD | ⬜ | — |
+| 27 | Image Management CRUD | 🟡 Built & RLS-verified, awaiting a UI upload | Add a photo to a draft in the form and check card / gallery / reorder |
 | 28 | Supporting Data Management | ⬜ | — |
 | 29 | Loading / Empty / Error States | ⬜ | — |
 | 30 | Desktop Fidelity Pass | ⬜ | — |
@@ -556,7 +556,7 @@ Gallery + lightbox + Quick View shipped; `DetailsModal` deleted or unreferenced.
 
 ---
 
-## Phase 21 — Supabase Storage Migration 🟡
+## Phase 21 — Supabase Storage Migration ✅
 
 ### Goal
 Move images off postimg.cc into Supabase Storage safely.
@@ -573,11 +573,11 @@ Move images off postimg.cc into Supabase Storage safely.
 - [x] Verify total size fits the plan (est. ~230 MB); no base64 in Postgres *(full dry run, 2026-09-30, all 227 originals: 198.7 MB of PNG → **30.7 MB** of WebP (full 227 × avg 114 KB, 1047–1280 px wide — no original exceeds 1600, so none is downscaled; thumb 227 × avg 24.7 KB, 9–32 KB), well inside the free plan's 1 GB. A full collection view drops from ~40 MB to ~5.5 MB of thumbnails. Postgres stores only paths)*
 
 ### Verification
-- [ ] Every image row resolves (HEAD 200); byte/dimension spot checks; page renders with Storage URLs *(tooling ready: `npm run images:verify -- --legacy --sample=all` resolves each row with the app's own `resolveImageUrl()` and HEADs full + thumb, compares sampled objects with the manifest, and HEADs every postimg URL. Run today, before the migration: 227 rows, 454 URLs → all 200 (all still postimg). Pending the owner's run, then a browser check that images load from Storage)*
-- [x] Rollback path documented (`legacy_url` still valid) *(`scripts/migrate-images/README.md` § Rollback: `npm run images:flip -- --rollback --apply` clears both storage paths in one transaction and the app falls back to postimg with no deploy; objects stay in Storage for a re-flip. All 454 postimg URLs answered 200 on 2026-09-30)*
+- [x] Every image row resolves (HEAD 200); byte/dimension spot checks; page renders with Storage URLs *(**owner run, 2026-10-01:** migration applied; `images:migrate -- --apply` uploaded 227 originals (198.7 MB) as 454 WebP objects (30.7 MB), 0 failed; `images:check -- --full` 454/454 OK; `images:flip -- --apply` 227/227 on Storage; `images:verify`: 227 rows served from Storage, HEAD 454 URLs → all 200, 20 spot checks match the manifest. Browser: the collection's 227 card photos and a details page's full photo load from `…supabase.co/storage/v1/object/public/model-images/…`, none broken. Before that, tooling ready: `npm run images:verify -- --legacy --sample=all` resolves each row with the app's own `resolveImageUrl()` and HEADs full + thumb, compares sampled objects with the manifest, and HEADs every postimg URL. Run today, before the migration: 227 rows, 454 URLs → all 200 (all still postimg). Pending the owner's run, then a browser check that images load from Storage)*
+- [x] Rollback path documented (`legacy_url` still valid) *(**exercised live by the owner on 2026-10-01**: flip → `--rollback --apply` (227/227 back to postimg) → flip again. `scripts/migrate-images/README.md` § Rollback: `npm run images:flip -- --rollback --apply` clears both storage paths in one transaction and the app falls back to postimg with no deploy; objects stay in Storage for a re-flip. All 454 postimg URLs answered 200 on 2026-09-30)*
 
 ### Definition of Done
-All 227 models' images served from Storage; postimg URLs retained only as `legacy_url`. *(pending the owner's run)*
+All 227 models' images served from Storage; postimg URLs retained only as `legacy_url`. *(done 2026-10-01)*
 
 **Manual:** run the migration script locally with the service-role key. → **Runbook: [`scripts/migrate-images/README.md`](scripts/migrate-images/README.md)** — apply the migration, `npm run verify:rls`, `npm run images:migrate -- --apply`, `npm run images:check -- --full`, `npm run images:flip -- --apply`, `npm run images:verify -- --legacy --sample=all`, commit `scripts/migrate-images/manifest.json`.
 
@@ -724,23 +724,40 @@ Form matches the mockup's seven sections plus preview/checklist.
 
 ---
 
-## Phase 27 — Image Management CRUD
+## Phase 27 — Image Management CRUD 🟡
 
 ### Goal
 Upload, order and remove photos safely.
 
 ### Tasks
-- [ ] Upload (drag/drop, PNG/JPG/WEBP, size cap per mockup), client-side resize + thumbnail generation, progress, error handling
-- [ ] Delete with confirmation; removes the Storage object and row; no orphans
-- [ ] Reorder (drag **and** keyboard/button alternative); choose primary; preview; max count per mockup (10)
-- [ ] Storage + table policies tested (anon/non-admin denied)
+- [x] Upload (drag/drop, PNG/JPG/WEBP, size cap per mockup), client-side resize + thumbnail generation, progress, error handling *(form section **6 Images** (`src/pages/admin/model-form-images.tsx`) per the mockup: Main Image slot with the "Primary" star, "Additional Images (n/9)" grid, "Add Images" tile. Files come from the picker or are dropped anywhere on the section; each is checked (`checkImageFile()` — PNG/JPG/WEBP by type or extension, ≤ 5 MB as the mockup says, 10 in all; the reason is shown per file) and resized **in the browser at once** with the Phase 21 helper (`src/lib/image-resize.ts`: full ≤ 1600 px q0.82 + thumb ≤ 400 px q0.75, WebP — the batch converter's settings), shown as a shimmer tile while it works. New photos stay in the form (badge "New") and are **uploaded only when the model is saved**, so Cancel/Discard really cancels and the unsaved-changes guard covers them. Saving: "Uploading photo 2 of 3…" in the section + "Uploading…" on the button, then "Saving…". Errors name the photo; a missing bucket says which migration is missing)*
+- [x] Delete with confirmation; removes the Storage object and row; no orphans *(**One write path, still one transaction**: migration `20261001090000_diecast_save_model_images.sql` gives `save_model()` an optional `images` key — the model's whole ordered photo list (existing photos by id, new ones by path + size). Rows removed from the list are deleted in the same transaction as the rest of the model and their Storage paths come back as `removed_files`. **Order that prevents orphans and lost photos** (`saveModelWithImages()`, `src/services/model-images.ts`): upload new files under fresh names → `save_model()` → only after the commit delete the dropped photos' files; a refused save deletes the files it just uploaded; a file that can't be deleted afterwards is named in the save notice (the save stands). "Confirmation": a photo's **Remove** only takes it out of the form (undo = Cancel); nothing is deleted until the owner saves — the same confirmation the rest of the form uses, rather than a dialog per photo)*
+- [x] Reorder (drag **and** keyboard/button alternative); choose primary; preview; max count per mockup (10) *(native HTML drag and drop between tiles (the drop target is outlined); every photo's **⋮ menu** (a disclosure like the account menu — Tab, Escape, click outside) has View larger / Make main photo / Move earlier / Move later / Remove, and focus follows the photo to where it lands, with an `aria-live` line ("Now the main photo.", "Moved to position 3 of 5."). **Primary = first**: the database now keeps positions 0..n-1 with exactly position 0 primary, so the gallery order and the card photo can't disagree. Preview: a photo click opens the Phase 20 `Lightbox` over the form's list, new photos included. The Live Preview card and the checklist's "Main image" follow the list live. Max 10, enforced by the form and by `save_model()`)*
+- [x] Storage + table policies tested (anon/non-admin denied) *(`npm run verify:rls` gained anon + non-admin checks that UPDATE/DELETE on `model_images` changes nothing (INSERT and every Storage write were already covered), and an admin photo cycle: upload two photos → save → first is primary; an unchanged list writes nothing; reorder moves the primary; a path outside the model's folder (`ZK422`), another model's photo id (`ZK404`) and 11 photos are refused; removing them all reports every file, the files delete, the public URL no longer answers 200, the folder is empty. **Run by the owner after applying both migrations: 114/114 passed** (the 3 Phase 21 Storage checks included))*
 
 ### Verification
-- [ ] Upload → visible in gallery/card; delete → 404 in Storage; reorder persists
-- [ ] Cannot leave a published model with no primary image without a warning
+- [ ] Upload → visible in gallery/card; delete → 404 in Storage; reorder persists *(**Database + Storage side proven live** by `verify:rls` (upload → save → reorder persists with the primary following → remove → files deleted, public URL no longer 200, no orphans). `verify:model-form`: all 227 models still round-trip unchanged with their photos, no file would be removed, and a photos-only edit is detected (the script's own create control first reused the sample's photo ids and was — correctly — refused with `ZK404`; fixed to send no photos). **Still open: one upload through the form UI** (Claude can't pick files from the owner's disk). Checked before the bucket existed, in the browser on a real model's edit page (nothing saved): dropping a 2400×1600 PNG, a JPEG and a GIF → two "New" tiles (thumbs 400×267 / 400×300), the GIF refused by name; Make main photo, drag onto the main slot, Remove (focus stays in the section), lightbox preview "2 / 3", Live Preview card + checklist following along; 360 px: no overflow; light + dark. 26 new unit tests (`model-images`, service order: upload → save → delete, cleanup on a refused save, orphans reported). `verify:model-form` now round-trips every model's photos (an untouched save must change nothing **and remove no file**) and adds a photos-only control)*
+- [x] Cannot leave a published model with no primary image without a warning *(publishing — Save Model / Publish / Save Changes — with no photo opens "Publish without a photo?" (focus on **Keep editing**; **Publish anyway** continues). Drafts save without asking. With primary = first photo, "no primary" can only mean "no photos". Checked in the browser)*
 
 ### Definition of Done
-Owner can fully manage a model's images from the UI.
+Owner can fully manage a model's images from the UI. *(built; migrations applied and verified; pending one live upload through the form)*
+
+**Manual (owner):**
+1. Apply `supabase/migrations/20260930120000_diecast_storage.sql` (Phase 21 bucket + policies) and `20261001090000_diecast_save_model_images.sql` in the SQL editor.
+2. `npm run verify:rls` (expect the 3 Phase 21 Storage failures to turn green, plus the new photo checks) and `npm run verify:model-form`.
+3. Preferably run the Phase 21 migration (`scripts/migrate-images/README.md`) **before** reordering or removing legacy photos in the form: its manifest and flip expect each legacy photo at its original position.
+4. Add a photo to a draft (or a `zz-` test model) in the form and check it on the card, details gallery and after a reorder.
+
+**Notes / deviations:**
+- **Photos are saved with the model, not on their own.** The mockup puts Images inside the Create form, where no model row exists yet to hang a photo on; staging photos in the form and committing them with Save gives one Save, one Cancel, one unsaved-changes guard, and one database transaction for everything. Consequence: uploads happen at save time (the button says "Uploading…").
+- **Per-photo delete confirmation:** none — Remove is undoable until Save (Cancel), so the form's existing Discard/Save flow is the confirmation. Deleting the whole model still asks first (Phase 25).
+- **Max 10 = in all** (1 main + 9 additional; the mockup's "Additional Images (5/10)" was ambiguous).
+- **Size cap 5 MB on the original file** as the mockup states, although the upload itself is the much smaller resized WebP (a typical phone photo is 3–8 MB; say if you'd like the cap raised — it's one constant, `MAX_IMAGE_BYTES`).
+- **Progress is per photo** ("Uploading photo 2 of 3…"), not per byte: after resizing a photo is ~100–300 KB, and supabase-js's upload has no byte progress.
+- **Storage names:** new photos are `models/{slug}/{random 12 hex}-full|thumb.webp` instead of the Phase 21 `{position}-…`, because positions change with every reorder and objects are cached for a week (Phase 21 note: never overwrite a path).
+- Not built: alt text editing (`model_images.alt` is kept as is on reorder; the UI still describes photos itself) and "Replace" on the main photo (add the new one, Make main photo, remove the old one).
+- The side column is now taller than the main one on desktop, so its `position: sticky` rarely engages any more — worth a look in the Phase 30 fidelity pass.
+- Bundle: the lazy form chunk grew 38 → 53 kB (owner only); visitors' bundle unchanged (+0.3 kB).
 
 ---
 

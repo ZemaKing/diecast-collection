@@ -48,6 +48,10 @@ const model: Model = {
     images: [],
 };
 
+const photo = (id: string, position: number, isPrimary: boolean) =>
+    ({id, position, isPrimary, url: `https://x.test/${id}.webp`, thumbUrl: null, width: 1200, height: 800, alt: null});
+const withPhotos: Model = {...model, images: [photo("p1", 0, false), photo("p2", 1, true)]};
+
 function validNew(): ModelFormValues {
     return {
         ...emptyModelForm("2026-09-30"),
@@ -171,9 +175,15 @@ describe("modelToFormValues → toSavePayload (round trip)", () => {
         });
     });
 
-    it("never carries images (Phase 27 manages them on their own)", () => {
-        const payload = toSavePayload(modelToFormValues(model), true) as Record<string, unknown>;
+    it("leaves images to saveModelWithImages() (new photos must be uploaded first)", () => {
+        const payload = toSavePayload(modelToFormValues(withPhotos), true) as Record<string, unknown>;
         expect(payload).not.toHaveProperty("images");
+    });
+
+    it("reads the photos main-first, and validates the count", () => {
+        expect(modelToFormValues(withPhotos).images.map((i) => i.kind === "existing" && i.id)).toEqual(["p2", "p1"]);
+        const tooMany = Array.from({length: 11}, (_, n) => ({kind: "existing" as const, id: `i${n}`, url: null, thumbUrl: null, width: null, height: null, alt: null}));
+        expect(validateModelForm({...validNew(), images: tooMany}, ctx).images).toMatch(/at most 10 photos — remove 1/);
     });
 
     it("sends empty rich fields as clears, dropping blank key-feature rows", () => {
@@ -273,12 +283,13 @@ describe("rich-field validation (Phase 26)", () => {
 });
 
 describe("getChecklist", () => {
-    it("ticks what's there; description is recommended, the image comes from the model", () => {
-        const items = getChecklist(validNew(), {currentYear: 2026, hasMainImage: false});
+    it("ticks what's there; description is recommended, the main image is any photo in the list", () => {
+        const items = getChecklist(validNew(), {currentYear: 2026});
         expect(items.filter((i) => !i.done).map((i) => i.key)).toEqual(["image", "description"]);
         expect(items.find((i) => i.key === "description")?.recommended).toBe(true);
-        expect(getChecklist({...validNew(), description: "Nice"}, {currentYear: 2026, hasMainImage: true}).every((i) => i.done)).toBe(true);
-        expect(getChecklist(emptyModelForm("2026-09-30"), {currentYear: 2026, hasMainImage: false}).filter((i) => i.done).map((i) => i.key)).toEqual(["scale"]);
+        const photos = modelToFormValues(withPhotos).images;
+        expect(getChecklist({...validNew(), description: "Nice", images: photos}, {currentYear: 2026}).every((i) => i.done)).toBe(true);
+        expect(getChecklist(emptyModelForm("2026-09-30"), {currentYear: 2026}).filter((i) => i.done).map((i) => i.key)).toEqual(["scale"]);
     });
 });
 
@@ -290,7 +301,6 @@ describe("toPreviewSummary", () => {
         categories: [{slug: "supercar", name: "Supercar", sortOrder: 30}],
         drivers: [{slug: "loeb", name: "Sébastien Loeb", countryCode: "FR"}],
         colors: [{slug: "yellow", name: "Yellow"}],
-        image: null,
     };
 
     it("feeds the card from the form, with logos from the lookups", () => {
@@ -305,6 +315,15 @@ describe("toPreviewSummary", () => {
             colors: [{slug: "yellow", name: "Yellow"}],
             liveryHex: ["#FFD200"],
         });
+    });
+
+    it("shows the first photo — stored or just picked — as the card image", () => {
+        expect(toPreviewSummary(validNew(), context)).toMatchObject({image: null, imageCount: 0});
+        const stored = toPreviewSummary({...validNew(), images: modelToFormValues(withPhotos).images}, context);
+        expect(stored).toMatchObject({image: {url: "https://x.test/p2.webp", width: 1200}, imageCount: 2});
+        const variant = {blob: new Blob(), width: 1600, height: 900, type: "image/webp", ext: "webp" as const};
+        const picked = toPreviewSummary({...validNew(), images: [{kind: "new", key: "k", fileName: "a.jpg", full: variant, thumb: {...variant, width: 400, height: 225}, previewUrl: "blob:full", thumbPreviewUrl: "blob:thumb"}]}, context);
+        expect(picked.image).toEqual({url: "blob:full", thumbUrl: "blob:thumb", width: 1600, height: 900});
     });
 
     it("shows field names instead of inventing values, and hides racing details on road cars", () => {

@@ -8,6 +8,7 @@ import {ConfirmDialog} from "../../components/ConfirmDialog/ConfirmDialog.tsx";
 import {DeleteModelDialog} from "../../components/ModelAdminActions/DeleteModelDialog.tsx";
 import {ModelCard} from "../../components/ModelCard/ModelCard.tsx";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
+import {ImagesEditor} from "./model-form-images.tsx";
 import {Checklist, DescriptionEditor, KeyFeaturesEditor} from "./model-form-rich.tsx";
 
 import {useDebouncedValue} from "../../hooks/useDebouncedValue.ts";
@@ -15,7 +16,8 @@ import {Check} from "../../icons/Check.tsx";
 import {Close} from "../../icons/Close.tsx";
 import type {AppError} from "../../lib/errors.ts";
 import {getBrands, getCategories, getColors, getDrivers, getManufacturers, getTags} from "../../services/lookups.ts";
-import {isSlugTaken, saveModel, type SaveModelResult} from "../../services/model-admin.ts";
+import {isSlugTaken} from "../../services/model-admin.ts";
+import {saveModelWithImages, type SaveWithImagesResult, type UploadProgress} from "../../services/model-images.ts";
 import {getModels} from "../../services/models.ts";
 import type {Model, ModelSummary} from "../../services/types.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
@@ -57,12 +59,12 @@ type ModelFormProps = {
 
 const SLUG_TAKEN = "Another model already uses this address. Change the name, year or color — or edit the address (e.g. add the racing number).";
 
-// The Create / Edit form (ROADMAP Phases 25–26, "Diecast Create-Edit.png"): Basic Information,
-// Classification, Racing Information (toggle), Condition & Collection, Description & Notes, Tags,
-// and a Live Preview (the real ModelCard) with the checklist. Images are Phase 27. Everything —
-// private notes and tags included — is saved in one call
-// (diecast.save_model) — as a draft or published — and an unsaved form never loses work silently:
-// leaving asks first (in-app navigation via useBlocker, reload/close via beforeunload).
+// The Create / Edit form (ROADMAP Phases 25–27, "Diecast Create-Edit.png"): Basic Information,
+// Classification, Racing Information (toggle), Condition & Collection, Description & Notes, Images,
+// Tags, and a Live Preview (the real ModelCard) with the checklist. Everything — private notes, tags
+// and the photo list included — is saved in one call (diecast.save_model), after any new photos are
+// uploaded (saveModelWithImages) — as a draft or published — and an unsaved form never loses work
+// silently: leaving asks first (in-app navigation via useBlocker, reload/close via beforeunload).
 export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const isNew = original === null;
     const navigate = useNavigate();
@@ -76,6 +78,10 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const [liveryLinked, setLiveryLinked] = useState(isNew && initial.liveryHex.length === 0);
     const [showErrors, setShowErrors] = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
+    // Publishing a model with no photo asks first (Phase 27).
+    const [confirmingNoPhoto, setConfirmingNoPhoto] = useState(false);
+    const [preparingImages, setPreparingImages] = useState(0);
+    const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
     const [currentYear] = useState(() => new Date().getFullYear());
     // Set right before a deliberate navigation (after save/delete) so the guard lets it through.
     const leavingRef = useRef(false);
@@ -129,8 +135,13 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
         return () => window.removeEventListener("beforeunload", onBeforeUnload);
     }, [dirty]);
 
-    const saveMutation = useMutation<SaveModelResult, AppError, boolean>({
-        mutationFn: (publish) => saveModel(toSavePayload(current, publish), {originalSlug: original?.slug ?? null}),
+    const saveMutation = useMutation<SaveWithImagesResult, AppError, boolean>({
+        mutationFn: (publish) =>
+            saveModelWithImages(toSavePayload(current, publish), current.images, {
+                originalSlug: original?.slug ?? null,
+                onProgress: (progress) => setUploadProgress(progress.total > 0 ? progress : null),
+            }),
+        onSettled: () => setUploadProgress(null),
         onSuccess: (result, publish) => {
             leavingRef.current = true;
             void queryClient.invalidateQueries({queryKey: ["models"]});
@@ -153,12 +164,16 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
         element?.scrollIntoView({block: "center"});
     };
 
-    const handleSave = (publish: boolean) => {
-        if (saveMutation.isPending) return;
+    const handleSave = (publish: boolean, confirmedNoPhoto = false) => {
+        if (saveMutation.isPending || preparingImages > 0) return;
         setShowErrors(true);
         const invalid = firstErrorField(errors);
         if (invalid) {
             focusField(invalid);
+            return;
+        }
+        if (publish && current.images.length === 0 && !confirmedNoPhoto) {
+            setConfirmingNoPhoto(true);
             return;
         }
         saveMutation.mutate(publish);
@@ -196,7 +211,6 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
         .map((t) => ({value: t.slug, label: t.name}));
 
     // Live preview (Phase 26): the collection's own card, fed from the form as it stands.
-    const primaryImage = original ? original.images.find((i) => i.isPrimary) ?? original.images[0] ?? null : null;
     const preview = toPreviewSummary(current, {
         slug: current.slug,
         brands: brandsQuery.data ?? [],
@@ -204,9 +218,8 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
         categories: categoriesQuery.data ?? [],
         drivers: driversQuery.data ?? [],
         colors,
-        image: primaryImage ? {url: primaryImage.url, thumbUrl: primaryImage.thumbUrl, width: primaryImage.width, height: primaryImage.height} : null,
     });
-    const checklist = getChecklist(current, {currentYear, hasMainImage: primaryImage !== null});
+    const checklist = getChecklist(current, {currentYear});
 
     const lookupError = [brandsQuery, manufacturersQuery, categoriesQuery, colorsQuery, driversQuery, tagsQuery].find((q) => q.isError)?.error;
 
@@ -231,12 +244,18 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
             ? {draft: "Move to Drafts", publish: "Save Changes"}
             : {draft: "Save Draft", publish: "Publish"};
 
+    const uploadStatus = uploadProgress && uploadProgress.done < uploadProgress.total
+        ? `Uploading photo ${uploadProgress.done + 1} of ${uploadProgress.total}…`
+        : null;
+
     const actions = (
         <FormActions
             labels={labels}
             pending={saveMutation.isPending ? (saveMutation.variables ? "publish" : "draft") : null}
+            pendingText={uploadStatus ? "Uploading…" : "Saving…"}
+            waiting={preparingImages > 0}
             onCancel={() => navigate(cancelTo)}
-            onSave={handleSave}
+            onSave={(publish) => handleSave(publish)}
         />
     );
 
@@ -589,7 +608,20 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                 </div>
 
                 <aside className="modelFormAside">
-                    <FormSection number={6} title="Tags" optional>
+                    <FormSection number={6} title="Images">
+                        <ImagesEditor
+                            id={fieldId("images")}
+                            images={values.images}
+                            onChange={(update) => setValues((v) => ({...v, images: update(v.images)}))}
+                            onPreparingChange={setPreparingImages}
+                            modelLabel={current.name.trim() || "This model"}
+                            error={visibleErrors.images}
+                            disabled={saveMutation.isPending}
+                            status={uploadStatus}
+                        />
+                    </FormSection>
+
+                    <FormSection number={7} title="Tags" optional>
                         <Field label="Add tags" htmlFor={fieldId("tags")} error={visibleErrors.tags} errorId={`${fieldId("tags")}-error`}>
                             {values.tags.length > 0 && (
                                 <ul className="tagChips" aria-label="Chosen tags">
@@ -703,6 +735,24 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                 />
             )}
 
+            {confirmingNoPhoto && (
+                <ConfirmDialog
+                    title="Publish without a photo?"
+                    confirmLabel="Publish anyway"
+                    cancelLabel="Keep editing"
+                    onConfirm={() => {
+                        setConfirmingNoPhoto(false);
+                        handleSave(true, true);
+                    }}
+                    onCancel={() => setConfirmingNoPhoto(false)}
+                >
+                    <p>
+                        Visitors will see “No photo yet” on its card and page. Add a photo in section 6 — or save it as a
+                        draft until you have one.
+                    </p>
+                </ConfirmDialog>
+            )}
+
             {blocker.state === "blocked" && (
                 <ConfirmDialog
                     title="Discard unsaved changes?"
@@ -728,7 +778,14 @@ function hasRacingDetails(values: ModelFormValues): boolean {
     return !!(values.carNumber.trim() || values.driver || values.team.trim() || values.event.trim());
 }
 
-function saveNotice(result: SaveModelResult, publish: boolean, original: Model | null, name: string): string {
+function saveNotice(result: SaveWithImagesResult, publish: boolean, original: Model | null, name: string): string {
+    const notice = saveNoticeText(result, publish, original, name);
+    if (result.orphanedFiles.length === 0) return notice;
+    const files = result.orphanedFiles.length === 1 ? "1 file" : `${result.orphanedFiles.length} files`;
+    return `${notice} ${files} of removed photos couldn't be deleted from storage (${result.orphanedFiles.join(", ")}) — delete them in the Supabase dashboard.`;
+}
+
+function saveNoticeText(result: SaveWithImagesResult, publish: boolean, original: Model | null, name: string): string {
     if (!result.changed) return "Nothing changed — the model is as it was.";
     if (result.created) return publish ? `Added “${name}” to the collection.` : `Saved “${name}” as a draft — only you can see it.`;
     if (!publish) return original?.isPublished ? `Moved “${name}” to drafts — hidden from visitors.` : "Draft saved.";
@@ -751,9 +808,12 @@ function Suggestions({id, values}: {id: string; values: string[]}) {
     );
 }
 
-function FormActions({labels, pending, onCancel, onSave}: {
+// `waiting`: photos are still being prepared — saving waits for them.
+function FormActions({labels, pending, pendingText, waiting, onCancel, onSave}: {
     labels: {draft: string; publish: string};
     pending: "draft" | "publish" | null;
+    pendingText: string;
+    waiting: boolean;
     onCancel: () => void;
     onSave: (publish: boolean) => void;
 }) {
@@ -763,12 +823,12 @@ function FormActions({labels, pending, onCancel, onSave}: {
                 <Close width={16} height={16} aria-hidden="true"/>
                 Cancel
             </button>
-            <button type="button" className="formButton" onClick={() => onSave(false)} disabled={pending !== null}>
-                {pending === "draft" ? "Saving…" : labels.draft}
+            <button type="button" className="formButton" onClick={() => onSave(false)} disabled={pending !== null || waiting}>
+                {pending === "draft" ? pendingText : labels.draft}
             </button>
-            <button type="button" className="formButton formButtonPrimary" onClick={() => onSave(true)} disabled={pending !== null}>
+            <button type="button" className="formButton formButtonPrimary" onClick={() => onSave(true)} disabled={pending !== null || waiting}>
                 <Check width={16} height={16} aria-hidden="true"/>
-                {pending === "publish" ? "Saving…" : labels.publish}
+                {pending === "publish" ? pendingText : labels.publish}
             </button>
         </div>
     );

@@ -1,5 +1,6 @@
 // `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6, the Phase 21 Storage bucket
-// policies and the Phase 25 model-form write path (diecast.save_model) against a live project,
+// policies, the Phase 25 model-form write path (diecast.save_model) and the Phase 27 photo
+// management (upload → save → reorder → remove, no orphans) against a live project,
 // using only the PUBLIC anon key plus two real logins (never the service-role key):
 //
 //   RLS_ADMIN_EMAIL / RLS_ADMIN_PASSWORD  — the owner (row in diecast.admin_users)
@@ -130,6 +131,11 @@ async function checkOutsider(who, c, f, uid) {
     check(who, "UPDATE models changes nothing", !!updError || updated.length === 0, updError?.code ?? `${updated?.length} rows`);
     const {data: deleted, error: delError} = await c.from("models").delete().eq("id", f.published.id).select();
     check(who, "DELETE models removes nothing", !!delError || deleted.length === 0, delError?.code ?? `${deleted?.length} rows`);
+    // Photos (Phase 27): outsiders can't reorder, re-point or delete a model's photo rows.
+    const {data: imgUpd, error: imgUpdErr} = await c.from("model_images").update({external_url: "https://example.com/hacked.png"}).eq("model_id", f.published.id).select();
+    check(who, "UPDATE model_images changes nothing", !!imgUpdErr || imgUpd.length === 0, imgUpdErr?.code ?? `${imgUpd?.length} rows`);
+    const {data: imgDel, error: imgDelErr} = await c.from("model_images").delete().eq("model_id", f.published.id).select();
+    check(who, "DELETE model_images removes nothing", !!imgDelErr || imgDel.length === 0, imgDelErr?.code ?? `${imgDel?.length} rows`);
     const {data: lookupDel, error: lookupErr} = await c.from("brands").delete().eq("id", f.brand.id).select();
     check(who, "DELETE brands removes nothing", !!lookupErr || lookupDel.length === 0, lookupErr?.code ?? `${lookupDel?.length} rows`);
 
@@ -260,11 +266,75 @@ async function checkStorage(anon, user, admin) {
     check("admin", "lists the bucket", !!listed?.some((o) => objectPath.endsWith(o.name)));
 }
 
+// Phase 27: the model form's photo cycle, as the admin — upload two photos, save them with the
+// model, reorder (the main photo follows position 0), refuse foreign paths and foreign photo ids,
+// then remove them all: save_model reports the files, deleting them leaves nothing public.
+async function checkModelImages(admin, f) {
+    const photoSlug = slug("form-photos");
+    const {error: createErr} = await admin.rpc("save_model", {p_model: formPayload(f, photoSlug)});
+    if (createErr) throw new Error(`photo model create failed: ${createErr.message}`);
+    const paths = ["aa", "bb"].map((key) => ({
+        storage_path: `models/${photoSlug}/${key}${suffix}-full.webp`,
+        thumb_storage_path: `models/${photoSlug}/${key}${suffix}-thumb.webp`,
+        width: 1600, height: 900,
+    }));
+    for (const p of paths) {
+        for (const path of [p.storage_path, p.thumb_storage_path]) {
+            const {error} = await admin.storage.from(BUCKET).upload(path, webp(), {contentType: "image/webp", cacheControl: "604800", upsert: false});
+            if (error) throw new Error(`photo upload failed: ${error.message}`);
+        }
+    }
+    const {data: photoModel} = await admin.from("models").select("id").eq("slug", photoSlug).single();
+    const save = (images) => admin.rpc("save_model", {p_model: {...formPayload(f, photoSlug), images}, p_original_slug: photoSlug});
+    const rows = async () => (await admin.from("model_images").select("id, position, is_primary, storage_path")
+        .eq("model_id", photoModel.id).order("position")).data ?? [];
+
+    const {data: added, error: addErr} = await save(paths);
+    let stored = await rows();
+    check("admin", "save_model adds uploaded photos in order, first = primary",
+        !addErr && added?.changed === true && stored.length === 2 && stored[0].storage_path === paths[0].storage_path
+            && stored[0].is_primary && !stored[1].is_primary && stored[1].position === 1,
+        addErr?.message ?? JSON.stringify(stored));
+
+    const {data: same} = await save(stored.map((r) => ({id: r.id})));
+    check("admin", "an unchanged photo list writes nothing", same?.changed === false && same?.removed_files?.length === 0, JSON.stringify(same));
+
+    const {data: swapped} = await save([{id: stored[1].id}, {id: stored[0].id}]);
+    const reordered = await rows();
+    check("admin", "reordering moves the primary with position 0",
+        swapped?.changed === true && reordered[0].id === stored[1].id && reordered[0].is_primary && !reordered[1].is_primary,
+        JSON.stringify(reordered));
+    stored = reordered;
+
+    const {error: foreignPath} = await save([...stored.map((r) => ({id: r.id})), {...paths[0], storage_path: `models/someone-else/x${suffix}-full.webp`}]);
+    check("admin", "a photo outside the model's folder is refused", foreignPath?.code === "ZK422", foreignPath?.code ?? "ACCEPTED");
+    const {data: otherImage} = await admin.from("model_images").select("id").eq("model_id", f.published.id).single();
+    const {error: foreignId} = await save([{id: otherImage.id}]);
+    check("admin", "another model's photo can't be taken over", foreignId?.code === "ZK404", foreignId?.code ?? "ACCEPTED");
+    const {error: tooMany} = await save(Array.from({length: 11}, (_, i) => ({...paths[0], storage_path: `models/${photoSlug}/n${i}-full.webp`})));
+    check("admin", "more than 10 photos are refused", tooMany?.code === "ZK422", tooMany?.code ?? "ACCEPTED");
+
+    const {data: cleared} = await save([]);
+    const files = paths.flatMap((p) => [p.storage_path, p.thumb_storage_path]);
+    const reported = [...(cleared?.removed_files ?? [])].sort();
+    check("admin", "removing the photos deletes the rows and reports every file",
+        (await rows()).length === 0 && JSON.stringify(reported) === JSON.stringify([...files].sort()), JSON.stringify(cleared));
+    const {error: removeErr} = await admin.storage.from(BUCKET).remove(reported);
+    check("admin", "the reported files can be deleted", !removeErr, removeErr?.message ?? "");
+    const status = (await fetch(admin.storage.from(BUCKET).getPublicUrl(files[0]).data.publicUrl)).status;
+    check("anon", "a removed photo is gone from Storage", status !== 200, `HTTP ${status}`);
+    const {data: left} = await admin.storage.from(BUCKET).list(`models/${photoSlug}`);
+    check("admin", "no orphaned files are left", (left ?? []).length === 0, `${left?.length} left`);
+}
+
 async function cleanupStorage(admin) {
     const {data} = await admin.storage.from(BUCKET).list("zz-rls");
     if (data?.length) await admin.storage.from(BUCKET).remove(data.map((o) => `zz-rls/${o.name}`));
     const {data: left} = await admin.storage.from(BUCKET).list("zz-rls");
     if (left?.length) console.warn(`⚠ ${left.length} object(s) left under ${BUCKET}/zz-rls/ — delete them in the dashboard.`);
+    const photoFolder = `models/${slug("form-photos")}`;
+    const {data: photos} = await admin.storage.from(BUCKET).list(photoFolder);
+    if (photos?.length) await admin.storage.from(BUCKET).remove(photos.map((o) => `${photoFolder}/${o.name}`));
 }
 
 const admin = await signIn(env.RLS_ADMIN_EMAIL, env.RLS_ADMIN_PASSWORD, "Admin");
@@ -283,12 +353,17 @@ try {
 } finally {
     await cleanup(admin, fixtures);
 }
+// Storage + the Phase 27 photo cycle, on fresh fixtures (they need the bucket from migration
+// 20260930120000; a failure here doesn't hide the table checks above).
 try {
+    fixtures = await createFixtures(admin);
     await checkStorage(client(), user, admin);
+    await checkModelImages(admin, fixtures);
 } catch (error) {
-    check("setup", "storage checks", false, error.message);
+    check("setup", "storage / photo checks", false, error.message);
 } finally {
     await cleanupStorage(admin);
+    await cleanup(admin, fixtures);
 }
 
 const failed = results.filter((r) => !r.ok);

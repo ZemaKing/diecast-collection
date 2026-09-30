@@ -153,9 +153,9 @@ After the alias map (D5): **138 drivers** (143 distinct strings − 5 merges). F
 | `id` | `uuid` | no | PK | |
 | `model_id` | `uuid` | no | FK `models` CASCADE | |
 | `position` | `smallint` | no | ≥ 0, unique `(model_id, position)` | Gallery order |
-| `is_primary` | `boolean` | no | `false`; **partial unique index** `(model_id) where is_primary` | Exactly one primary is a Phase 27 UI rule; at most one is DB-enforced |
-| `storage_path` | `text` | yes | | Supabase Storage key for the full image (Phase 21+): `models/{slug}/{position}-full.webp` in bucket `model-images` |
-| `thumb_storage_path` | `text` | yes | | `models/{slug}/{position}-thumb.webp` (≤ 400 px) |
+| `is_primary` | `boolean` | no | `false`; **partial unique index** `(model_id) where is_primary` | At most one is DB-enforced. Since Phase 27 `save_model()` keeps positions `0..n-1` with **exactly the photo at position 0 primary**, so gallery order and card photo always agree |
+| `storage_path` | `text` | yes | | Supabase Storage key for the full image in bucket `model-images`: `models/{slug}/{position}-full.webp` for photos migrated from postimg (Phase 21), `models/{slug}/{key}-full.webp` (`key` = 12 random hex characters, never reused) for photos uploaded in the admin form (Phase 27) |
+| `thumb_storage_path` | `text` | yes | | Same, `-thumb` (≤ 400 px) |
 | `external_url` | `text` | yes | check `^https://` | Today's postimg URL. **This is the roadmap's `legacy_url`.** It is kept after Phase 21 as the rollback path |
 | `thumb_external_url` | `text` | yes | check `^https://` | |
 | `alt` | `text` | yes | ≤ 200 | Defaults to the model name in the UI when NULL |
@@ -167,6 +167,8 @@ Row check: `storage_path is not null or external_url is not null`.
 **URL resolution (one function in the service layer — `resolveImageUrl()` in `src/services/image-url.ts`, Phase 20):** `storage_path` → public Storage URL, else `external_url`. Same for thumbnails, then fall back to the full image. No base64 or binary data in Postgres.
 
 Import: one row per model (position 0, `is_primary = true`, both postimg URLs) → **227 rows**.
+
+**Photo management (Phase 27):** the admin form holds new photos in the browser (resized there to ≤ 1600 px + a ≤ 400 px thumbnail, WebP), uploads them under a fresh name when the form is saved, then sends the model's **whole ordered photo list** as `save_model()`'s optional `images` key (existing photos by `id`, new ones by path + size; at most 10; new paths must sit under `models/{slug}/`). The rows change in the same transaction as the rest of the model; the function returns the Storage paths of the photos it dropped (`removed_files`) and the browser deletes those files **after** the commit. A failed save removes the files it had just uploaded. Photos are never overwritten in place — objects are cached for a week.
 
 **Storage (Phase 21):** bucket `model-images` is public-read, admin-only write (migration `20260930120000_diecast_storage.sql`). Rows are flipped to Storage by `diecast.set_image_storage()` (service role, one transaction) only after every object is verified against the upload manifest; clearing the two `*_storage_path` columns rolls back to `external_url`. Runbook: `scripts/migrate-images/README.md`.
 
@@ -189,6 +191,7 @@ Import: one row per model (position 0, `is_primary = true`, both postimg URLs) �
 | `is_admin()` | `returns boolean language sql stable security definer set search_path = ''` → `exists (select 1 from diecast.admin_users where user_id = auth.uid())` | Single gate used by every admin policy |
 | `set_updated_at()` | trigger `before update` on every table with `updated_at` | |
 | `is_hex_palette(text[])` | immutable SQL function used by the `livery_hex` CHECK | Array-element CHECKs can't use subqueries directly |
+| `save_model(p_model jsonb, p_original_slug text, p_dry_run boolean)` | security invoker; migrations `20260930150000` → `20260930180000` (rich fields) → `20261001090000` (photos) | The admin form's single write path: model row, colors, and — when their keys are present — description, key features, tags, private notes and the ordered photo list, in one transaction. User-facing errors use SQLSTATE class `ZK` |
 | `model_summaries` (view, **`security_invoker = true`** so RLS applies) | One row per model, with: slug, name, year, scale, is_racing, car_number, `livery_hex`, added_at, is_published; brand/manufacturer/category **slug + name** (+ logo paths); driver name; `color_slugs text[]` in position order; primary image thumb + full (resolved columns); condition/location | The single query behind `getModels()` (Phase 9). Keeps the client free of N+1 joins |
 
 `getCollectionStats()` (Phase 23) is computed client-side from the cached list first. A SQL view is added only if Phase 33 measurements call for it.
@@ -280,7 +283,7 @@ Phase 7's importer must print exactly these numbers, and Phase 8 verifies them. 
 | Description (rich text toolbar) | Form §5, "About this model" | `description` (markdown-lite, decided in Phase 26; the toolbar inserts markers, no WYSIWYG) |
 | Notes (private) | Form §5 | `model_private_notes.notes` |
 | Public "Notes" row in details "My Collection" card / "Notes" tab | Details | **Deferred.** The form only has *private* notes, so there's no public source. Render nothing (Phase 19). A public `notes` column can be added later if wanted |
-| Main image + additional images (5/10), primary star | Form §6, gallery "1 / 8" | `model_images` (`position`, `is_primary`; max 10 enforced by the UI) |
+| Main image + additional images (5/10), primary star | Form §6, gallery "1 / 8" | `model_images` (`position`, `is_primary` = position 0; max 10 — the UI and `save_model()` both enforce it) |
 | Tags | Form §7, details | `tags` + `model_tags` |
 | Key Features | Details | `models.key_features` |
 | Save as Draft | Form header | `is_published = false` |

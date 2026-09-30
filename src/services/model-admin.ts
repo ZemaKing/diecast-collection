@@ -4,7 +4,9 @@
 import {toAppError} from "../lib/errors.ts";
 import type {Json} from "../lib/database.types.ts";
 import {supabase} from "../lib/supabase.ts";
+import type {ImagePayloadItem} from "../utils/model-images.ts";
 
+import {MODEL_IMAGES_BUCKET} from "./image-url.ts";
 import {unwrap} from "./supabase-query.ts";
 
 // An existing lookup row by slug, or — with `create` — a new one the save inserts first (the
@@ -12,8 +14,8 @@ import {unwrap} from "./supabase-query.ts";
 export type LookupInput = {slug: string; name: string; create?: boolean};
 
 // The form's fields, as save_model() expects them. The Phase 26 keys (description, key features,
-// tags, private notes) are optional: absent = leave as is, present = set (empty clears). Images are
-// never part of a save (Phase 27 manages them on their own).
+// tags, private notes) and the Phase 27 `images` (the whole ordered photo list, first = main photo,
+// new photos already uploaded) are optional: absent = leave as is, present = set (empty clears).
 export type ModelSavePayload = {
     slug: string;
     name: string;
@@ -38,6 +40,7 @@ export type ModelSavePayload = {
     key_features?: string[];
     tags?: LookupInput[];
     notes?: string | null;
+    images?: ImagePayloadItem[];
 };
 
 export type SaveModelResult = {
@@ -45,10 +48,13 @@ export type SaveModelResult = {
     created: boolean;
     // false when every submitted value already matched the stored one (nothing was written).
     changed: boolean;
+    // Storage paths of the photos this save removed from the model (their rows are gone). The
+    // caller deletes the files — after the commit, never before.
+    removedFiles: string[];
     dryRun: boolean;
 };
 
-type SaveModelRow = {slug: string; created: boolean; changed: boolean; dry_run: boolean};
+type SaveModelRow = {slug: string; created: boolean; changed: boolean; removed_files?: string[] | null; dry_run: boolean};
 
 // `originalSlug` null = create. The slug never changes after creation: on update the payload's
 // slug is ignored by the database. `dryRun` runs the real statements and rolls them back.
@@ -63,7 +69,7 @@ export async function saveModel(
             p_dry_run: options.dryRun ?? false,
         }),
     )) as unknown as SaveModelRow;
-    return {slug: row.slug, created: row.created, changed: row.changed, dryRun: row.dry_run};
+    return {slug: row.slug, created: row.created, changed: row.changed, removedFiles: row.removed_files ?? [], dryRun: row.dry_run};
 }
 
 // The owner's private notes for a model (`model_private_notes`, admin-only through RLS — anyone else
@@ -86,8 +92,6 @@ export type DeleteModelResult = {
     orphanedFiles: string[];
 };
 
-const IMAGE_BUCKET = "model-images";
-
 // Deletes the model; its colors, tags, images rows and private notes go with it (ON DELETE
 // CASCADE, one statement). Photos already moved to Storage (Phase 21) are removed afterwards —
 // best effort: a failure there is reported, never undoes the delete.
@@ -103,11 +107,18 @@ export async function deleteModel(slug: string): Promise<DeleteModelResult> {
     // RLS doesn't error on a refused DELETE — it just matches no rows.
     if (deleted.length === 0) throw toAppError({code: "42501", message: "delete matched no rows"});
 
-    if (files.length === 0) return {orphanedFiles: []};
+    return {orphanedFiles: await removeStorageFiles(files)};
+}
+
+// Best-effort removal of photo files; returns the ones that couldn't be removed (empty = all gone).
+// Used after the database has already let go of them, so a failure only leaves an orphaned file.
+export async function removeStorageFiles(paths: string[]): Promise<string[]> {
+    if (paths.length === 0) return [];
     try {
-        const {error} = await supabase.storage.from(IMAGE_BUCKET).remove(files);
-        return {orphanedFiles: error ? files : []};
+        // No error = done: a file that was already gone isn't an orphan.
+        const {error} = await supabase.storage.from(MODEL_IMAGES_BUCKET).remove(paths);
+        return error ? paths : [];
     } catch {
-        return {orphanedFiles: files};
+        return paths;
     }
 }
