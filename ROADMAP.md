@@ -55,7 +55,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 14 | Advanced Filter Panel | ✅ Done | — |
 | 15 | Search & Sorting | ✅ Done | — |
 | 16 | Model Card Redesign | ✅ Done | — |
-| 17 | Collection Hero & Grid | ⬜ | Hero background image |
+| 17 | Collection Hero & Grid | ✅ Done | Hero background image (optional — slot ready) |
 | 18 | View Modes | ⬜ | Decide Showcase mode |
 | 19 | Model Details Page | ⬜ | Decide public "My Collection" fields |
 | 20 | Gallery, Lightbox & Quick View | ⬜ | — |
@@ -465,23 +465,25 @@ New card used everywhere the old one was; old `ModelCard` styles removed.
 
 ---
 
-## Phase 17 — Collection Hero & Grid
+## Phase 17 — Collection Hero & Grid ✅
 
 ### Goal
 Intro area and responsive grid per the mockups.
 
 ### Tasks
-- [ ] Hero: eyebrow "MY COLLECTION", **count from data**, subtitle, tagline (fix the mockup's "Diecas" typo), background art (asset from owner)
-- [ ] Grid: mockup targets — desktop ~5, tablet 3, mobile 1 (confirm against final mockups; prefer `auto-fill/minmax` if it reproduces them)
-- [ ] Remove `.thumb { min-width: 250px }` and other forced widths
-- [ ] Results header (count, active state) between toolbar and grid
+- [x] Hero: eyebrow "MY COLLECTION", **count from data**, subtitle, tagline (fix the mockup's "Diecas" typo), background art (asset from owner) *(`src/components/CollectionHero/`. Title reads "227 Diecast Models" with the count from `getCollectionStats()` (gold, per mockup) — a shimmer placeholder while loading, no number at all on error rather than a misleading "0". Subtitle is data-driven too: "A personal collection of 1:43 scale models" only while the data has exactly one scale (new `CollectionStats.scales`), scale-agnostic wording otherwise. Tagline "Small cars. / Big stories." with the gold rule, tablet+ only. **Background art: not delivered yet**, so the hero ships with a token-only backdrop (gold glow + faint diagonal sheen, `--hero-*` tokens per theme); `HERO_ART_URL` in `collection-page.tsx` is the one-line slot for the owner's image — it layers in on the right with a fade mask and falls back to the gradient if it fails to load)*
+- [x] Grid: mockup targets — desktop ~5, tablet 3, mobile 1 (confirm against final mockups; prefer `auto-fill/minmax` if it reproduces them) *(it does: one rule, `repeat(auto-fill, minmax(min(100%, var(--card-min-width)), 1fr))` with `--card-min-width: 220px`, replaces the four per-breakpoint column counts. The key enabler was dropping the legacy bordered `.main` panel (the mockup puts hero + grid straight on the page background) and using the Header's `--container-max`/`--container-gutter`, so content aligns with the logo/nav and the widths work out)*
+- [x] Remove `.thumb { min-width: 250px }` and other forced widths *(the `.thumb` one was already gone with the Phase 16 rebuild; the page's remaining hard-coded paddings/radii/legacy vars (`--panel`, `--muted`, the legacy green `--accent` on the retry button, `z-index: 1200` on the back-to-top button — it floated above the modal) are now semantic tokens)*
+- [x] Results header (count, active state) between toolbar and grid *(`describeResults()` in `src/utils/collection-summary.ts`: "227 models" untouched; "29 of 227 models · matching "ford" · 2 filters" when narrowed, with the count emphasized. `aria-live="polite"`. The toolbar's own inline "N models" was moved here rather than duplicated; `resultsCount` still feeds the mobile sheet's "Show N models" button)*
 
 ### Verification
-- [ ] 227 (or filtered) cards render; counts match; columns at 360/768/1024/1440/1920
-- [ ] No layout shift when images load (aspect ratio reserved)
+- [x] 227 (or filtered) cards render; counts match; columns at 360/768/1024/1440/1920 *(live: 227 cards / "227 models" unfiltered; `?manufacturer=ixo&category=rally&q=ford` → 3 cards, "3 of 227 models matching "ford" · 2 filters". Columns measured from the computed grid: **360 → 1, 768 → 3, 1024 → 4, 1280 → 5, 1440 → 5, 1920 → 6**; `scrollWidth` never exceeds the viewport. 13 new unit tests (`collection-summary.test.ts`, `stats.test.ts`))*
+- [x] No layout shift when images load (aspect ratio reserved) *(card thumbs already reserve `aspect-ratio: 4/3` (Phase 16). Measured with a `layout-shift` PerformanceObserver on a cold load: first run 0.012, traced to the results header appearing only after data arrived and pushing the skeleton grid down — fixed by rendering it (as "Loading models…") during loading too. After: 0.0008 total, from font/scrollbar settling (the header's social icons shift with it), not images)*
 
 ### Definition of Done
-Hero + grid match the Desktop mockup; usable on narrow widths.
+Hero + grid match the Desktop mockup; usable on narrow widths. *(checked at 1440 in both themes against `Mockup Overall.png`)*
+
+**Deviation to confirm in Phase 32:** the Tablet/Mobile mockup references show no hero at all. This phase keeps a compact hero on mobile (eyebrow, title, subtitle; tagline hidden) because it carries the page's only `<h1>`. If the final mobile mockup drops it, the fix is to make it visually hidden below 640px, not to remove it.
 
 ---
 

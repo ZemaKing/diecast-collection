@@ -9,5 +9,6 @@ export function getCollectionStats(models: ModelSummary[]): CollectionStats {
         totalBrands: new Set(models.map((m) => m.brand.slug)).size,
         totalManufacturers: new Set(models.map((m) => m.manufacturer.slug)).size,
         totalCategories: new Set(models.map((m) => m.category.slug)).size,
+        scales: [...new Set(models.map((m) => m.scale))].sort(),
     };
 }

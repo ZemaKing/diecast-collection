@@ -4,120 +4,109 @@
     flex-direction: column;
 }
 
+/* Same container as the Header (max width + gutter), so the hero, toolbar and grid line up with
+   the logo/nav above. No bordered panel around the content — the mockup sets hero and grid
+   straight on the page background (ROADMAP Phase 17). */
 .content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 12px;
     width: 100%;
-    max-width: 1800px;
+    max-width: var(--container-max);
     margin: 0 auto;
+    padding: 0 var(--container-gutter) var(--space-3xl);
 }
 
 .main {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
     min-width: 0;
 }
 
-.mainHeader {
+.resultsHeader {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-sm);
+    margin: 0 0 var(--space-md);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.resultsHeaderCount {
+    color: var(--color-text-secondary);
+    font-weight: var(--weight-semibold);
+}
+
+.resultsHeaderNarrowed .resultsHeaderCount {
+    color: var(--color-text);
+}
+
+.resultsHeaderDetail {
+    color: var(--color-text-muted);
 }
 
 .contentEmpty {
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    color: var(--muted);
-    padding: 20px;
+    border: var(--border-width) dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-muted);
+    padding: var(--space-xl);
 }
 
 .contentError {
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    color: var(--muted);
-    padding: 20px;
+    border: var(--border-width) dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-muted);
+    padding: var(--space-xl);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--space-md);
 }
 
 .retryButton {
-    background: var(--accent);
+    background: var(--color-accent);
     border: 0;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
+    color: var(--color-on-accent);
     cursor: pointer;
     font-family: var(--font-sans);
-    font-weight: 500;
-    padding: 10px 16px;
+    font-weight: var(--weight-semibold);
+    min-height: var(--tap-target);
+    padding: 0 var(--space-lg);
 }
 
+.retryButton:hover {
+    background: var(--color-accent-hover);
+}
+
+/* One rule for every width: as many columns as fit at --card-min-width. With the container
+   gutter that yields 1 column at 360, 3 at 768, 4 at 1024, 5 at 1280–1440 and 6 at 1920 — the
+   mockups' desktop ~5 / tablet 3 / mobile 1 — with no per-breakpoint column counts to maintain.
+   min(100%, …) keeps a single column from overflowing on screens narrower than the floor. */
 .modelGrid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min-width)), 1fr));
+    gap: var(--space-lg);
 }
 
 .scrollTopButton {
-    background: var(--panel-alt);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: 0 12px 34px var(--shadow-color);
-    color: var(--text);
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--color-text);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: var(--text-xl);
     line-height: 1;
-    width: 44px;
-    height: 44px;
+    width: var(--tap-target);
+    height: var(--tap-target);
     position: fixed;
-    right: 20px;
-    bottom: 20px;
-    transition: background 120ms ease, transform 120ms ease;
-    z-index: 1200;
+    right: var(--space-xl);
+    bottom: var(--space-xl);
+    transition: background var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+    z-index: var(--z-sticky);
 }
 
 .scrollTopButton:hover {
-    background: var(--panel-alt-hover);
+    background: var(--color-surface-hover);
     transform: translateY(-2px);
-}
-
-@media (min-width: 640px) {
-    .content {
-        padding: 16px;
-        gap: 16px;
-    }
-
-    .main {
-        padding: 16px;
-    }
-
-    .modelGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .modelGrid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1500px) {
-    .modelGrid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (min-width: 1800px) {
-    .modelGrid {
-        grid-template-columns: repeat(5, 1fr);
-    }
 }

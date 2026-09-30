@@ -78,4 +78,7 @@ export type CollectionStats = {
     totalBrands: number;
     totalManufacturers: number;
     totalCategories: number;
+    // Distinct scales, sorted (e.g. ["1:43"]) — the hero says "1:43 scale models" only while
+    // there's exactly one.
+    scales: string[];
 };

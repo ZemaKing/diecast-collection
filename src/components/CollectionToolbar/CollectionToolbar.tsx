@@ -195,8 +195,8 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                     )}
                 </div>
 
-                <span className="resultsCount">{resultsCount} models</span>
-
+                {/* The results count moved to the page's results header (Phase 17); resultsCount
+                    now only feeds the mobile sheet's "Show N models" button. */}
                 <div className="toolbarPlaceholders">
                     {/* View modes: visual placeholder only — wired in Phase 18. */}
                     <div className="viewModeGroup" aria-hidden="true">

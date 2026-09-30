@@ -30,7 +30,8 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 | Radius | `--radius-xs` (4) … `--radius-xl` (20), `--radius-pill`, `--radius-round` | |
 | Motion | `--duration-instant/fast/base/slow/slower`, `--ease-standard/emphasized/exit` | All durations → `0ms` under `prefers-reduced-motion` |
 | Layers | `--z-base`, `--z-sticky`, `--z-dropdown`, `--z-modal`, `--z-lightbox`, `--z-toast` | |
-| Layout | `--container-max`, `--container-gutter`, `--header-height`, `--tap-target` (44px) | |
+| Layout | `--container-max`, `--container-gutter`, `--header-height`, `--tap-target` (44px), `--card-min-width` (220px) | `--card-min-width` is the collection grid's `auto-fill` column floor (Phase 17) |
+| Hero | `--hero-glow`, `--hero-sheen`, `--hero-art-opacity` | Collection hero backdrop, per theme (Phase 17) |
 
 ## Breakpoints
 

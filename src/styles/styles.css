@@ -79,6 +79,9 @@
     --container-gutter: clamp(var(--space-lg), 3vw, var(--space-2xl));
     --header-height: 64px;
     --tap-target: 44px;
+    /* collection grid: auto-fill column floor — reproduces the mockups' 1 (360) / 3 (768) /
+       5 (1280–1440) columns with the container gutter (ROADMAP Phase 17) */
+    --card-min-width: 220px;
 
     /* motion */
     --duration-instant: 80ms;
@@ -160,6 +163,11 @@
     --cat-premium: #a78bfa;
     --cat-retro: #44c85e;
     --cat-fallback: var(--color-text-muted);
+
+    /* collection hero backdrop */
+    --hero-glow: rgba(245, 195, 59, 0.1);
+    --hero-sheen: rgba(226, 234, 245, 0.04);
+    --hero-art-opacity: 0.4;
 }
 
 /* ---- 3. Semantic colors — light (derived; no mockup, flagged) ---------- */
@@ -208,6 +216,10 @@
     --cat-supercar: #1565c0;
     --cat-premium: #6d28d9;
     --cat-retro: #17702f;
+
+    --hero-glow: rgba(245, 195, 59, 0.18);
+    --hero-sheen: rgba(14, 23, 38, 0.03);
+    --hero-art-opacity: 0.22;
 }
 
 @media (prefers-reduced-motion: reduce) {

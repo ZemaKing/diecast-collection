@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
+import {CollectionHero} from "../../components/CollectionHero/CollectionHero";
 import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionToolbar";
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
@@ -19,10 +20,16 @@ import type {ModelSummary} from "../../services/types.ts";
 
 import type {DiecastModel} from "../../types.ts";
 import {findModelById} from "../../utils/collection-filters.ts";
+import {describeResults} from "../../utils/collection-summary.ts";
 import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
 
-// A fixed key set (not an index) avoids remounting skeleton nodes on every render.
-const SKELETON_KEYS = Array.from({length: 8}, (_, i) => `skeleton-${i}`);
+// A fixed key set (not an index) avoids remounting skeleton nodes on every render. 10 = two full
+// rows at the mockup's 5-column desktop grid.
+const SKELETON_KEYS = Array.from({length: 10}, (_, i) => `skeleton-${i}`);
+
+// Hero background photo — an owner-supplied asset (ROADMAP Phase 17), not yet delivered. Drop it in
+// `public/` and point this at it; until then the hero renders its token-only gradient backdrop.
+const HERO_ART_URL: string | null = null;
 
 export function CollectionPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,6 +56,8 @@ export function CollectionPage() {
     const visibleSummaries = useMemo(() => sortModels(searchedSummaries, sort, query), [searchedSummaries, sort, query]);
     const facets = useMemo(() => getFacetCounts(summaries, filters), [summaries, filters]);
     const stats = useMemo(() => getCollectionStats(summaries), [summaries]);
+    const activeFilterCount = Object.values(filters).reduce((n, values) => n + values.length, 0);
+    const results = describeResults({visible: visibleSummaries.length, total: stats.totalModels, activeFilterCount, query});
 
     // DetailsModal still needs the legacy shape (Phase 19 replaces it); ModelCard now renders
     // straight off ModelSummary (Phase 16) — no toLegacyModel() in the render path below.
@@ -142,6 +151,13 @@ export function CollectionPage() {
 
             <div className="content">
                 <main className="main">
+                    <CollectionHero
+                        count={carsQuery.isSuccess ? stats.totalModels : null}
+                        scales={stats.scales}
+                        isLoading={carsQuery.isPending}
+                        artUrl={HERO_ART_URL}
+                    />
+
                     <CollectionToolbar
                         filters={filters}
                         facets={facets}
@@ -152,6 +168,22 @@ export function CollectionPage() {
                         onSortChange={setSort}
                         hasQuery={!!query.trim()}
                     />
+
+                    {/* Results header (Phase 17): what the grid below is showing, and why. Polite
+                        live region so filter/search changes are announced without stealing focus.
+                        Rendered while loading too, so the grid doesn't shift down when data lands. */}
+                    {!carsQuery.isError && (
+                        <p className={`resultsHeader${results.isNarrowed ? " resultsHeaderNarrowed" : ""}`} aria-live="polite">
+                            {carsQuery.isPending ? (
+                                <span className="resultsHeaderDetail">Loading models…</span>
+                            ) : (
+                                <>
+                                    <span className="resultsHeaderCount">{results.count}</span>
+                                    {results.detail && <span className="resultsHeaderDetail">{results.detail}</span>}
+                                </>
+                            )}
+                        </p>
+                    )}
 
                     {carsQuery.isPending ? (
                         <div className="modelGrid">
@@ -189,7 +221,7 @@ export function CollectionPage() {
             </div>
 
             {showScrollTop && (
-                <button className="scrollTopButton" onClick={scrollToTop} type="button">
+                <button className="scrollTopButton" onClick={scrollToTop} type="button" aria-label="Back to top">
                     ˄
                 </button>
             )}
