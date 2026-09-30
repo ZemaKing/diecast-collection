@@ -150,6 +150,12 @@
     /* overlays & elevation */
     --color-overlay: rgba(2, 6, 12, 0.72);
     --color-scrim-strong: rgba(0, 0, 0, 0.92); /* lightbox */
+    /* Text/controls on the lightbox scrim — it's near-black in both themes, so these are
+       deliberately not overridden by the light theme. */
+    --color-on-scrim: #f2f5f9;
+    --color-on-scrim-muted: #b4bfcc;
+    --color-scrim-control: rgba(255, 255, 255, 0.12);
+    --color-scrim-control-hover: rgba(255, 255, 255, 0.24);
     --shadow-color: rgba(0, 0, 0, 0.45);
     --shadow-sm: 0 1px 2px var(--shadow-color);
     --shadow-md: 0 8px 24px var(--shadow-color);
@@ -284,6 +290,13 @@ body {
 :focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
+}
+
+/* Page scroll lock while a modal <dialog> is open (useModalDialog). */
+html.modalOpen {
+    overflow: hidden;
+    /* Keeps the scrollbar's space, so the page behind doesn't shift sideways. */
+    scrollbar-gutter: stable;
 }
 
 /* Screen-reader-only text: visible to assistive tech, removed from layout/paint. */

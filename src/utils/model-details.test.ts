@@ -40,7 +40,7 @@ const base: Model = {
     keyFeatures: [],
     tags: [],
     isPublished: true,
-    images: [{id: "i-1", position: 0, isPrimary: true, url: "full.png", thumbUrl: "thumb.png", width: null, height: null}],
+    images: [{id: "i-1", position: 0, isPrimary: true, url: "full.png", thumbUrl: "thumb.png", width: null, height: null, alt: null}],
 };
 
 describe("getAvailableTabs", () => {

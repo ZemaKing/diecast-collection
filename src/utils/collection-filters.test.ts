@@ -9,7 +9,6 @@ import {
     ALL_VALUE,
     DEFAULT_FILTERS,
     filterModels,
-    findModelById,
     getFilterOptions,
     getModelColors,
     matchesFilters,
@@ -117,7 +116,7 @@ describe("filterModels on the real dataset", () => {
 });
 
 describe("matchesFilters color handling", () => {
-    const multiColor = findModelById(cars, "acura-integra-gsr-1996-altaya-red")!;
+    const multiColor = cars.find((m) => m.id === "acura-integra-gsr-1996-altaya-red")!;
 
     it("matches a model on any of its colors, not only the first", () => {
         expect(multiColor.color).toEqual(["Red", "Yellow", "White"]);
@@ -140,13 +139,5 @@ describe("matchesFilters color handling", () => {
     it("treats the literal 'All' as no filter", () => {
         expect(ALL_VALUE).toBe("All");
         expect(matchesFilters(multiColor, withFilters({color: ALL_VALUE}))).toBe(true);
-    });
-});
-
-describe("findModelById", () => {
-    it("finds by exact id and returns undefined otherwise", () => {
-        expect(findModelById(cars, "acura-integra-gsr-1996-altaya-red")?.name).toBeDefined();
-        expect(findModelById(cars, "does-not-exist")).toBeUndefined();
-        expect(findModelById(cars, "ACURA-INTEGRA-GSR-1996-ALTAYA-RED")).toBeUndefined();
     });
 });

@@ -1,0 +1,87 @@
+/* Six spec tiles (ROADMAP Phase 19, shared with Quick View in Phase 20): 3 × 2 on tablet+,
+   2 × 3 on mobile. */
+
+.specTiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 640px) {
+    .specTiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-md);
+    }
+}
+
+.specTile {
+    min-width: 0;
+}
+
+.specTileInner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    height: 100%;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: inherit;
+    text-decoration: none;
+}
+
+.specTileLink {
+    transition: border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+
+.specTileLink:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+}
+
+.specTileArrow {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-sm);
+    color: var(--color-text-subtle);
+}
+
+.specTileLabel {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.specTileValue {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: 0;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    overflow-wrap: anywhere;
+}
+
+.specTileLogo {
+    width: 28px;
+    height: 20px;
+    object-fit: contain;
+    flex: none;
+}
+
+.specTileIcon {
+    color: var(--color-text-secondary);
+    flex: none;
+}
+
+.specTileSkeleton {
+    min-height: 76px;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+}

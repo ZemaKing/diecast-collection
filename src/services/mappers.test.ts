@@ -1,4 +1,4 @@
-import {describe, expect, it} from "vitest";
+import {afterEach, describe, expect, it, vi} from "vitest";
 
 import type {Tables} from "../lib/database.types.ts";
 
@@ -96,10 +96,12 @@ describe("mapModelSummary", () => {
         expect(model.imageCount).toBe(0);
     });
 
-    it("prefers storage_path over external_url when both are set (Phase 21 migration)", () => {
+    it("prefers storage_path over external_url when both are set, resolved to a public Storage URL (Phase 20/21)", () => {
+        vi.stubEnv("VITE_SUPABASE_URL", "https://abcdefghijklmnopqrst.supabase.co");
         const model = mapModelSummary(summaryRow({image_storage_path: "models/abarth/0-full.webp", thumb_storage_path: "models/abarth/0-thumb.webp"}));
-        expect(model.image?.url).toBe("models/abarth/0-full.webp");
-        expect(model.image?.thumbUrl).toBe("models/abarth/0-thumb.webp");
+        const bucket = "https://abcdefghijklmnopqrst.supabase.co/storage/v1/object/public/model-images";
+        expect(model.image?.url).toBe(`${bucket}/models/abarth/0-full.webp`);
+        expect(model.image?.thumbUrl).toBe(`${bucket}/models/abarth/0-thumb.webp`);
     });
 
     it("throws on a row missing required fields (defensive — should never happen given NOT NULL columns)", () => {
@@ -148,8 +150,24 @@ describe("mapCategory / mapDriver / mapModelImage", () => {
             thumbUrl: "https://example.com/thumb.png",
             width: 800,
             height: 600,
+            alt: null,
         });
     });
+
+    it("keeps owner-written alt text, treating a blank one as none", () => {
+        const row = {
+            id: "img-2", model_id: "m-1", position: 1, is_primary: false,
+            storage_path: null, external_url: "https://example.com/rear.png",
+            thumb_storage_path: null, thumb_external_url: null,
+            width: null, height: null, alt: " Rear three-quarter view ", created_at: "", updated_at: "",
+        };
+        expect(mapModelImage(row).alt).toBe("Rear three-quarter view");
+        expect(mapModelImage({...row, alt: "   "}).alt).toBeNull();
+    });
+});
+
+afterEach(() => {
+    vi.unstubAllEnvs();
 });
 
 describe("mapModel", () => {

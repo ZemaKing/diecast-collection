@@ -223,6 +223,71 @@
     font-weight: var(--weight-semibold);
 }
 
+/* ---- Quick View trigger (ROADMAP Phase 20) ---- */
+
+.cardShell {
+    position: relative;
+}
+
+/* Sits exactly over the card's photo (same inset, same 4:3), so the button centres on it. Only the
+   button takes clicks — the rest of the photo still opens the details page. */
+.quickViewLayer {
+    position: absolute;
+    top: calc(var(--space-md) + var(--border-width));
+    left: calc(var(--space-md) + var(--border-width));
+    right: calc(var(--space-md) + var(--border-width));
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+/* Follows the card's own 2px hover lift. */
+.cardShell:hover .quickViewLayer {
+    transform: translateY(-2px);
+}
+
+.quickViewTrigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: 36px;
+    padding: 0 var(--space-md);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    background: var(--color-overlay);
+    backdrop-filter: blur(6px);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+
+.cardShell:hover .quickViewTrigger,
+.quickViewTrigger:focus-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.quickViewTrigger:hover {
+    background: var(--color-surface-raised);
+}
+
+/* Quick View is a pointer/keyboard shortcut ("Quick View Modal (Desktop)"). On touch-only devices
+   there's no hover to reveal it, and a tap on the card already opens the full page. */
+@media (hover: none) {
+    .quickViewLayer {
+        display: none;
+    }
+}
+
 /* Loading skeleton (ROADMAP Phase 16) — same box model as a real card so the grid doesn't jump
    when data arrives. Final shimmer/skeleton visuals across the whole app are Phase 29's job; this
    is the card-level piece of that vocabulary. */

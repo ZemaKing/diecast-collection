@@ -164,7 +164,7 @@ After the alias map (D5): **138 drivers** (143 distinct strings − 5 merges). F
 
 Row check: `storage_path is not null or external_url is not null`.
 
-**URL resolution (one function in the service layer):** `storage_path` → public Storage URL, else `external_url`. Same for thumbnails, then fall back to the full image. No base64 or binary data in Postgres.
+**URL resolution (one function in the service layer — `resolveImageUrl()` in `src/services/image-url.ts`, Phase 20):** `storage_path` → public Storage URL, else `external_url`. Same for thumbnails, then fall back to the full image. No base64 or binary data in Postgres.
 
 Import: one row per model (position 0, `is_primary = true`, both postimg URLs) → **227 rows**.
 

@@ -1,6 +1,7 @@
 // Row → domain conversions. The only place that reads database.types.ts Row shapes directly.
 import type {Tables} from "../lib/database.types.ts";
 
+import {resolveImageUrl} from "./image-url.ts";
 import type {Category, Driver, LookupRef, Model, ModelColor, ModelImage, ModelSummary, Tag} from "./types.ts";
 
 type SummaryRow = Tables<"model_summaries">;
@@ -37,8 +38,8 @@ export function mapModelSummary(row: SummaryRow): ModelSummary {
         colors: colorSlugs.map((slug, i): ModelColor => ({slug, name: colorNames[i] ?? slug})),
         image: hasImage
             ? {
-                  url: row.image_storage_path ?? row.image_external_url,
-                  thumbUrl: row.thumb_storage_path ?? row.thumb_external_url,
+                  url: resolveImageUrl({storagePath: row.image_storage_path, externalUrl: row.image_external_url}),
+                  thumbUrl: resolveImageUrl({storagePath: row.thumb_storage_path, externalUrl: row.thumb_external_url}),
                   width: row.image_width,
                   height: row.image_height,
               }
@@ -64,10 +65,11 @@ export function mapModelImage(row: Tables<"model_images">): ModelImage {
         id: row.id,
         position: row.position,
         isPrimary: row.is_primary,
-        url: row.storage_path ?? row.external_url,
-        thumbUrl: row.thumb_storage_path ?? row.thumb_external_url,
+        url: resolveImageUrl({storagePath: row.storage_path, externalUrl: row.external_url}),
+        thumbUrl: resolveImageUrl({storagePath: row.thumb_storage_path, externalUrl: row.thumb_external_url}),
         width: row.width,
         height: row.height,
+        alt: row.alt?.trim() || null,
     };
 }
 

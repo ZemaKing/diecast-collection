@@ -1,0 +1,118 @@
+/* Quick View (ROADMAP Phase 20) — "Quick View Modal (Desktop)" in Mockup Details.png. */
+
+.quickView {
+    width: min(560px, 100vw - 2 * var(--container-gutter));
+    max-width: none;
+    max-height: calc(100dvh - 2 * var(--space-lg));
+    padding: 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.quickView::backdrop {
+    background: var(--color-overlay);
+}
+
+.quickViewInner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-2xl) var(--space-lg) var(--space-lg);
+}
+
+.quickViewClose {
+    position: absolute;
+    top: var(--space-2xs);
+    right: var(--space-2xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.quickViewClose:hover {
+    background: var(--state-hover);
+    color: var(--color-text);
+}
+
+.quickViewBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 0;
+}
+
+.quickViewTitle {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    overflow-wrap: anywhere;
+}
+
+.quickViewMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-sm);
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+}
+
+.quickViewYear {
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+}
+
+.quickViewCategory {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2xs) var(--space-sm);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+}
+
+/* Tighter tiles than the details page — this is a 560px panel. */
+.quickView .specTiles {
+    gap: var(--space-sm);
+}
+
+.quickView .specTileInner {
+    padding: var(--space-sm) var(--space-md);
+}
+
+.quickViewDetailsLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    min-height: var(--tap-target);
+    padding: 0 var(--space-lg);
+    margin-top: var(--space-xs);
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.quickViewDetailsLink:hover {
+    background: var(--color-accent-hover);
+}

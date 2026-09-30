@@ -7,7 +7,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 - Components use `var(--token)` only. No hard-coded colors, spacing, radii, font sizes, shadows or durations.
 - `src/styles/tokens.test.ts` enforces:
   - every `var(--x)` used in `src` is defined;
-  - no new hard-coded colors outside `styles.css`. Existing debt in `DetailsModal`, `Header` and `landing-page` is capped and may only go down;
+  - no new hard-coded colors outside `styles.css`. Existing debt in `Header` is capped and may only go down (`DetailsModal` was deleted in Phase 20, `landing-page` earlier);
   - breakpoints stay in sync with `breakpoints.ts`;
   - every category in the data has a dark and a light color token.
 - `src/styles/contrast.test.ts` enforces ≥ 4.5:1 for every text token on every surface, in both themes.
@@ -23,7 +23,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 | Accent | `--color-accent` (+`-hover`, `-active`, `-soft`), `--color-accent-text`, `--color-on-accent` | Gold. Use `-accent` for fills and borders, `-accent-text` for gold text/icons, and `-on-accent` for text on a gold fill |
 | Feedback | `--color-success`, `-info`, `-warning`, `-danger` | "Collected" green / "Near Mint" blue from the details mockup |
 | States | `--state-hover`, `--state-active`, `--state-selected-bg`, `--state-selected-border`, `--state-disabled-opacity`, `--focus-ring`, `--focus-ring-color` | Hover/active are overlays that work on any surface. A global `:focus-visible` uses `--focus-ring` |
-| Elevation | `--shadow-sm/md/lg`, `--shadow-color`, `--color-overlay`, `--color-scrim-strong` | |
+| Elevation | `--shadow-sm/md/lg`, `--shadow-color`, `--color-overlay`, `--color-scrim-strong`, `--color-on-scrim(-muted)`, `--color-scrim-control(-hover)` (lightbox — theme-independent, the scrim is black in both) | |
 | Category | `--cat-rally`, `-racing`, `-supercar`, `-premium`, `-retro`, `--cat-fallback` | Keyed by **slug** (`categorySlug()` in `src/utils/category.ts`). Truck-only slugs are removed in Phase 11 |
 | Typography | `--font-sans`, `--text-2xs … --text-3xl`, `--text-display`, `--weight-*`, `--leading-*`, `--tracking-*` | `--text-display` is fluid (`clamp`) for the hero |
 | Spacing | `--space-2xs` (2) … `--space-4xl` (64) | 4px grid. Existing `xs–xl` values unchanged |
@@ -44,7 +44,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 
 CSS can't use `var()` inside `@media`, so the numbers are written literally. Write media queries min-width first (mobile-up).
 
-Some pre-redesign files still use other widths: 1280/1500/1800 in the grid and card, 600 in `DetailsModal`, 768 on the landing page. Changing them now would move the current layout, so they are converted when those components are rebuilt (Phases 16–17, 20, 11).
+Some pre-redesign files still use other widths: 1280/1500/1800 in the grid and card, 768 on the landing page (and 600 in `DetailsModal`, deleted in Phase 20). Changing them now would move the current layout, so they are converted when those components are rebuilt (Phases 16–17, 20, 11).
 
 ## Decisions
 

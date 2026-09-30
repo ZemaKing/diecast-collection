@@ -5,6 +5,7 @@ import {ColorCircle} from "../ColorCircle/ColorCircle";
 import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
 import {LogoOrText} from "./LogoOrText.tsx";
 
+import {Eye} from "../../icons/Eye.tsx";
 import type {ModelSummary} from "../../services/types.ts";
 import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
 import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
@@ -14,18 +15,23 @@ import "./ModelCard.css";
 type ModelCardProps = {
     model: ModelSummary;
     linkState?: ModelLinkState;
+    // Opens Quick View (ROADMAP Phase 20). Omitted → no trigger.
+    onQuickView?: (model: ModelSummary) => void;
 };
 
 // The whole card is one link to the model's details page (ROADMAP Phase 19; a <button> that
 // opened a modal before). `id={slug}` lets the collection bring it back into view on return.
-export function ModelCard({model, linkState}: ModelCardProps) {
+// The Quick View button can't live inside the link (interactive content can't nest), so both sit
+// in a shell and the button is laid over the photo; `data-slug` lets the collection's view-mode
+// scroll anchoring find the card through the shell.
+export function ModelCard({model, linkState, onQuickView}: ModelCardProps) {
     const [imageBroken, setImageBroken] = useState(false);
 
     const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
     const hasCarNumber = model.carNumber !== null;
     const hasDriver = !!model.driver;
 
-    return (
+    const card = (
         <Link className="card" id={model.slug} to={modelPath(model.slug)} state={linkState}>
             <div className="thumb">
                 {imageUrl && !imageBroken ? (
@@ -80,5 +86,20 @@ export function ModelCard({model, linkState}: ModelCardProps) {
                 <CategoryLabel category={model.category.name}/>
             </div>
         </Link>
+    );
+
+    if (!onQuickView) return card;
+
+    return (
+        <div className="cardShell" data-slug={model.slug}>
+            {card}
+            <div className="quickViewLayer">
+                <button type="button" className="quickViewTrigger" onClick={() => onQuickView(model)}>
+                    <Eye width={16} height={16}/>
+                    <span>Quick view</span>
+                    <span className="visuallyHidden">: {model.name}</span>
+                </button>
+            </div>
+        </div>
     );
 }

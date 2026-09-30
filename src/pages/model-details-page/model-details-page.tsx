@@ -1,24 +1,25 @@
-import {useId, useRef, useState, type KeyboardEvent, type ReactNode} from "react";
+import {useId, useRef, type KeyboardEvent} from "react";
 import {Link, useLocation, useParams, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
 import {Header} from "../../components/Header/Header";
 import {CategoryLabel} from "../../components/CategoryLabel/CategoryLabel";
-import {ColorCircle} from "../../components/ColorCircle/ColorCircle";
+import {Lightbox} from "../../components/Gallery/Lightbox.tsx";
+import {ModelGallery} from "../../components/Gallery/ModelGallery.tsx";
+import {modelPhotoLabel, useGallery} from "../../components/Gallery/useGallery.ts";
 import {LogoOrText} from "../../components/ModelCard/LogoOrText.tsx";
+import {SpecTiles, SpecTilesSkeleton} from "../../components/SpecTiles/SpecTiles.tsx";
 import {NotFoundPage} from "../not-found-page/not-found-page";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
-import {Calendar} from "../../icons/Calendar.tsx";
-import {Car} from "../../icons/Car.tsx";
 import {Check} from "../../icons/Check.tsx";
 import {ChevronRight} from "../../icons/ChevronRight.tsx";
 import {Home} from "../../icons/Home.tsx";
-import {Scale} from "../../icons/Scale.tsx";
 import type {AppError} from "../../lib/errors.ts";
 import {getModelBySlug, getModels} from "../../services/models.ts";
 import type {Model, ModelImage} from "../../services/types.ts";
-import {countryCodeToFlagEmoji, logoSrc} from "../../utils/model-display.ts";
+import {thumbSrc} from "../../utils/gallery.ts";
+import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
 import {
     formatColors,
     getAvailableTabs,
@@ -51,8 +52,8 @@ import "./model-details-page.css";
 
 const TAB_PARAM = "tab";
 
-function collectionFilterPath(key: "brand" | "manufacturer" | "category", slug: string): string {
-    return `/?${key}=${encodeURIComponent(slug)}`;
+function brandFilterPath(slug: string): string {
+    return `/?brand=${encodeURIComponent(slug)}`;
 }
 
 export function ModelDetailsPage() {
@@ -95,7 +96,7 @@ export function ModelDetailsPage() {
                                 <li>
                                     <ChevronRight className="breadcrumbSeparator" width={14} height={14}/>
                                     {/* No brand page until Phase 22 — the collection filtered to the brand is the real equivalent. */}
-                                    <Link to={collectionFilterPath("brand", modelQuery.data.brand.slug)} className="breadcrumbLink">
+                                    <Link to={brandFilterPath(modelQuery.data.brand.slug)} className="breadcrumbLink">
                                         {modelQuery.data.brand.name}
                                     </Link>
                                 </li>
@@ -132,11 +133,22 @@ export function ModelDetailsPage() {
 function ModelDetails({model}: {model: Model}) {
     const racing = getRacingSpecs(model);
     const hasRacingBadges = model.isRacing && (model.carNumber !== null || !!model.driver);
+    const gallery = useGallery(model.images);
+    const photoLabel = modelPhotoLabel(model);
 
     return (
         <>
             <article className="detailsTop" aria-labelledby="model-title">
-                <ModelMedia model={model}/>
+                <div className="detailsMedia">
+                    <ModelGallery
+                        images={gallery.photos}
+                        index={gallery.index}
+                        onIndexChange={gallery.setIndex}
+                        onOpenLightbox={() => gallery.openLightbox()}
+                        modelLabel={photoLabel}
+                        badges={<PhotoBadges model={model}/>}
+                    />
+                </div>
 
                 <div className="detailsInfo">
                     <header className="detailsHeader">
@@ -176,118 +188,46 @@ function ModelDetails({model}: {model: Model}) {
                         <span className="detailsRule" aria-hidden="true"/>
                     </header>
 
-                    <ul className="specTiles" aria-label="Key specifications">
-                        <SpecTile label="Brand" to={collectionFilterPath("brand", model.brand.slug)} linkHint={`all ${model.brand.name} models`}>
-                            <TileLogo logoPath={model.brand.logoPath}/>
-                            <span>{model.brand.name}</span>
-                        </SpecTile>
-                        <SpecTile label="Manufacturer" to={collectionFilterPath("manufacturer", model.manufacturer.slug)} linkHint={`all ${model.manufacturer.name} models`}>
-                            <TileLogo logoPath={model.manufacturer.logoPath}/>
-                            <span>{model.manufacturer.name}</span>
-                        </SpecTile>
-                        <SpecTile label="Category" to={collectionFilterPath("category", model.category.slug)} linkHint={`all ${model.category.name} models`}>
-                            <Car className="specTileIcon" width={18} height={18}/>
-                            <CategoryLabel category={model.category.name}/>
-                        </SpecTile>
-                        <SpecTile label="Scale">
-                            <Scale className="specTileIcon" width={18} height={18}/>
-                            <span>{model.scale}</span>
-                        </SpecTile>
-                        <SpecTile label={model.colors.length > 1 ? "Colors" : "Color"}>
-                            {model.liveryHex.length > 0 && <ColorCircle hex={model.liveryHex}/>}
-                            <span>{formatColors(model) ?? "—"}</span>
-                        </SpecTile>
-                        <SpecTile label="Year">
-                            <Calendar className="specTileIcon" width={18} height={18}/>
-                            <span>{model.year}</span>
-                        </SpecTile>
-                    </ul>
+                    <SpecTiles model={model} linked/>
                 </div>
             </article>
 
-            <DetailsTabs model={model} racing={racing}/>
+            <DetailsTabs model={model} racing={racing} photos={gallery.photos} onOpenPhoto={gallery.openLightbox}/>
+
+            {gallery.lightboxOpen && (
+                <Lightbox
+                    images={gallery.photos}
+                    index={gallery.index}
+                    onIndexChange={gallery.setIndex}
+                    onClose={gallery.closeLightbox}
+                    title={model.name}
+                    modelLabel={photoLabel}
+                />
+            )}
         </>
     );
 }
 
-type SpecTileProps = {
-    label: string;
-    children: ReactNode;
-    // Brand / manufacturer / category tiles open the collection filtered to that value.
-    to?: string;
-    linkHint?: string;
+// Manufacturer logo + scale over the photo, as on the collection card.
+function PhotoBadges({model}: {model: Model}) {
+    return (
+        <>
+            <div className="manufacturerBadge">
+                <LogoOrText logoPath={model.manufacturer.logoPath} name={model.manufacturer.name} textClassName="manufacturerBadgeText"/>
+            </div>
+            <div className="scaleBadge">{model.scale}</div>
+        </>
+    );
+}
+
+type DetailsTabsProps = {
+    model: Model;
+    racing: SpecRow[];
+    photos: ModelImage[];
+    onOpenPhoto: (index: number) => void;
 };
 
-function SpecTile({label, to, linkHint, children}: SpecTileProps) {
-    const body = (
-        <>
-            <span className="specTileLabel">{label}</span>
-            <span className="specTileValue">{children}</span>
-        </>
-    );
-
-    return (
-        <li className="specTile">
-            {to ? (
-                <Link to={to} className="specTileInner specTileLink">
-                    {body}
-                    {linkHint && <span className="visuallyHidden"> — show {linkHint}</span>}
-                    <ChevronRight className="specTileArrow" width={14} height={14}/>
-                </Link>
-            ) : (
-                <div className="specTileInner">{body}</div>
-            )}
-        </li>
-    );
-}
-
-// Decorative (the name is right next to it); a missing or broken logo simply isn't shown.
-function TileLogo({logoPath}: {logoPath: string | null}) {
-    const [broken, setBroken] = useState(false);
-    const src = logoSrc(logoPath);
-    if (!src || broken) return null;
-    return <img className="specTileLogo" src={src} alt="" aria-hidden="true" onError={() => setBroken(true)}/>;
-}
-
-// The primary image, as large as the layout allows. The multi-image gallery, lightbox and
-// fullscreen view are Phase 20 — every model has exactly one image today.
-function ModelMedia({model}: {model: Model}) {
-    const [broken, setBroken] = useState(false);
-    const image = primaryImage(model.images);
-    const src = image?.url ?? image?.thumbUrl ?? null;
-
-    return (
-        <figure className="detailsMedia">
-            <div className="detailsMediaFrame">
-                {src && !broken ? (
-                    <img
-                        src={src}
-                        alt={`${model.name} (${model.year}), ${model.manufacturer.name} ${model.scale} model`}
-                        width={image?.width ?? undefined}
-                        height={image?.height ?? undefined}
-                        decoding="async"
-                        onError={() => setBroken(true)}
-                    />
-                ) : (
-                    <div className="detailsMediaFallback">{src ? "Image unavailable" : "No photo yet"}</div>
-                )}
-
-                <div className="detailsMediaTopRow">
-                    <div className="manufacturerBadge">
-                        <LogoOrText logoPath={model.manufacturer.logoPath} name={model.manufacturer.name} textClassName="manufacturerBadgeText"/>
-                    </div>
-                    <div className="scaleBadge">{model.scale}</div>
-                </div>
-            </div>
-        </figure>
-    );
-}
-
-function primaryImage(images: ModelImage[]): ModelImage | null {
-    return images.find((image) => image.isPrimary) ?? images[0] ?? null;
-}
-
-function DetailsTabs({model, racing}: {model: Model; racing: SpecRow[]}) {
+function DetailsTabs({model, racing, photos, onOpenPhoto}: DetailsTabsProps) {
     const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
     const baseId = useId();
@@ -319,7 +259,7 @@ function DetailsTabs({model, racing}: {model: Model; racing: SpecRow[]}) {
         tabRefs.current.get(target)?.focus();
     };
 
-    const panel = <TabPanelContent tab={active} model={model} racing={racing}/>;
+    const panel = <TabPanelContent tab={active} model={model} racing={racing} photos={photos} onOpenPhoto={onOpenPhoto}/>;
 
     // One section only (a model with no extra data): a heading reads better than a lone tab.
     if (tabs.length === 1) {
@@ -362,7 +302,7 @@ function DetailsTabs({model, racing}: {model: Model; racing: SpecRow[]}) {
     );
 }
 
-function TabPanelContent({tab, model, racing}: {tab: DetailTab; model: Model; racing: SpecRow[]}) {
+function TabPanelContent({tab, model, racing, photos, onOpenPhoto}: DetailsTabsProps & {tab: DetailTab}) {
     const facts = getCollectionFacts(model);
 
     if (tab === "overview") {
@@ -411,14 +351,14 @@ function TabPanelContent({tab, model, racing}: {tab: DetailTab; model: Model; ra
     }
 
     if (tab === "gallery") {
-        // Plain thumbnails for now; the real gallery (viewer, lightbox) is Phase 20.
+        // Every photo at a glance; each opens the lightbox on itself.
         return (
             <ul className="galleryGrid">
-                {model.images.map((image, i) => (
+                {photos.map((image, i) => (
                     <li key={image.id} className="galleryItem">
-                        {(image.thumbUrl ?? image.url) && (
-                            <img src={image.thumbUrl ?? image.url ?? undefined} alt={`${model.name}, photo ${i + 1} of ${model.images.length}`} loading="lazy" decoding="async"/>
-                        )}
+                        <button type="button" className="galleryItemButton" onClick={() => onOpenPhoto(i)} aria-label={`View photo ${i + 1} of ${photos.length} fullscreen`}>
+                            <img src={thumbSrc(image) ?? undefined} alt="" loading="lazy" decoding="async"/>
+                        </button>
                     </li>
                 ))}
             </ul>
@@ -490,9 +430,7 @@ function DetailsSkeleton() {
             <div className="detailsInfo">
                 <span className="skeletonBar skeletonBarTitle"/>
                 <span className="skeletonBar skeletonBarMeta"/>
-                <ul className="specTiles" aria-hidden="true">
-                    {["a", "b", "c", "d", "e", "f"].map((key) => <li key={key} className="specTile specTileSkeleton"/>)}
-                </ul>
+                <SpecTilesSkeleton/>
             </div>
         </div>
     );

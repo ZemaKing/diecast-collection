@@ -9,6 +9,7 @@ import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionTo
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
 import {ModelCompactRow, ModelListRow, ModelRowSkeleton} from "../../components/ModelCard/ModelRow.tsx";
+import {QuickView} from "../../components/QuickView/QuickView.tsx";
 
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
@@ -49,7 +50,9 @@ function findScrollAnchor(container: HTMLElement | null): ScrollAnchor | null {
 
     for (const child of container.children) {
         const rect = child.getBoundingClientRect();
-        if (child.id && rect.bottom > 0) return {id: child.id, top: rect.top};
+        // Grid cards with a Quick View button are wrapped in a shell carrying the slug instead.
+        const id = child.id || (child instanceof HTMLElement ? child.dataset.slug : undefined);
+        if (id && rect.bottom > 0) return {id, top: rect.top};
     }
 
     return null;
@@ -62,6 +65,10 @@ export function CollectionPage() {
     const {viewMode, setViewMode} = useViewMode();
 
     const [showScrollTop, setShowScrollTop] = useState(false);
+    // Quick View (ROADMAP Phase 20) — local UI state, not in the URL: the details page is the
+    // shareable/deep-linkable view of a model.
+    const [quickViewModel, setQuickViewModel] = useState<ModelSummary | null>(null);
+    const closeQuickView = useCallback(() => setQuickViewModel(null), []);
 
     const resultsRef = useRef<HTMLDivElement>(null);
     const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
@@ -195,12 +202,16 @@ export function CollectionPage() {
                             {visibleSummaries.map((m) => {
                                 if (viewMode === "list") return <ModelListRow key={m.slug} model={m} linkState={linkState}/>;
                                 if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} linkState={linkState}/>;
-                                return <ModelCard key={m.slug} model={m} linkState={linkState}/>;
+                                return <ModelCard key={m.slug} model={m} linkState={linkState} onQuickView={setQuickViewModel}/>;
                             })}
                         </div>
                     )}
                 </main>
             </div>
+
+            {quickViewModel && (
+                <QuickView key={quickViewModel.slug} model={quickViewModel} linkState={linkState} onClose={closeQuickView}/>
+            )}
 
             {showScrollTop && (
                 <button className="scrollTopButton" onClick={scrollToTop} type="button" aria-label="Back to top">

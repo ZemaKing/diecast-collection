@@ -60,7 +60,3 @@ export function matchesFilters(model: DiecastModel, filters: Filters): boolean {
 export function filterModels(models: DiecastModel[], filters: Filters): DiecastModel[] {
     return models.filter((model) => matchesFilters(model, filters));
 }
-
-export function findModelById(models: DiecastModel[], id: string): DiecastModel | undefined {
-    return models.find((m) => String(m.id) === String(id));
-}

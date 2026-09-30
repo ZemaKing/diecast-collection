@@ -58,7 +58,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 17 | Collection Hero & Grid | ✅ Done | Hero background image (optional — slot ready) |
 | 18 | View Modes | ✅ Done | — (Showcase deferred by owner) |
 | 19 | Model Details Page | ✅ Done | Heart / "Add to Collection" meaning (open decision 7) |
-| 20 | Gallery, Lightbox & Quick View | ⬜ | — |
+| 20 | Gallery, Lightbox & Quick View | ✅ Done | — |
 | 21 | Supabase Storage Migration | ⬜ | Run image migration |
 | 22 | Manufacturer & Brand Browsing | ⬜ | Mockups (none exist) |
 | 23 | Collection Statistics | ⬜ | Mockup (none exists) |
@@ -530,23 +530,29 @@ Details page replaces the modal deep-link path with parity of information. *(eve
 
 ---
 
-## Phase 20 — Gallery, Lightbox & Quick View
+## Phase 20 — Gallery, Lightbox & Quick View ✅
 
 ### Goal
 Great photography experience; replaces `DetailsModal`.
 
 ### Tasks
-- [ ] Gallery from `model_images`: primary, thumbnails, prev/next, `1 / n` counter (degrades gracefully to the single image all models have today)
-- [ ] Lightbox: fullscreen, `←/→/Esc`, touch swipe (pointer events, no library), neighbor preloading, loading skeleton, missing-image fallback
-- [ ] Quick View modal from cards (native `<dialog>` with focus trap/restore) — confirm it stays given the details page
-- [ ] Storage-ready image URL resolver (postimg now, Storage in Phase 21)
+- [x] Gallery from `model_images`: primary, thumbnails, prev/next, `1 / n` counter (degrades gracefully to the single image all models have today) *(`src/components/Gallery/ModelGallery.tsx`, controlled by `useGallery()`: opens on the primary photo; arrows, counter and thumbnail strip appear only with more than one photo, so today's single-photo models show just the photo, its manufacturer/scale badges and a fullscreen button. ←/→ work while focus is inside the gallery; the counter has a visually-hidden "Photo 2 of 4" live region. Rows with no URL at all aren't counted (`displayableImages()`). The details page's Gallery tab is now a grid of buttons that open the lightbox on that photo. Owner alt text (`model_images.alt`, now mapped) wins over the generated "Name (year), Manufacturer 1:43 model, photo 2 of 4")*
+- [x] Lightbox: fullscreen, `←/→/Esc`, touch swipe (pointer events, no library), neighbor preloading, loading skeleton, missing-image fallback *(`Lightbox.tsx`: a viewport-filling native `<dialog>` on the black scrim, title + counter + close, prev/next, thumbnail strip. Swipe = a mostly-horizontal pointer move ≥ 48px (`swipeDirection()`; `touch-action: pan-y pinch-zoom` keeps vertical pan/zoom native); a click on the empty stage closes, unless it ended a swipe. The photos either side are preloaded with `new Image()`. `GalleryImage` shows the shimmer until `onLoad`, then fades in; `onError` → "Image unavailable". New theme-independent tokens `--color-on-scrim(-muted)` / `--color-scrim-control(-hover)`, since the scrim is black in both themes)*
+- [x] Quick View modal from cards (native `<dialog>` with focus trap/restore) — confirm it stays given the details page → **confirmed by the owner (2026-09-30)** *(`src/components/QuickView/`, per the mockup's "Quick View Modal (Desktop)": gallery (no strip), title, year · manufacturer · category · color dot, the six tiles (now the shared `SpecTiles` component, unlinked here — a link would change the page behind the dialog), gold "View Details →" carrying the same link state as the card. It renders instantly from the `ModelSummary` and loads the full model into the `["model", slug]` cache the details page reads. Trigger: a "Quick view" pill over the card photo, shown on hover or keyboard focus, hidden on touch-only devices. `useModalDialog()` does open-on-mount, Escape/backdrop/close-button → `onClose`, focus back to the trigger, and a counted `html.modalOpen` scroll lock (so the lightbox can stack over Quick View))*
+- [x] Storage-ready image URL resolver (postimg now, Storage in Phase 21) *(`src/services/image-url.ts`: `resolveImageUrl()` — `storage_path` → `https://<ref>.supabase.co/storage/v1/object/public/model-images/<path>` (segments encoded), else `external_url`; used by both mappers. Before this, a `storage_path` would have been used verbatim as a relative URL. Phase 21 only has to fill the column)*
 
 ### Verification
-- [ ] Keyboard-only and touch flows work; focus returns to the trigger
-- [ ] Old `DetailsModal` no longer referenced
+- [x] Keyboard-only and touch flows work; focus returns to the trigger *(live, keyboard only: Quick view button → dialog focuses its close button; Tab → fullscreen → Enter opens the lightbox on top (focus on its close); Escape closes only the lightbox, focus back on the fullscreen button; Escape again closes Quick View, focus back on the card's Quick view button, scroll lock released. Backdrop click closes, clicks inside don't. With a 4-photo gallery simulated in the browser (the `model_images` response intercepted client-side — no data changed): prev/next wrap both ways, ←/→ keys, thumbnails, a broken URL shows "Image unavailable" in both the gallery and the lightbox, left/right swipes step, a vertical drag doesn't, closing the lightbox leaves the gallery on the photo you ended on. "View Details" → details page with the crumb back to `/?brand=dodge`, Back restores the collection. No console errors in a clean run. No horizontal scroll at 360 / 768 / 1280; at 360 the Quick View trigger is hidden (touch) and the lightbox fits (336px stage). Light + dark checked. 20 new unit tests (`gallery.test.ts`, `image-url.test.ts`, an alt-text case in `mappers.test.ts`; the storage-path mapper test now expects a real Storage URL); 5 removed with the deleted code — 508 total)*
+- [x] Old `DetailsModal` no longer referenced *(deleted, with `legacy-adapter.ts` (`toLegacyModel()`) + its test, `findModelById()` + its test, and `DetailsModal.css`'s hard-coded-color allowance in `tokens.test.ts`)*
 
 ### Definition of Done
-Gallery + lightbox + Quick View shipped; `DetailsModal` deleted or unreferenced.
+Gallery + lightbox + Quick View shipped; `DetailsModal` deleted or unreferenced. *(deleted)*
+
+**Notes / deviations:**
+- Quick View is on **grid cards only**. List and Compact rows go straight to the details page — Compact is a dense table and List's photo is small; say if you want it there too.
+- The mockup's Quick View "Add to Collection" button is not rendered (open decision 7, same as the details page's heart). The tile order is the details page's (Brand, Manufacturer, Category / Scale, Color, Year) rather than the Quick View mockup's slightly different order, so the component is shared.
+- A Chrome quirk found in verification: a dialog's `close` event is delivered with rendering, so it can lag (or stall while the tab isn't painting). `useModalDialog` therefore reports Escape via the synchronous `cancel` event and has its own close buttons call `onClose` directly; `close` is only a fallback.
+- postimg.cc serves a 320px placeholder image for a missing file instead of an error, so a dead postimg link shows postimg's placeholder rather than our "Image unavailable" (which covers network errors and non-images). Phase 21's move to Storage removes this.
 
 ---
 

@@ -38,6 +38,8 @@ export type ModelImage = {
     thumbUrl: string | null;
     width: number | null;
     height: number | null;
+    // Owner-written alt text (`model_images.alt`); null → the UI describes the photo itself.
+    alt: string | null;
 };
 
 // One row per model — everything the collection grid/toolbar/filters need. Backed by
