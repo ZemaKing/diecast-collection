@@ -25,7 +25,7 @@ Inputs: [`docs/AUDIT.md`](AUDIT.md) (findings D1–D14), the three mockups in `d
 | Scale | **All 227 are 1:43** | `scale text not null default '1:43'`; no `scales` table |
 | Trucks | Not migrated (ROADMAP architecture) | No truck categories, brands or manufacturers are created |
 
-Still open, not blocking: heart / "Add to Collection" meaning (Phase 19), the breadcrumb "model line" level (§8), rich-text vs plain description (Phase 26), and whether **"DTM" is really a manufacturer** (see D15).
+Still open, not blocking: heart / "Add to Collection" meaning (Phase 19), the breadcrumb "model line" level (§8), and whether **"DTM" is really a manufacturer** (see D15).
 
 ## 3. Entity-relationship diagram
 
@@ -97,7 +97,7 @@ Conventions:
 | `team` | `text` | yes | length ≤ 120 | Mockup Racing section |
 | `event` | `text` | yes | length ≤ 120 | Race / event, e.g. "24h Le Mans" |
 | `series` | `text` | yes | length ≤ 120 | "Series / Collection" (e.g. a partwork line). Form suggests existing distinct values |
-| `description` | `text` | yes | length ≤ 10 000 | **Stored as plain text / markdown-lite, never HTML** (Phase 26 decides the rendering) |
+| `description` | `text` | yes | length ≤ 10 000 | **Stored as markdown-lite text, never HTML** (owner, Phase 26: paragraphs, `-`/`1.` lists, `**bold**`, `*italic*`, http(s)/mailto links — rendered as React elements by `src/utils/markdown-lite.ts` + `<MarkdownLite>`) |
 | `key_features` | `text[]` | no | `'{}'`, ≤ 12 items | Ordered bullet list ("Key Features") |
 | `condition` | `text` | yes | check `in ('mint','near_mint','excellent','good','fair','poor')` | Public (owner). Stable, short list: check constraint instead of a table |
 | `location` | `text` | yes | length ≤ 80 | Public (owner). Free text with suggestions ("Display Cabinet") |
@@ -277,7 +277,7 @@ Phase 7's importer must print exactly these numbers, and Phase 8 verifies them. 
 | "This is a racing model", Racing Number, Driver, Team, Race/Event | Form §3 | `is_racing`, `car_number`, `driver_id`, `team`, `event` |
 | Condition, Added Date, Location | Form §4, "My Collection" | `condition`, `added_at`, `location` (public) |
 | Collected checkbox / "Collected" badge | Form §4, details | **Dropped.** Owner: everything is owned |
-| Description (rich text toolbar) | Form §5, "About this model" | `description` (plain/markdown-lite; format decided in Phase 26) |
+| Description (rich text toolbar) | Form §5, "About this model" | `description` (markdown-lite, decided in Phase 26; the toolbar inserts markers, no WYSIWYG) |
 | Notes (private) | Form §5 | `model_private_notes.notes` |
 | Public "Notes" row in details "My Collection" card / "Notes" tab | Details | **Deferred.** The form only has *private* notes, so there's no public source. Render nothing (Phase 19). A public `notes` column can be added later if wanted |
 | Main image + additional images (5/10), primary star | Form §6, gallery "1 / 8" | `model_images` (`position`, `is_primary`; max 10 enforced by the UI) |

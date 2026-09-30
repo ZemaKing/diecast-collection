@@ -1,0 +1,42 @@
+/* Markdown-lite description (Phase 26): the details page's prose style, plus lists and links. */
+
+.markdownLite {
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    overflow-wrap: anywhere;
+}
+
+.markdownLite > * {
+    margin: 0 0 var(--space-sm);
+}
+
+.markdownLite > :last-child {
+    margin-bottom: 0;
+}
+
+.markdownLite ul,
+.markdownLite ol {
+    padding-left: var(--space-xl);
+}
+
+.markdownLite li + li {
+    margin-top: var(--space-2xs);
+}
+
+.markdownLite strong {
+    color: var(--color-text);
+    font-weight: var(--weight-bold);
+}
+
+.markdownLite a {
+    border-radius: var(--radius-xs);
+    color: var(--color-accent-text);
+    font-weight: var(--weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.markdownLite a:hover {
+    text-decoration-thickness: 2px;
+}

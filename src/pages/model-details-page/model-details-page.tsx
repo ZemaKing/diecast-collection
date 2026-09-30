@@ -9,6 +9,7 @@ import {Lightbox} from "../../components/Gallery/Lightbox.tsx";
 import {ModelGallery} from "../../components/Gallery/ModelGallery.tsx";
 import {ModelAdminActions} from "../../components/ModelAdminActions/ModelAdminActions.tsx";
 import {modelPhotoLabel, useGallery} from "../../components/Gallery/useGallery.ts";
+import {MarkdownLite} from "../../components/MarkdownLite/MarkdownLite.tsx";
 import {LogoOrText} from "../../components/ModelCard/LogoOrText.tsx";
 import {SpecTiles, SpecTilesSkeleton} from "../../components/SpecTiles/SpecTiles.tsx";
 import {NotFoundPage} from "../not-found-page/not-found-page";
@@ -296,9 +297,7 @@ function TabPanelContent({tab, model, racing, photos, onOpenPhoto}: DetailsTabsP
                     {model.description?.trim() && (
                         <section className="detailsBlock">
                             <h3 className="detailsBlockTitle">About this model</h3>
-                            {model.description.trim().split(/\n\s*\n/).map((paragraph, i) => (
-                                <p key={i} className="detailsProse">{paragraph}</p>
-                            ))}
+                            <MarkdownLite source={model.description}/>
                         </section>
                     )}
 

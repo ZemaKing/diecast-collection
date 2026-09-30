@@ -5,6 +5,8 @@ import {
     emptyModelForm,
     firstErrorField,
     generateModelSlug,
+    getChecklist,
+    toPreviewSummary,
     isFormDirty,
     liveryFromColors,
     localDateString,
@@ -140,8 +142,8 @@ describe("validateModelForm", () => {
 });
 
 describe("modelToFormValues → toSavePayload (round trip)", () => {
-    it("saving an unchanged imported model sends exactly its stored core fields", () => {
-        const payload = toSavePayload(modelToFormValues(model), model.isPublished);
+    it("saving an unchanged model sends exactly its stored fields", () => {
+        const payload = toSavePayload(modelToFormValues(model, "Bought at Altaya fair"), model.isPublished);
         expect(payload).toEqual({
             slug: model.slug,
             name: "Abarth 124 Rally RGT",
@@ -162,12 +164,21 @@ describe("modelToFormValues → toSavePayload (round trip)", () => {
             location: null,
             added_at: null,
             is_published: true,
+            description: "Kept out of the form (Phase 26).",
+            key_features: ["Not touched"],
+            tags: [{slug: "iconic", name: "Iconic"}],
+            notes: "Bought at Altaya fair",
         });
     });
 
-    it("never carries the fields Phases 26–27 own", () => {
+    it("never carries images (Phase 27 manages them on their own)", () => {
         const payload = toSavePayload(modelToFormValues(model), true) as Record<string, unknown>;
-        for (const key of ["description", "key_features", "tags", "images", "notes"]) expect(payload).not.toHaveProperty(key);
+        expect(payload).not.toHaveProperty("images");
+    });
+
+    it("sends empty rich fields as clears, dropping blank key-feature rows", () => {
+        const values = {...modelToFormValues(model), description: "  \n ", keyFeatures: [" Opening doors ", "", "  "], tags: [], notes: " "};
+        expect(toSavePayload(values, true)).toMatchObject({description: null, key_features: ["Opening doors"], tags: [], notes: null});
     });
 
     it("an untouched edit form is not dirty; any change is", () => {
@@ -238,5 +249,66 @@ describe("swatch helpers", () => {
 describe("localDateString", () => {
     it("is the local calendar date, zero-padded", () => {
         expect(localDateString(new Date(2025, 3, 2, 23, 59))).toBe("2025-04-02");
+    });
+});
+
+describe("rich-field validation (Phase 26)", () => {
+    it("limits key features, tags and text lengths", () => {
+        const errors = validateModelForm({
+            ...validNew(),
+            description: "x".repeat(10001),
+            keyFeatures: Array.from({length: 13}, (_, i) => `Feature ${i}`),
+            tags: Array.from({length: 21}, (_, i) => ({slug: `t${i}`, name: `T${i}`, isNew: false})),
+            notes: "x".repeat(10001),
+        }, ctx);
+        expect(Object.keys(errors).sort()).toEqual(["description", "keyFeatures", "notes", "tags"]);
+    });
+
+    it("counts only filled key-feature rows and checks new tag names", () => {
+        const blanks = {...validNew(), keyFeatures: [...Array.from({length: 12}, () => "ok"), "", " "]};
+        expect(validateModelForm(blanks, ctx).keyFeatures).toBeUndefined();
+        expect(validateModelForm({...validNew(), keyFeatures: ["x".repeat(201)]}, ctx).keyFeatures).toMatch(/200/);
+        expect(validateModelForm({...validNew(), tags: [{slug: "x", name: "x".repeat(41), isNew: true}]}, ctx).tags).toMatch(/40/);
+    });
+});
+
+describe("getChecklist", () => {
+    it("ticks what's there; description is recommended, the image comes from the model", () => {
+        const items = getChecklist(validNew(), {currentYear: 2026, hasMainImage: false});
+        expect(items.filter((i) => !i.done).map((i) => i.key)).toEqual(["image", "description"]);
+        expect(items.find((i) => i.key === "description")?.recommended).toBe(true);
+        expect(getChecklist({...validNew(), description: "Nice"}, {currentYear: 2026, hasMainImage: true}).every((i) => i.done)).toBe(true);
+        expect(getChecklist(emptyModelForm("2026-09-30"), {currentYear: 2026, hasMainImage: false}).filter((i) => i.done).map((i) => i.key)).toEqual(["scale"]);
+    });
+});
+
+describe("toPreviewSummary", () => {
+    const context = {
+        slug: "chevrolet-corvette-stingray-2020-ixo-yellow",
+        brands: [{slug: "chevrolet", name: "Chevrolet", logoPath: "/brands/Chevrolet.svg"}],
+        manufacturers: [{slug: "ixo", name: "IXO", logoPath: "/manufacturers/Ixo.svg"}],
+        categories: [{slug: "supercar", name: "Supercar", sortOrder: 30}],
+        drivers: [{slug: "loeb", name: "Sébastien Loeb", countryCode: "FR"}],
+        colors: [{slug: "yellow", name: "Yellow"}],
+        image: null,
+    };
+
+    it("feeds the card from the form, with logos from the lookups", () => {
+        const summary = toPreviewSummary({...validNew(), isRacing: true, carNumber: "3a", driver: {slug: "loeb", name: "Sébastien Loeb", isNew: false}}, context);
+        expect(summary).toMatchObject({
+            name: "Chevrolet Corvette Stingray",
+            year: 2020,
+            brand: {logoPath: "/brands/Chevrolet.svg"},
+            category: {name: "Supercar"},
+            carNumber: "3A",
+            driver: {countryCode: "FR"},
+            colors: [{slug: "yellow", name: "Yellow"}],
+            liveryHex: ["#FFD200"],
+        });
+    });
+
+    it("shows field names instead of inventing values, and hides racing details on road cars", () => {
+        const summary = toPreviewSummary({...emptyModelForm("2026-09-30"), carNumber: "7"}, context);
+        expect(summary).toMatchObject({name: "Model name", year: 0, brand: {name: "Brand"}, manufacturer: {name: "Manufacturer"}, category: {name: "Category"}, carNumber: null, driver: null});
     });
 });

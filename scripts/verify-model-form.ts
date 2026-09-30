@@ -1,20 +1,21 @@
-// `npm run verify:model-form` — ROADMAP Phase 25: "editing an imported model changes nothing it
-// shouldn't", proven on every model in the database, without writing anything.
+// `npm run verify:model-form` — ROADMAP Phases 25–26: "editing an imported model changes nothing it
+// shouldn't", proven on every model in the database, without writing anything. Since Phase 26 that
+// includes the description, key features, tags and private notes.
 //
 // For each model this runs the admin form's exact code path — the details read mapped by
 // mapModel(), modelToFormValues(), validateModelForm(), toSavePayload() — and submits the result to
 // diecast.save_model() as a DRY RUN (the function executes the real statements, reports, then
 // rolls itself back). Opening a model in the form and pressing Save without touching anything must:
 //   - validate (every stored model is editable as-is), and
-//   - report `changed: false` (every value round-trips exactly, colors in order).
+//   - report `changed: false` (every value round-trips exactly, colors in order, tags as a set).
 // Plus two controls: a real edit is detected (`changed: true`), and neither dry run left a trace.
 //
 // Signs in as the admin from .env.local (RLS_ADMIN_*) — the same rights the form has. Needs
-// migration 20260930150000_diecast_save_model.sql applied.
+// migrations 20260930150000 and 20260930180000 (save_model with rich fields) applied.
 import {createClient} from "@supabase/supabase-js";
 
 import type {Database} from "../src/lib/database.types.ts";
-import {mapModel, type ModelColorRow, type ModelWithRelations} from "../src/services/mappers.ts";
+import {mapModel, type ModelColorRow, type ModelTagRow, type ModelWithRelations} from "../src/services/mappers.ts";
 import {modelToFormValues, toSavePayload, validateModelForm} from "../src/utils/model-form.ts";
 
 const env = process.env;
@@ -41,8 +42,11 @@ const {data: colorRows, error: colorsError} = await supabase
     .from("model_colors")
     .select("model_id, position, color:colors(*)")
     .limit(10000);
-if (modelsError || colorsError || !modelRows || !colorRows) {
-    console.error(`✖ Read failed: ${modelsError?.message ?? colorsError?.message}`);
+const {data: tagRows, error: tagsError} = await supabase.from("model_tags").select("model_id, tag:tags(*)").limit(10000);
+const {data: noteRows, error: notesError} = await supabase.from("model_private_notes").select("model_id, notes").limit(10000);
+const readError = modelsError ?? colorsError ?? tagsError ?? notesError;
+if (readError || !modelRows || !colorRows || !tagRows || !noteRows) {
+    console.error(`✖ Read failed: ${readError?.message}`);
     process.exit(1);
 }
 
@@ -50,6 +54,12 @@ const colorsByModel = new Map<string, ModelColorRow[]>();
 for (const row of colorRows as unknown as (ModelColorRow & {model_id: string})[]) {
     colorsByModel.set(row.model_id, [...(colorsByModel.get(row.model_id) ?? []), row]);
 }
+const tagsByModel = new Map<string, ModelTagRow[]>();
+for (const row of tagRows as unknown as (ModelTagRow & {model_id: string})[]) {
+    tagsByModel.set(row.model_id, [...(tagsByModel.get(row.model_id) ?? []), row]);
+}
+const notesByModel = new Map(noteRows.map((n) => [n.model_id, n.notes]));
+const toModel = (row: ModelWithRelations) => mapModel(row, colorsByModel.get(row.id) ?? [], [], tagsByModel.get(row.id) ?? []);
 
 const currentYear = new Date().getFullYear();
 const problems: string[] = [];
@@ -71,8 +81,8 @@ const rows = modelRows as unknown as ModelWithRelations[];
 const queue = [...rows];
 async function worker() {
     for (let row = queue.shift(); row; row = queue.shift()) {
-        const model = mapModel(row, colorsByModel.get(row.id) ?? [], [], []);
-        const values = modelToFormValues(model);
+        const model = toModel(row);
+        const values = modelToFormValues(model, notesByModel.get(row.id) ?? null);
         const errors = validateModelForm(values, {isNew: false, currentYear});
         if (Object.keys(errors).length > 0) {
             problems.push(`${model.slug}: the form rejects the stored values — ${JSON.stringify(errors)}`);
@@ -92,18 +102,26 @@ await Promise.all(Array.from({length: 6}, worker));
 
 // Controls: the dry run does detect a real change, and leaves nothing behind.
 const sample = rows[0];
-const sampleModel = mapModel(sample, colorsByModel.get(sample.id) ?? [], [], []);
-const edited = {...toSavePayload(modelToFormValues(sampleModel), sampleModel.isPublished), location: "ZZ verify-model-form"};
+const sampleModel = toModel(sample);
+const edited = {...toSavePayload(modelToFormValues(sampleModel, notesByModel.get(sample.id) ?? null), sampleModel.isPublished), location: "ZZ verify-model-form"};
+// Notes-only and tags-only edits are changes too (and roll back like the rest).
+const notesResult = await dryRunSave({...edited, location: sampleModel.location, notes: "ZZ verify-model-form"}, sampleModel.slug);
+const tagsResult = await dryRunSave({...edited, location: sampleModel.location, tags: [{slug: "zz-verify-model-form", name: "ZZ verify-model-form", create: true}]}, sampleModel.slug);
 const editResult = await dryRunSave(edited, sampleModel.slug);
 const createResult = await dryRunSave({...edited, slug: "zz-verify-model-form-dry-run"}, null);
 const {data: after} = await supabase.from("models").select("location, updated_at").eq("id", sample.id).single();
 const {count: leftover} = await supabase.from("models").select("id", {count: "exact", head: true}).eq("slug", "zz-verify-model-form-dry-run");
+const {count: leftoverNotes} = await supabase.from("model_private_notes").select("model_id", {count: "exact", head: true}).eq("model_id", sample.id);
+const {count: leftoverTag} = await supabase.from("tags").select("id", {count: "exact", head: true}).eq("slug", "zz-verify-model-form");
 
 const controls = [
     {what: "a real edit is detected (changed: true)", ok: editResult.changed === true},
+    {what: "a notes-only edit is detected", ok: notesResult.changed === true},
+    {what: "a tags-only edit (with a new tag) is detected", ok: tagsResult.changed === true},
     {what: "a new model dry run reports created: true", ok: createResult.created === true},
     {what: "the dry-run edit left the model untouched", ok: after?.location === sample.location && after?.updated_at === sample.updated_at},
     {what: "the dry-run create left no model behind", ok: leftover === 0},
+    {what: "the dry runs left no notes or tag behind", ok: leftoverNotes === (notesByModel.has(sample.id) ? 1 : 0) && leftoverTag === 0},
 ];
 
 console.log(`Models checked: ${rows.length}`);

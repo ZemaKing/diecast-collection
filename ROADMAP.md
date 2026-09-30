@@ -64,7 +64,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 23 | Collection Statistics | ✅ Done | Review the design (no mockup existed — built from the established system) |
 | 24 | Authentication & Admin Protection | ✅ Done | Optional: set your display name to "ZemaKing" (avatar shows "ZK"); apply the Phase 21 storage migration (3 storage RLS checks wait on it) |
 | 25 | Model Form — Core & CRUD | ✅ Done | Review the form (migration `20260930150000` applied) |
-| 26 | Model Form — Rich Sections | ⬜ | Decide rich-text vs plain |
+| 26 | Model Form — Rich Sections | ✅ Done | — (markdown-lite chosen; migration `20260930180000` applied) |
 | 27 | Image Management CRUD | ⬜ | — |
 | 28 | Supporting Data Management | ⬜ | — |
 | 29 | Loading / Empty / Error States | ⬜ | — |
@@ -698,22 +698,29 @@ Full CRUD for core fields, validated and RLS-safe.
 
 ---
 
-## Phase 26 — Model Form: Rich Sections
+## Phase 26 — Model Form: Rich Sections ✅
 
 ### Goal
 Description, notes, tags, live preview, checklist.
 
 ### Tasks
-- [ ] Description editor — **decision:** plain text / markdown-lite (recommended: no WYSIWYG dependency or HTML-sanitization surface) vs rich text per mockup toolbar
-- [ ] Private notes (writes to `model_private_notes`, admin-only), key features list, tags (autocomplete + create)
-- [ ] **Live Preview** reuses the real `ModelCard`; completeness checklist (name, brand, manufacturer, year, category, scale, color, main image, description-recommended)
+- [x] Description editor — **decision:** plain text / markdown-lite (recommended: no WYSIWYG dependency or HTML-sanitization surface) vs rich text per mockup toolbar *(**markdown-lite** — owner's choice, 2026-09-30. Stored as the typed text, never HTML (docs/SCHEMA.md updated). `src/utils/markdown-lite.ts` parses paragraphs, line breaks, `-`/`*` and `1.` lists, `**bold**`, `*italic*`/`_italic_`, `[text](url)` and `\` escapes into a small tree; `<MarkdownLite>` (`src/components/MarkdownLite/`) renders it as React elements — no `dangerouslySetInnerHTML`, so there is nothing to sanitize. Links only for http(s)/mailto (anything else keeps its text, loses the link), opened in a new tab with `noopener noreferrer nofollow`. Editor (`model-form-rich.tsx`): textarea + toolbar B / I / • / 1. / Link that inserts the markers around the selection (lists toggle whole lines), Ctrl/⌘+B / I, and a Write/Preview switch showing exactly what the page will render. Toolbar edits go through `insertText`, so Ctrl+Z undoes them. **Deviation:** no Underline button — it isn't in markdown and underlined text reads as a link on the web. The details page's Overview now renders descriptions through `<MarkdownLite>` (existing plain-paragraph text renders the same as before))*
+- [x] Private notes (writes to `model_private_notes`, admin-only), key features list, tags (autocomplete + create) *(one write path still: migration `20260930180000_diecast_save_model_rich.sql` replaces `save_model()` so description, key features, tags and notes save **in the same transaction** as the model and its colors. The four keys are optional — absent = untouched, present = set, empty = cleared (empty notes delete the row) — and are part of the "changed?" answer. A notes-only change doesn't bump the public `updated_at`. **Notes:** "Notes (private)" textarea next to the description, "Only you can see these"; the edit page reads them with a separate admin-only query (`getPrivateNotes()`) before building the form. **Key features:** ordered list of short lines — add, edit, ↑/↓ buttons to reorder (keyboard-friendly, no drag and drop), remove; Enter adds the next line; ≤ 12, ≤ 200 characters, empty lines dropped on save. **Tags:** section 6, chips + the Phase 25 combobox ("Add “…”" creates a tag in the same save; `resolve_model_lookup()` now handles tags), ≤ 20)*
+- [x] **Live Preview** reuses the real `ModelCard`; completeness checklist (name, brand, manufacturer, year, category, scale, color, main image, description-recommended) *(`toPreviewSummary()` builds a `ModelSummary` from the form — brand/manufacturer logos from the lookup lists, racing badges only for racing models, the model's current photo when editing — and the side column renders the collection's own `ModelCard` in an `inert` wrapper (a picture of the result, not a link). Unfilled fields show their names ("Brand", "Year", "Category"), never invented values. `getChecklist()` reuses validation for the required items; "Description (recommended)" never blocks saving; "Main image" is done only for a model that already has a photo until Phase 27 adds uploads. Checked items carry a visually-hidden "done"/"missing" for screen readers)*
 
 ### Verification
-- [ ] Private notes never appear in any anon query (RLS test)
-- [ ] Any rich text is sanitized/escaped on render (XSS test string)
+- [x] Private notes never appear in any anon query (RLS test) *(`npm run verify:rls` gained 10 checks, all passing (97/100 — the 3 failures are the Phase 21 Storage checks, still waiting on that migration): the admin publishes a test model **with** a note, tags and a description in one `save_model` call; anon and the non-admin user both see the model in `model_summaries`, the note text appears in none of its columns, and `model_private_notes` returns nothing to them; emptying the note deletes the row. `npm run verify:model-form` now round-trips description, key features, tags and notes too: all 227 unchanged, and notes-only / tags-only dry-run edits are detected and leave nothing behind)*
+- [x] Any rich text is sanitized/escaped on render (XSS test string) *(`markdown-lite.test.ts` renders through React's real server renderer: `<script>`, `<img onerror>` and inline event handlers come out as escaped text; `javascript:`, `data:` and `vbscript:` links lose their `href`; a quote in a URL can't break out of the attribute. Live: a description containing `<script>alert(1)</script>` shows as that literal text in the form preview and on the details page, with no `<script>` element created)*
 
 ### Definition of Done
 Form matches the mockup's seven sections plus preview/checklist.
+
+**Notes / deviations:**
+- Section 6 of the mockup (Images) is Phase 27, so Tags are numbered **6** for now (Phase 27 inserts Images and renumbers). All other sections match the mockup: 1–5 on the left, Tags + Live Preview/Checklist on the right (above the page address and Delete from Phase 25).
+- Key features aren't in the Create/Edit mockup, but the details page has them and the roadmap asks for them; they sit under the description in section 5.
+- Live test in the browser (owner signed in): created a `zz-` draft with a bold word, a bullet list including a `<script>` line, two reordered key features, a private note and a **new** tag; the details page showed all of it formatted, the script as text, and the note nowhere; the edit form reloaded every value, note included; deleted it from the form, and removed the test tag afterwards (tags outlive models by design — `model_tags` cascades, `tags` rows are shared). 360px: no overflow.
+- Dev-server hiccup, not a code bug: Vite's watcher missed one of two quick edits to `model-details-page.tsx` and served a copy without the `MarkdownLite` import ("MarkdownLite is not defined"); touching the file fixed it. The build compiles from disk and was never affected.
+- Bundle: the form chunk is 38 kB (lazy, owner only); visitors' bundle grew 3.5 kB (the markdown renderer on the details page).
 
 ---
 

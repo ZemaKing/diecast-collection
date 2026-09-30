@@ -1,9 +1,9 @@
-// Pure logic behind the admin model form (ROADMAP Phase 25): the form's values, how a stored
-// model becomes form values and form values become a save payload, the generated slug, and
-// validation. The rules mirror the `diecast.models` CHECK constraints (docs/SCHEMA.md §4.1), so a
+// Pure logic behind the admin model form (ROADMAP Phases 25–26): the form's values, how a stored
+// model becomes form values and form values become a save payload, the generated slug,
+// validation, the completeness checklist and the live-preview card. The rules mirror the `diecast.models` CHECK constraints (docs/SCHEMA.md §4.1), so a
 // form that validates here is one the database accepts; the database still re-checks everything.
 import type {LookupInput, ModelSavePayload} from "../services/model-admin.ts";
-import type {Model} from "../services/types.ts";
+import type {Category, Driver, LookupRef, Model, ModelSummary} from "../services/types.ts";
 import {CONDITION_LABELS, formatAddedDate} from "./model-details.ts";
 import {SLUG_PATTERN, slugify} from "./slug.ts";
 
@@ -31,6 +31,13 @@ export type ModelFormValues = {
     condition: string;
     addedAt: string;
     location: string;
+    // Phase 26. The description is markdown-lite source (src/utils/markdown-lite.ts), stored as typed.
+    description: string;
+    // Ordered bullet points; blank rows are the owner's unfinished input and are dropped on save.
+    keyFeatures: string[];
+    tags: LookupChoice[];
+    // Admin-only (`model_private_notes`); never shown to visitors.
+    notes: string;
     // New models only; stable after creation. `slugEdited` = the owner typed their own, so it no
     // longer follows the generated one.
     slug: string;
@@ -42,6 +49,8 @@ export type ModelFormErrors = Partial<Record<ModelFormField, string>>;
 
 export const MAX_COLORS = 3;
 export const MAX_LIVERY = 8;
+export const MAX_KEY_FEATURES = 12;
+export const MAX_TAGS = 20;
 export const MIN_YEAR = 1885;
 export const CONDITION_OPTIONS = Object.keys(CONDITION_LABELS);
 // Common diecast scales for the picker; any `1:N` already stored is kept as an option too.
@@ -50,7 +59,10 @@ export const DEFAULT_SCALE = "1:43";
 // A new swatch before the owner picks its color (livery data, not UI styling): neutral mid-gray.
 export const NEW_SWATCH_HEX = "#808080";
 
-const LIMITS = {name: 120, team: 120, event: 120, series: 120, location: 80, lookupName: 80, slug: 80} as const;
+const LIMITS = {
+    name: 120, team: 120, event: 120, series: 120, location: 80, lookupName: 80, slug: 80,
+    description: 10000, notes: 10000, keyFeature: 200, tagName: 40,
+} as const;
 const HEX_PATTERN = /^#[0-9A-F]{6}$/;
 const CAR_NUMBER_PATTERN = /^[0-9A-Z]{1,4}$/;
 const SCALE_PATTERN = /^1:[0-9]{1,3}$/;
@@ -75,12 +87,17 @@ export function emptyModelForm(today: string): ModelFormValues {
         condition: "",
         addedAt: today,
         location: "",
+        description: "",
+        keyFeatures: [],
+        tags: [],
+        notes: "",
         slug: "",
         slugEdited: false,
     };
 }
 
-export function modelToFormValues(model: Model): ModelFormValues {
+// `notes` come from a separate, admin-only read (getPrivateNotes()).
+export function modelToFormValues(model: Model, notes: string | null = null): ModelFormValues {
     const existing = (ref: {slug: string; name: string}): LookupChoice => ({slug: ref.slug, name: ref.name, isNew: false});
     return {
         name: model.name,
@@ -100,6 +117,10 @@ export function modelToFormValues(model: Model): ModelFormValues {
         condition: model.condition ?? "",
         addedAt: model.addedAt ?? "",
         location: model.location ?? "",
+        description: model.description ?? "",
+        keyFeatures: [...model.keyFeatures],
+        tags: model.tags.map(existing),
+        notes: notes ?? "",
         slug: model.slug,
         slugEdited: true,
     };
@@ -137,11 +158,11 @@ function isValidDate(value: string): boolean {
     return formatAddedDate(value) !== null;
 }
 
-function checkLookup(choice: LookupChoice | null, missing: string): string | undefined {
+function checkLookup(choice: LookupChoice | null, missing: string, maxName: number = LIMITS.lookupName): string | undefined {
     if (!choice) return missing;
     if (!choice.isNew) return undefined;
     const name = choice.name.trim();
-    if (name.length > LIMITS.lookupName) return `Keep the name under ${LIMITS.lookupName} characters.`;
+    if (name.length > maxName) return `Keep the name under ${maxName} characters.`;
     if (!choice.slug || !SLUG_PATTERN.test(choice.slug)) return "Use at least one letter or digit (A–Z, 0–9) in the name.";
     return undefined;
 }
@@ -190,6 +211,19 @@ export function validateModelForm(values: ModelFormValues, context: {isNew: bool
     if (values.addedAt && !isValidDate(values.addedAt)) errors.addedAt = "Enter a real date.";
     if (values.location.trim().length > LIMITS.location) errors.location = `Keep it under ${LIMITS.location} characters.`;
 
+    if (values.description.trim().length > LIMITS.description) {
+        errors.description = `Keep the description under ${LIMITS.description.toLocaleString("en")} characters.`;
+    }
+    const features = cleanKeyFeatures(values.keyFeatures);
+    if (features.length > MAX_KEY_FEATURES) errors.keyFeatures = `Use at most ${MAX_KEY_FEATURES} key features.`;
+    else if (features.some((f) => f.length > LIMITS.keyFeature)) errors.keyFeatures = `Keep each key feature under ${LIMITS.keyFeature} characters.`;
+    if (values.tags.length > MAX_TAGS) errors.tags = `Use at most ${MAX_TAGS} tags.`;
+    else {
+        const tagError = values.tags.map((t) => checkLookup(t, "", LIMITS.tagName)).find(Boolean);
+        if (tagError) errors.tags = tagError;
+    }
+    if (values.notes.trim().length > LIMITS.notes) errors.notes = `Keep the notes under ${LIMITS.notes.toLocaleString("en")} characters.`;
+
     if (context.isNew) {
         const slug = values.slug.trim();
         if (!slug) errors.slug = "The address is generated from the name, year, brand, manufacturer and color — fill those in first.";
@@ -203,7 +237,8 @@ export function validateModelForm(values: ModelFormValues, context: {isNew: bool
 // Order the form reports/focuses errors in — top to bottom as rendered.
 export const FIELD_ORDER: ModelFormField[] = [
     "name", "year", "brand", "manufacturer", "categorySlug", "scale", "colorSlugs", "liveryHex", "series",
-    "carNumber", "driver", "team", "event", "condition", "addedAt", "location", "slug",
+    "carNumber", "driver", "team", "event", "condition", "addedAt", "location", "description", "keyFeatures",
+    "notes", "tags", "slug",
 ];
 
 export function firstErrorField(errors: ModelFormErrors): ModelFormField | undefined {
@@ -241,7 +276,15 @@ export function toSavePayload(values: ModelFormValues, isPublished: boolean): Mo
         location: orNull(values.location),
         added_at: values.addedAt || null,
         is_published: isPublished,
+        description: values.description.trim() || null,
+        key_features: cleanKeyFeatures(values.keyFeatures),
+        tags: values.tags.map(lookupInput),
+        notes: values.notes.trim() || null,
     };
+}
+
+export function cleanKeyFeatures(features: string[]): string[] {
+    return features.map((f) => f.trim()).filter(Boolean);
 }
 
 // Unsaved changes = anything differs from what the form started with.
@@ -253,4 +296,80 @@ export function isFormDirty(initial: ModelFormValues, current: ModelFormValues):
 export function localDateString(date: Date): string {
     const pad = (n: number) => String(n).padStart(2, "0");
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+// ---- completeness checklist (Phase 26, mockup "Checklist") -------------------------------------
+
+export type ChecklistItem = {key: string; label: string; done: boolean; recommended?: boolean};
+
+// What a finished model has. Required items mirror validation; the main image comes with Phase 27
+// (until then it's only ever done for a model that already has a photo), and the description is
+// recommended, not required — 227 imported models have none.
+export function getChecklist(values: ModelFormValues, context: {currentYear: number; hasMainImage: boolean}): ChecklistItem[] {
+    const errors = validateModelForm(values, {isNew: false, currentYear: context.currentYear});
+    return [
+        {key: "name", label: "Model name", done: !errors.name},
+        {key: "brand", label: "Brand", done: !errors.brand},
+        {key: "manufacturer", label: "Manufacturer", done: !errors.manufacturer},
+        {key: "year", label: "Year", done: !errors.year},
+        {key: "category", label: "Category", done: !errors.categorySlug},
+        {key: "scale", label: "Scale", done: !errors.scale},
+        {key: "color", label: "Color", done: !errors.colorSlugs},
+        {key: "image", label: "Main image", done: context.hasMainImage},
+        {key: "description", label: "Description", done: values.description.trim().length > 0, recommended: true},
+    ];
+}
+
+// ---- live preview (Phase 26): the real ModelCard, fed from the form ----------------------------
+
+export type PreviewContext = {
+    slug: string;
+    brands: LookupRef[];
+    manufacturers: LookupRef[];
+    categories: Category[];
+    drivers: Driver[];
+    colors: {slug: string; name: string}[];
+    // The model's current primary photo (editing), or null.
+    image: ModelSummary["image"];
+};
+
+// A ModelSummary built from the form as it stands, so the preview is the collection card itself.
+// Missing values show their field name ("Brand", "Category"…) instead of inventing data.
+export function toPreviewSummary(values: ModelFormValues, context: PreviewContext): ModelSummary {
+    const ref = (choice: LookupChoice | null, list: LookupRef[], placeholder: string): LookupRef =>
+        choice
+            ? list.find((r) => r.slug === choice.slug) ?? {slug: choice.slug, name: choice.name, logoPath: null}
+            : {slug: "", name: placeholder, logoPath: null};
+    const year = /^\d{4}$/.test(values.year.trim()) ? Number(values.year.trim()) : 0;
+    const category = context.categories.find((c) => c.slug === values.categorySlug) ?? {slug: "", name: "Category", sortOrder: 0};
+    const driver = values.isRacing && values.driver
+        ? context.drivers.find((d) => d.slug === values.driver!.slug) ?? {slug: values.driver.slug, name: values.driver.name, countryCode: null}
+        : null;
+    const number = values.carNumber.trim().toUpperCase();
+
+    return {
+        id: "preview",
+        slug: context.slug || "preview",
+        name: values.name.trim() || "Model name",
+        year,
+        scale: values.scale,
+        isRacing: values.isRacing,
+        carNumber: values.isRacing && number ? number : null,
+        liveryHex: values.liveryHex,
+        team: null,
+        event: null,
+        series: null,
+        condition: null,
+        location: null,
+        addedAt: null,
+        createdAt: "",
+        updatedAt: "",
+        brand: ref(values.brand, context.brands, "Brand"),
+        manufacturer: ref(values.manufacturer, context.manufacturers, "Manufacturer"),
+        category,
+        driver,
+        colors: values.colorSlugs.map((slug) => ({slug, name: context.colors.find((c) => c.slug === slug)?.name ?? slug})),
+        image: context.image,
+        imageCount: context.image ? 1 : 0,
+    };
 }

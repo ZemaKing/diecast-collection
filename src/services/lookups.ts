@@ -4,7 +4,7 @@ import {supabase} from "../lib/supabase.ts";
 
 import {mapCategory} from "./mappers.ts";
 import {unwrap} from "./supabase-query.ts";
-import type {Category, Driver, LookupRef} from "./types.ts";
+import type {Category, Driver, LookupRef, Tag} from "./types.ts";
 
 export async function getBrands(): Promise<LookupRef[]> {
     const rows = await unwrap(supabase.from("brands").select("*").order("name"));
@@ -30,4 +30,10 @@ export async function getColors(): Promise<{slug: string; name: string; hex: str
 export async function getDrivers(): Promise<Driver[]> {
     const rows = await unwrap(supabase.from("drivers").select("*").order("name"));
     return rows.map((r) => ({slug: r.slug, name: r.name, countryCode: r.country_code}));
+}
+
+// Every tag, for the admin form's tag picker (Phase 26). Public table; empty until tags are added.
+export async function getTags(): Promise<Tag[]> {
+    const rows = await unwrap(supabase.from("tags").select("*").order("name"));
+    return rows.map((r) => ({slug: r.slug, name: r.name}));
 }

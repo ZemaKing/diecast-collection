@@ -9,6 +9,7 @@ import {ModelForm} from "./model-form.tsx";
 
 import {useModelCount} from "../../hooks/useModelCount.ts";
 import type {AppError} from "../../lib/errors.ts";
+import {getPrivateNotes} from "../../services/model-admin.ts";
 import {getModelBySlug} from "../../services/models.ts";
 import type {Model} from "../../services/types.ts";
 import {emptyModelForm, localDateString, modelToFormValues} from "../../utils/model-form.ts";
@@ -35,7 +36,9 @@ export function NewModelPage() {
 }
 
 // `/admin/models/:slug/edit` (Phase 25). Reads the same ["model", slug] cache as the details page,
-// so arriving from there is instant. Drafts load too — RLS shows them to the admin.
+// so arriving from there is instant. Drafts load too — RLS shows them to the admin. The private
+// notes (Phase 26) are a second, admin-only read; the form waits for both, so its starting values
+// (what "unsaved changes" compares against) are complete.
 export function EditModelPage() {
     const {slug = ""} = useParams();
     const count = useModelCount();
@@ -47,9 +50,17 @@ export function EditModelPage() {
         refetchOnWindowFocus: false,
     });
 
+    const notesQuery = useQuery<string | null, AppError>({
+        queryKey: ["model-notes", slug],
+        queryFn: () => getPrivateNotes(modelQuery.data!.id),
+        enabled: !!modelQuery.data,
+        refetchOnWindowFocus: false,
+    });
+
     if (modelQuery.error?.kind === "not_found") return <NotFoundPage/>;
 
     const model = modelQuery.data;
+    const error = modelQuery.error ?? notesQuery.error;
 
     return (
         <div className="layout">
@@ -60,18 +71,20 @@ export function EditModelPage() {
                     trail={model ? [{label: model.name, to: modelPath(model.slug)}, {label: "Edit"}] : [{label: "Edit"}]}
                 />
                 <main className="main">
-                    {modelQuery.isPending ? (
-                        <p className="formLoading" role="status">Loading model…</p>
-                    ) : modelQuery.isError ? (
+                    {error ? (
                         <div className="contentError">
-                            <p>{modelQuery.error.message}</p>
-                            {modelQuery.error.retryable && (
-                                <button type="button" className="retryButton" onClick={() => modelQuery.refetch()}>Try again</button>
+                            <p>{error.message}</p>
+                            {error.retryable && (
+                                <button type="button" className="retryButton" onClick={() => (modelQuery.isError ? modelQuery.refetch() : notesQuery.refetch())}>
+                                    Try again
+                                </button>
                             )}
                         </div>
+                    ) : !model || notesQuery.isPending ? (
+                        <p className="formLoading" role="status">Loading model…</p>
                     ) : (
                         // Keyed by slug: a different model is a fresh form, never a merge into this one.
-                        <ModelForm key={modelQuery.data.slug} initial={modelToFormValues(modelQuery.data)} original={modelQuery.data} cancelTo={modelPath(modelQuery.data.slug)}/>
+                        <ModelForm key={model.slug} initial={modelToFormValues(model, notesQuery.data)} original={model} cancelTo={modelPath(model.slug)}/>
                     )}
                 </main>
             </div>

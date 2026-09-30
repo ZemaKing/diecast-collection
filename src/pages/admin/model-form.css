@@ -549,3 +549,282 @@
     color: var(--color-text-muted);
     text-align: center;
 }
+
+/* ---- Phase 26: description & notes ---------------------------------------------------------- */
+
+@media (min-width: 640px) {
+    .formRowDescription {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+}
+
+.formDescriptionColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 0;
+}
+
+.formTextarea {
+    min-height: 168px;
+    padding: var(--space-sm) var(--space-md);
+    line-height: var(--leading-normal);
+    resize: vertical;
+}
+
+.formFieldNotes .formTextarea {
+    flex: 1;
+}
+
+.markdownEditor {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--color-surface-sunken);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.markdownEditor:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: var(--focus-ring);
+}
+
+.markdownEditorInvalid {
+    border-color: var(--color-danger);
+}
+
+.markdownToolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-xs);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.markdownToolbarSpacer {
+    flex: 1;
+}
+
+.markdownTool,
+.markdownMode {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 var(--space-xs);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+}
+
+.markdownTool-italic {
+    font-style: italic;
+    font-weight: var(--weight-semibold);
+}
+
+.markdownTool:hover:not(:disabled),
+.markdownMode:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.markdownTool:disabled {
+    cursor: default;
+    opacity: var(--state-disabled-opacity);
+}
+
+.markdownMode[aria-pressed="true"] {
+    background: var(--color-accent-soft);
+    color: var(--color-text);
+}
+
+.markdownTool:focus-visible,
+.markdownMode:focus-visible,
+.featureButton:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* The editor box shows the focus ring (:focus-within), not the bare textarea too. */
+.markdownTextarea {
+    width: 100%;
+    min-height: 168px;
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: 0;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    resize: vertical;
+}
+
+.markdownTextarea:focus,
+.markdownTextarea:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.markdownTextarea::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.markdownPreview {
+    min-height: 168px;
+    padding: var(--space-sm) var(--space-md);
+}
+
+.markdownPreviewEmpty {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+/* ---- key features --------------------------------------------------------------------------- */
+
+.featureRows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.featureRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+}
+
+.featureButton {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: var(--text-sm);
+}
+
+.featureButton:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+}
+
+.featureButton:disabled {
+    cursor: default;
+    opacity: var(--state-disabled-opacity);
+}
+
+.featureAdd {
+    align-self: flex-start;
+}
+
+/* ---- tags ----------------------------------------------------------------------------------- */
+
+.tagChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tagChip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-sm);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+}
+
+.tagChipNew {
+    color: var(--color-accent-text);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+}
+
+/* ---- live preview & checklist --------------------------------------------------------------- */
+
+.previewCard {
+    max-width: 360px;
+}
+
+.checklist {
+    padding-top: var(--space-sm);
+    border-top: var(--border-width) solid var(--color-border-subtle);
+}
+
+.checklistTitle {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+}
+
+.checklistCount {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-semibold);
+}
+
+.checklistItems {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.checklistItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.checklistItemDone {
+    color: var(--color-text);
+}
+
+.checklistBox {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-xs);
+}
+
+.checklistItemDone .checklistBox {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+}
+
+.checklistRecommended {
+    color: var(--color-text-muted);
+}

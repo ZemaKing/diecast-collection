@@ -6,13 +6,15 @@ import {ColorCircle} from "../../components/ColorCircle/ColorCircle.tsx";
 import {Combobox, type ComboboxItem} from "../../components/Combobox/Combobox.tsx";
 import {ConfirmDialog} from "../../components/ConfirmDialog/ConfirmDialog.tsx";
 import {DeleteModelDialog} from "../../components/ModelAdminActions/DeleteModelDialog.tsx";
+import {ModelCard} from "../../components/ModelCard/ModelCard.tsx";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
+import {Checklist, DescriptionEditor, KeyFeaturesEditor} from "./model-form-rich.tsx";
 
 import {useDebouncedValue} from "../../hooks/useDebouncedValue.ts";
 import {Check} from "../../icons/Check.tsx";
 import {Close} from "../../icons/Close.tsx";
 import type {AppError} from "../../lib/errors.ts";
-import {getBrands, getCategories, getColors, getDrivers, getManufacturers} from "../../services/lookups.ts";
+import {getBrands, getCategories, getColors, getDrivers, getManufacturers, getTags} from "../../services/lookups.ts";
 import {isSlugTaken, saveModel, type SaveModelResult} from "../../services/model-admin.ts";
 import {getModels} from "../../services/models.ts";
 import type {Model, ModelSummary} from "../../services/types.ts";
@@ -23,9 +25,12 @@ import {
     CONDITION_OPTIONS,
     MAX_COLORS,
     MAX_LIVERY,
+    MAX_TAGS,
     NEW_SWATCH_HEX,
     SCALE_OPTIONS,
     firstErrorField,
+    getChecklist,
+    toPreviewSummary,
     generateModelSlug,
     isFormDirty,
     liveryFromColors,
@@ -52,9 +57,10 @@ type ModelFormProps = {
 
 const SLUG_TAKEN = "Another model already uses this address. Change the name, year or color — or edit the address (e.g. add the racing number).";
 
-// The Create / Edit form (ROADMAP Phase 25, "Diecast Create-Edit.png"): Basic Information,
-// Classification, Racing Information (toggle), Condition & Collection. Description & notes, images,
-// tags, live preview and the checklist are Phases 26–27. Everything is saved in one call
+// The Create / Edit form (ROADMAP Phases 25–26, "Diecast Create-Edit.png"): Basic Information,
+// Classification, Racing Information (toggle), Condition & Collection, Description & Notes, Tags,
+// and a Live Preview (the real ModelCard) with the checklist. Images are Phase 27. Everything —
+// private notes and tags included — is saved in one call
 // (diecast.save_model) — as a draft or published — and an unsaved form never loses work silently:
 // leaving asks first (in-app navigation via useBlocker, reload/close via beforeunload).
 export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
@@ -79,6 +85,7 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const categoriesQuery = useQuery({queryKey: ["categories"], queryFn: getCategories});
     const colorsQuery = useQuery({queryKey: ["colors"], queryFn: getColors});
     const driversQuery = useQuery({queryKey: ["drivers"], queryFn: getDrivers});
+    const tagsQuery = useQuery({queryKey: ["tags"], queryFn: getTags});
     // Existing series/team/event/location values, offered as suggestions.
     const summariesQuery = useQuery({queryKey: ["models", "cars"], queryFn: getModels});
 
@@ -129,8 +136,9 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
             void queryClient.invalidateQueries({queryKey: ["models"]});
             void queryClient.invalidateQueries({queryKey: ["model", result.slug]});
             queryClient.removeQueries({queryKey: ["slug-taken"]});
-            if ([current.brand, current.manufacturer, current.isRacing ? current.driver : null].some((c) => c?.isNew)) {
-                for (const key of ["brands", "manufacturers", "drivers"]) void queryClient.invalidateQueries({queryKey: [key]});
+            void queryClient.invalidateQueries({queryKey: ["model-notes", result.slug]});
+            if ([current.brand, current.manufacturer, current.isRacing ? current.driver : null, ...current.tags].some((c) => c?.isNew)) {
+                for (const key of ["brands", "manufacturers", "drivers", "tags"]) void queryClient.invalidateQueries({queryKey: [key]});
             }
             navigate(modelPath(result.slug), {state: {adminNotice: saveNotice(result, publish, original, current.name.trim())} satisfies AdminNoticeState});
         },
@@ -183,7 +191,24 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const scaleOptions = SCALE_OPTIONS.includes(values.scale) ? SCALE_OPTIONS : [...SCALE_OPTIONS, values.scale];
     const suggestions = collectSuggestions(summariesQuery.data);
 
-    const lookupError = [brandsQuery, manufacturersQuery, categoriesQuery, colorsQuery, driversQuery].find((q) => q.isError)?.error;
+    const tagOptions: ComboboxItem[] = (tagsQuery.data ?? [])
+        .filter((t) => !values.tags.some((chosen) => chosen.slug === t.slug))
+        .map((t) => ({value: t.slug, label: t.name}));
+
+    // Live preview (Phase 26): the collection's own card, fed from the form as it stands.
+    const primaryImage = original ? original.images.find((i) => i.isPrimary) ?? original.images[0] ?? null : null;
+    const preview = toPreviewSummary(current, {
+        slug: current.slug,
+        brands: brandsQuery.data ?? [],
+        manufacturers: manufacturersQuery.data ?? [],
+        categories: categoriesQuery.data ?? [],
+        drivers: driversQuery.data ?? [],
+        colors,
+        image: primaryImage ? {url: primaryImage.url, thumbUrl: primaryImage.thumbUrl, width: primaryImage.width, height: primaryImage.height} : null,
+    });
+    const checklist = getChecklist(current, {currentYear, hasMainImage: primaryImage !== null});
+
+    const lookupError = [brandsQuery, manufacturersQuery, categoriesQuery, colorsQuery, driversQuery, tagsQuery].find((q) => q.isError)?.error;
 
     const newChoice = (label: string): LookupChoice => ({slug: slugify(label), name: label, isNew: true});
     const choice = (option: ComboboxItem): LookupChoice => ({slug: option.value, name: option.label, isNew: false});
@@ -512,9 +537,103 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                             </Field>
                         </div>
                     </FormSection>
+
+                    <FormSection number={5} title="Description & Notes">
+                        <div className="formRow formRowDescription">
+                            <div className="formDescriptionColumn">
+                                <Field
+                                    label="Description"
+                                    htmlFor={fieldId("description")}
+                                    error={visibleErrors.description}
+                                    errorId={`${fieldId("description")}-error`}
+                                    hint="Shown as “About this model”. **bold**, *italic*, lists (- or 1.) and [links](https://…) are formatted; nothing else is."
+                                    hintId={`${fieldId("description")}-hint`}
+                                >
+                                    <DescriptionEditor
+                                        id={fieldId("description")}
+                                        value={values.description}
+                                        onChange={(description) => set("description", description)}
+                                        maxLength={10000}
+                                        invalid={!!visibleErrors.description}
+                                        describedBy={control("description", true)["aria-describedby"]}
+                                    />
+                                </Field>
+                                <KeyFeaturesEditor
+                                    id={fieldId("keyFeatures")}
+                                    features={values.keyFeatures}
+                                    onChange={(keyFeatures) => set("keyFeatures", keyFeatures)}
+                                    error={visibleErrors.keyFeatures}
+                                />
+                            </div>
+                            <Field
+                                label="Notes (private)"
+                                htmlFor={fieldId("notes")}
+                                error={visibleErrors.notes}
+                                errorId={`${fieldId("notes")}-error`}
+                                hint="Only you can see these — never shown on the site."
+                                hintId={`${fieldId("notes")}-hint`}
+                                className="formFieldNotes"
+                            >
+                                <textarea
+                                    {...control("notes", true)}
+                                    className="formInput formTextarea"
+                                    rows={7}
+                                    maxLength={10000}
+                                    placeholder="Where you bought it, what you paid, what to look out for…"
+                                    value={values.notes}
+                                    onChange={(e) => set("notes", e.target.value)}
+                                />
+                            </Field>
+                        </div>
+                    </FormSection>
                 </div>
 
                 <aside className="modelFormAside">
+                    <FormSection number={6} title="Tags" optional>
+                        <Field label="Add tags" htmlFor={fieldId("tags")} error={visibleErrors.tags} errorId={`${fieldId("tags")}-error`}>
+                            {values.tags.length > 0 && (
+                                <ul className="tagChips" aria-label="Chosen tags">
+                                    {values.tags.map((tag) => (
+                                        <li key={tag.slug} className="tagChip">
+                                            <span>{tag.name}</span>
+                                            {tag.isNew && <span className="tagChipNew">new</span>}
+                                            <button
+                                                type="button"
+                                                className="colorChipRemove"
+                                                aria-label={`Remove tag ${tag.name}`}
+                                                onClick={() => set("tags", values.tags.filter((t) => t.slug !== tag.slug))}
+                                            >
+                                                <Close width={12} height={12}/>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <Combobox
+                                {...lookupControl(control("tags"))}
+                                options={tagOptions}
+                                value={null}
+                                displayLabel={null}
+                                onSelect={(o) => set("tags", [...values.tags, choice(o)])}
+                                onCreate={(label) => {
+                                    const tag = newChoice(label);
+                                    if (!values.tags.some((t) => t.slug === tag.slug)) set("tags", [...values.tags, tag]);
+                                }}
+                                createHint="new tag"
+                                placeholder={values.tags.length >= MAX_TAGS ? `Up to ${MAX_TAGS} tags` : "Search or add a tag…"}
+                                disabled={values.tags.length >= MAX_TAGS}
+                            />
+                        </Field>
+                    </FormSection>
+
+                    <section className="formSection" aria-labelledby={`${baseId}-preview`}>
+                        <h2 id={`${baseId}-preview`} className="formAsideTitle">Live Preview</h2>
+                        {/* The real collection card; inert — a picture of the result, not a link. */}
+                        <div className="previewCard" inert>
+                            <ModelCard model={preview}/>
+                        </div>
+                        <Checklist items={checklist}/>
+                    </section>
                     <section className="formSection" aria-labelledby={`${baseId}-address`}>
                         <h2 id={`${baseId}-address`} className="formAsideTitle">Page address</h2>
                         {isNew ? (

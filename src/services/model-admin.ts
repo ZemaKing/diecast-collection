@@ -11,8 +11,9 @@ import {unwrap} from "./supabase-query.ts";
 // driver/brand/manufacturer pickers can add a name that isn't in the list yet).
 export type LookupInput = {slug: string; name: string; create?: boolean};
 
-// The form's core fields, as save_model() expects them. Description, key features, tags, notes
-// and images are deliberately absent (Phases 26–27): a save can never touch them.
+// The form's fields, as save_model() expects them. The Phase 26 keys (description, key features,
+// tags, private notes) are optional: absent = leave as is, present = set (empty clears). Images are
+// never part of a save (Phase 27 manages them on their own).
 export type ModelSavePayload = {
     slug: string;
     name: string;
@@ -33,6 +34,10 @@ export type ModelSavePayload = {
     location: string | null;
     added_at: string | null;
     is_published: boolean;
+    description?: string | null;
+    key_features?: string[];
+    tags?: LookupInput[];
+    notes?: string | null;
 };
 
 export type SaveModelResult = {
@@ -59,6 +64,13 @@ export async function saveModel(
         }),
     )) as unknown as SaveModelRow;
     return {slug: row.slug, created: row.created, changed: row.changed, dryRun: row.dry_run};
+}
+
+// The owner's private notes for a model (`model_private_notes`, admin-only through RLS — anyone else
+// gets no row, which reads as no notes). Only the edit form asks for them.
+export async function getPrivateNotes(modelId: string): Promise<string | null> {
+    const rows = await unwrap(supabase.from("model_private_notes").select("notes").eq("model_id", modelId).limit(1));
+    return rows[0]?.notes ?? null;
 }
 
 // The form's live "address already taken" check. The database re-checks on save (a race can't

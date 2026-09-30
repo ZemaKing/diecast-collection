@@ -71,6 +71,7 @@ async function cleanup(admin, f) {
     if (!f) return;
     // Models created through save_model (Phase 25 checks) — their colors cascade.
     await admin.from("models").delete().like("slug", `zz-rls-form%-${suffix}`);
+    await admin.from("tags").delete().like("slug", `zz-rls-form%-${suffix}`);
     await admin.from("models").delete().in("id", [f.published?.id, f.draft?.id].filter(Boolean));
     await admin.from("tags").delete().in("id", [f.tag?.id, f.spareTag?.id].filter(Boolean));
     await admin.from("colors").delete().in("id", [f.color?.id, f.spareColor?.id].filter(Boolean));
@@ -155,7 +156,7 @@ function formPayload(f, modelSlug) {
 
 // Admin side of the model form (Phase 25): create a draft, anon can't see it, a duplicate slug is
 // refused with a clear message, edits apply, an unchanged save writes nothing, delete cascades.
-async function checkModelForm(admin, anon, f) {
+async function checkModelForm(admin, anon, user, f) {
     const formSlug = slug("form");
     const {data: created, error: createErr} = await admin.rpc("save_model", {p_model: formPayload(f, formSlug)});
     check("admin", "save_model creates a draft", !createErr && created?.created === true, createErr?.message ?? JSON.stringify(created));
@@ -178,6 +179,31 @@ async function checkModelForm(admin, anon, f) {
     check("admin", "an unchanged save writes nothing", again?.changed === false, JSON.stringify(again));
     const {data: renamed} = await admin.rpc("save_model", {p_model: {...edited, slug: "zz-rls-renamed"}, p_original_slug: formSlug});
     check("admin", "the slug is stable after creation", renamed?.slug === formSlug, JSON.stringify(renamed));
+
+    // Phase 26: the form saves private notes + tags in the same call. Published WITH notes, the model
+    // is public — its notes must still never reach anyone but the admin.
+    const tagSlug = slug("formtag");
+    const {data: rich, error: richErr} = await admin.rpc("save_model", {
+        p_model: {...edited, is_published: true, description: "**zz** rls", notes: "zz-rls private note",
+            tags: [{slug: tagSlug, name: `ZZ RLS FormTag ${suffix}`, create: true}]},
+        p_original_slug: formSlug,
+    });
+    check("admin", "save_model saves description, tags and private notes", !richErr && rich?.changed === true, richErr?.message ?? JSON.stringify(rich));
+    const {data: ownNotes} = await admin.from("model_private_notes").select("notes").eq("model_id", formModel?.id ?? "");
+    check("admin", "reads the note it saved", ownNotes?.[0]?.notes === "zz-rls private note", JSON.stringify(ownNotes));
+    const {count: tagLinks} = await admin.from("model_tags").select("model_id", {count: "exact", head: true}).eq("model_id", formModel?.id ?? "");
+    check("admin", "the new tag is created and linked", tagLinks === 1, `${tagLinks} tag links`);
+    for (const [who, c] of [["anon", anon], ["user", user]]) {
+        const {data: summary} = await c.from("model_summaries").select("*").eq("slug", formSlug);
+        check(who, "sees the published form model", summary?.length === 1, `${summary?.length} rows`);
+        const leaked = JSON.stringify(summary ?? []).includes("zz-rls private note");
+        check(who, "its private note is in no public column", !leaked, leaked ? "NOTE LEAKED" : "");
+        const {data: notes, error: notesErr} = await c.from("model_private_notes").select("*").eq("model_id", formModel?.id ?? "");
+        check(who, "cannot read the form model's private notes", !!notesErr || notes.length === 0, notesErr ? notesErr.code : `${notes.length} rows`);
+    }
+    const {data: cleared} = await admin.rpc("save_model", {p_model: {...edited, is_published: true, notes: ""}, p_original_slug: formSlug});
+    const {count: notesLeft} = await admin.from("model_private_notes").select("model_id", {count: "exact", head: true}).eq("model_id", formModel?.id ?? "");
+    check("admin", "emptying the notes deletes the row", cleared?.changed === true && notesLeft === 0, `${notesLeft} rows`);
 
     const {data: gone, error: delErr} = await admin.from("models").delete().eq("slug", formSlug).select("id");
     check("admin", "DELETE models works", !delErr && gone?.length === 1, delErr?.message ?? `${gone?.length} rows`);
@@ -251,7 +277,7 @@ try {
     await checkOutsider("anon", client(), fixtures, userId);
     await checkOutsider("user", user, fixtures, userId);
     await checkAdmin(admin, fixtures);
-    await checkModelForm(admin, client(), fixtures);
+    await checkModelForm(admin, client(), user, fixtures);
 } catch (error) {
     check("setup", "fixtures / run", false, error.message);
 } finally {
