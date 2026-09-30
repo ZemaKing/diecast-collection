@@ -3,7 +3,7 @@
 // collection-query.ts). getModelBySlug() is for the details page (Phase 19).
 import {supabase} from "../lib/supabase.ts";
 
-import {mapModel, mapModelSummary, type ModelColorRow, type ModelWithRelations} from "./mappers.ts";
+import {mapModel, mapModelSummary, type ModelColorRow, type ModelTagRow, type ModelWithRelations} from "./mappers.ts";
 import {unwrap} from "./supabase-query.ts";
 import type {Model, ModelSummary} from "./types.ts";
 
@@ -24,9 +24,9 @@ export async function getRecentlyAddedModels(limit = 8): Promise<ModelSummary[]>
     return rows.map(mapModelSummary);
 }
 
-// Three queries instead of one deep embed: `model_colors`/`model_images` both carry an FK to
-// `models` AND to the `model_summaries` view (same FK name on both, since the view exposes the
-// same id), which makes PostgREST's embed resolution ambiguous from `models`. Fetching them
+// Four queries instead of one deep embed: `model_colors`/`model_images`/`model_tags` all carry an
+// FK to `models` AND to the `model_summaries` view (same FK name on both, since the view exposes
+// the same id), which makes PostgREST's embed resolution ambiguous from `models`. Fetching them
 // separately (each unambiguous on its own) sidesteps that instead of fighting embed hints.
 export async function getModelBySlug(slug: string): Promise<Model> {
     const row = (await unwrap(
@@ -37,10 +37,11 @@ export async function getModelBySlug(slug: string): Promise<Model> {
             .single(),
     )) as unknown as ModelWithRelations;
 
-    const [colorRows, imageRows] = await Promise.all([
+    const [colorRows, imageRows, tagRows] = await Promise.all([
         unwrap(supabase.from("model_colors").select("position, color:colors(*)").eq("model_id", row.id)) as Promise<ModelColorRow[]>,
         unwrap(supabase.from("model_images").select("*").eq("model_id", row.id)),
+        unwrap(supabase.from("model_tags").select("tag:tags(*)").eq("model_id", row.id)) as Promise<ModelTagRow[]>,
     ]);
 
-    return mapModel(row, colorRows, imageRows);
+    return mapModel(row, colorRows, imageRows, tagRows);
 }

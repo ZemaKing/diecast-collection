@@ -2,6 +2,7 @@ import {lazy, Suspense} from "react";
 import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {AboutPage} from "./pages/about-page/about-page";
 import {CollectionPage} from "./pages/collection-page/collection-page";
+import {ModelDetailsPage} from "./pages/model-details-page/model-details-page";
 import {NotFoundPage} from "./pages/not-found-page/not-found-page";
 
 // Dev-only token reference; the DEV guard lets Vite drop it from production builds.
@@ -9,7 +10,8 @@ const TokensPage = import.meta.env.DEV ? lazy(() => import("./pages/dev-tokens/t
 
 // Trucks are retired (ROADMAP Phase 11) and "/" now renders the collection directly, so old
 // `/cars`/`/trucks` links (shared URLs, bookmarks, `?model=`/filter query strings) redirect to
-// "/" instead of 404ing — preserving the query string and hash so those old links still work.
+// "/" instead of 404ing — preserving the query string and hash so those old links still work
+// (an old `?model=<id>` then continues on to `/models/<id>` — see CollectionPage).
 function RedirectToCollection() {
     const location = useLocation();
     return <Navigate to={{pathname: "/", search: location.search, hash: location.hash}} replace/>;
@@ -19,6 +21,7 @@ export default function App() {
     return (
         <Routes>
             <Route path="/" element={<CollectionPage/>}/>
+            <Route path="/models/:slug" element={<ModelDetailsPage/>}/>
             <Route path="/about" element={<AboutPage/>}/>
             <Route path="/cars" element={<RedirectToCollection/>}/>
             <Route path="/trucks" element={<RedirectToCollection/>}/>

@@ -92,14 +92,5 @@ export function withSort(searchParams: URLSearchParams, sort: SortOption | null)
     return next;
 }
 
-export function withModelParam(searchParams: URLSearchParams, modelId: string): URLSearchParams {
-    const nextSearchParams = new URLSearchParams(searchParams);
-    nextSearchParams.set("model", String(modelId));
-    return nextSearchParams;
-}
-
-export function withoutModelParam(searchParams: URLSearchParams): URLSearchParams {
-    const nextSearchParams = new URLSearchParams(searchParams);
-    nextSearchParams.delete("model");
-    return nextSearchParams;
-}
+// `?model=` is no longer written anywhere: models have their own route since Phase 19, and old
+// `?model=` links are redirected by getLegacyModelRedirect() (model-link.ts).

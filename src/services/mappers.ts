@@ -1,7 +1,7 @@
 // Row → domain conversions. The only place that reads database.types.ts Row shapes directly.
 import type {Tables} from "../lib/database.types.ts";
 
-import type {Category, Driver, LookupRef, Model, ModelColor, ModelImage, ModelSummary} from "./types.ts";
+import type {Category, Driver, LookupRef, Model, ModelColor, ModelImage, ModelSummary, Tag} from "./types.ts";
 
 type SummaryRow = Tables<"model_summaries">;
 
@@ -80,9 +80,16 @@ export type ModelWithRelations = Tables<"models"> & {
 
 export type ModelColorRow = {position: number; color: Tables<"colors"> | null};
 
-// Combines a `models` row (with its singular relations embedded) plus separately-fetched colors
-// and images — see getModelBySlug() in models.ts for why those are fetched apart.
-export function mapModel(row: ModelWithRelations, colorRows: ModelColorRow[], imageRows: Tables<"model_images">[]): Model {
+export type ModelTagRow = {tag: Tables<"tags"> | null};
+
+// Combines a `models` row (with its singular relations embedded) plus separately-fetched colors,
+// images and tags — see getModelBySlug() in models.ts for why those are fetched apart.
+export function mapModel(
+    row: ModelWithRelations,
+    colorRows: ModelColorRow[],
+    imageRows: Tables<"model_images">[],
+    tagRows: ModelTagRow[] = [],
+): Model {
     if (!row.brand || !row.manufacturer || !row.category) {
         throw new Error(`model "${row.slug}" is missing a required relation (brand/manufacturer/category)`);
     }
@@ -105,6 +112,10 @@ export function mapModel(row: ModelWithRelations, colorRows: ModelColorRow[], im
         updatedAt: row.updated_at,
         description: row.description,
         keyFeatures: row.key_features,
+        // No position column on model_tags — alphabetical is the only stable order.
+        tags: tagRows
+            .flatMap((t): Tag[] => (t.tag ? [{slug: t.tag.slug, name: t.tag.name}] : []))
+            .sort((a, b) => a.name.localeCompare(b.name)),
         isPublished: row.is_published,
         brand: mapLookup(row.brand),
         manufacturer: mapLookup(row.manufacturer),

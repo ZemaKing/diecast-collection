@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {Link} from "react-router-dom";
 
 import {ColorCircle} from "../ColorCircle/ColorCircle";
 import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
@@ -6,17 +7,19 @@ import {LogoOrText} from "./LogoOrText.tsx";
 
 import type {ModelSummary} from "../../services/types.ts";
 import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
+import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
 import "./ModelRow.css";
 
 // The List and Compact collection views (ROADMAP Phase 18). Same ModelSummary data as ModelCard,
-// same whole-row-is-one-button interaction and `id={slug}` (the ?model= deep link scrolls to it),
-// just laid out as rows. Markup is phrasing content only (spans), since it lives inside <button>.
+// same whole-row-is-one-link interaction (to the details page) and `id={slug}` (the collection
+// brings it back into view on return), just laid out as rows. Markup is phrasing content only
+// (spans), which keeps the rows valid whether they're links or buttons.
 
 type ModelRowProps = {
     model: ModelSummary;
-    onClick: () => void;
+    linkState?: ModelLinkState;
 };
 
 function RowThumb({model, className, children}: {model: ModelSummary; className: string; children?: React.ReactNode}) {
@@ -59,9 +62,9 @@ function RacingInline({model}: {model: ModelSummary}) {
     );
 }
 
-export function ModelListRow({model, onClick}: ModelRowProps) {
+export function ModelListRow({model, linkState}: ModelRowProps) {
     return (
-        <button type="button" className="listRow" id={model.slug} onClick={onClick}>
+        <Link className="listRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
             <RowThumb model={model} className="listRowThumb">
                 {/* Below tablet the aside column is dropped to give the title room; the scale
                     moves onto the photo instead, as on the grid card. */}
@@ -93,13 +96,13 @@ export function ModelListRow({model, onClick}: ModelRowProps) {
                 </span>
                 <span className="rowScale">{model.scale}</span>
             </span>
-        </button>
+        </Link>
     );
 }
 
-export function ModelCompactRow({model, onClick}: ModelRowProps) {
+export function ModelCompactRow({model, linkState}: ModelRowProps) {
     return (
-        <button type="button" className="compactRow" id={model.slug} onClick={onClick}>
+        <Link className="compactRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
             <RowThumb model={model} className="compactThumb"/>
 
             <span className="compactMain">
@@ -116,7 +119,7 @@ export function ModelCompactRow({model, onClick}: ModelRowProps) {
             <span className="compactCell compactManufacturer">{model.manufacturer.name}</span>
             <span className="compactCell compactRacingCell"><RacingInline model={model}/></span>
             <span className="compactCategory"><CategoryLabel category={model.category.name}/></span>
-        </button>
+        </Link>
     );
 }
 

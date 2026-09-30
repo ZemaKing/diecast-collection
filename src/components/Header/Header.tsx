@@ -19,9 +19,11 @@ type Props = {
 // Only routes that actually resolve to a real page today — Manufacturers/Statistics/Login land
 // in Phases 22-24, and adding a nav link before then would violate "nav only links to pages that
 // exist" (ROADMAP Phase 12).
+// `section`: other paths that belong to the same nav item — a model page (Phase 19) is part of the
+// Collection, so it stays highlighted there (without claiming aria-current="page").
 const NAV_LINKS = [
-    {to: "/", label: "Collection", end: true},
-    {to: "/about", label: "About", end: false},
+    {to: "/", label: "Collection", end: true, section: "/models/"},
+    {to: "/about", label: "About", end: false, section: null},
 ];
 
 const SEARCH_DEBOUNCE_MS = 250;
@@ -50,6 +52,7 @@ export function Header({count}: Props) {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [raw, setRaw] = useState(() => getSearchQueryFromSearchParams(searchParams));
+    const inSection = (section: string | null) => !!section && location.pathname.startsWith(section);
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
@@ -112,8 +115,8 @@ export function Header({count}: Props) {
                 </Link>
 
                 <nav className="siteNav" aria-label="Primary">
-                    {NAV_LINKS.map(({to, label, end}) => (
-                        <NavLink key={to} to={to} end={end} className={navLinkClass}>
+                    {NAV_LINKS.map(({to, label, end, section}) => (
+                        <NavLink key={to} to={to} end={end} className={({isActive}) => navLinkClass({isActive: isActive || inSection(section)})}>
                             {label}
                         </NavLink>
                     ))}
@@ -161,8 +164,8 @@ export function Header({count}: Props) {
             {isMenuOpen && (
                 <div id={drawerId} className="mobileDrawer" role="dialog" aria-modal="true" aria-label="Menu">
                     <nav className="mobileNav" aria-label="Primary">
-                        {NAV_LINKS.map(({to, label, end}) => (
-                            <NavLink key={to} to={to} end={end} onClick={closeMenu} className={mobileNavLinkClass}>
+                        {NAV_LINKS.map(({to, label, end, section}) => (
+                            <NavLink key={to} to={to} end={end} onClick={closeMenu} className={({isActive}) => mobileNavLinkClass({isActive: isActive || inSection(section)})}>
                                 {label}
                             </NavLink>
                         ))}

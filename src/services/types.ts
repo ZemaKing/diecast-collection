@@ -25,6 +25,11 @@ export type ModelColor = {
     name: string;
 };
 
+export type Tag = {
+    slug: string;
+    name: string;
+};
+
 export type ModelImage = {
     id: string;
     position: number;
@@ -65,10 +70,12 @@ export type ModelSummary = {
 };
 
 // Everything the details page (Phase 19) and admin form (Phase 25) need beyond the summary:
-// description/key features (not exposed by model_summaries), publish state, and the full gallery.
+// description/key features/tags (not exposed by model_summaries), publish state, and the full
+// gallery.
 export type Model = Omit<ModelSummary, "image" | "imageCount"> & {
     description: string | null;
     keyFeatures: string[];
+    tags: Tag[];
     isPublished: boolean;
     images: ModelImage[];
 };

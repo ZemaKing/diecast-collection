@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {useSearchParams} from "react-router-dom";
+import {Navigate, useLocation, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import "./collection-page.css";
 
@@ -9,21 +9,18 @@ import {CollectionToolbar} from "../../components/CollectionToolbar/CollectionTo
 import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
 import {ModelCompactRow, ModelListRow, ModelRowSkeleton} from "../../components/ModelCard/ModelRow.tsx";
-import {DetailsModal} from "../../components/DetailsModal/DetailsModal";
 
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
+import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {useViewMode} from "../../hooks/useViewMode.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getModels} from "../../services/models.ts";
 import {filterModels, getFacetCounts, searchModels, sortModels} from "../../services/collection-query.ts";
-import {toLegacyModel} from "../../services/legacy-adapter.ts";
 import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
-import type {DiecastModel} from "../../types.ts";
-import {findModelById} from "../../utils/collection-filters.ts";
 import {describeResults} from "../../utils/collection-summary.ts";
-import {withModelParam, withoutModelParam} from "../../utils/url-params.ts";
+import {getLegacyModelRedirect, readFocusModel, type ModelLinkState} from "../../utils/model-link.ts";
 import type {ViewMode} from "../../utils/view-mode.ts";
 
 // A fixed key set (not an index) avoids remounting skeleton nodes on every render. 10 = two full
@@ -59,14 +56,13 @@ function findScrollAnchor(container: HTMLElement | null): ScrollAnchor | null {
 }
 
 export function CollectionPage() {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
+    const location = useLocation();
     const {filters, query, sort, toggleFilter, clearFilters, setSort} = useCollectionQuery();
     const {viewMode, setViewMode} = useViewMode();
 
     const [showScrollTop, setShowScrollTop] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const lastOpenedModelIdRef = useRef<string | null>(null);
     const resultsRef = useRef<HTMLDivElement>(null);
     const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
 
@@ -77,10 +73,9 @@ export function CollectionPage() {
     });
     const summaries = useMemo(() => carsQuery.data ?? [], [carsQuery.data]);
 
-    // Filter -> search -> sort, all on the Supabase domain shape (ModelSummary); toLegacyModel()
-    // only maps the final result for the still-legacy ModelCard/DetailsModal (Phase 16/19 replace
-    // those). Facets are computed pre-search/sort — they describe "what else is in this filtered
-    // set", not "what's currently visible after searching", so a search doesn't zero them out.
+    // Filter -> search -> sort, all on the Supabase domain shape (ModelSummary). Facets are
+    // computed pre-search/sort — they describe "what else is in this filtered set", not "what's
+    // currently visible after searching", so a search doesn't zero them out.
     const filteredSummaries = useMemo(() => filterModels(summaries, filters), [summaries, filters]);
     const searchedSummaries = useMemo(() => searchModels(filteredSummaries, query), [filteredSummaries, query]);
     const visibleSummaries = useMemo(() => sortModels(searchedSummaries, sort, query), [searchedSummaries, sort, query]);
@@ -89,25 +84,13 @@ export function CollectionPage() {
     const activeFilterCount = Object.values(filters).reduce((n, values) => n + values.length, 0);
     const results = describeResults({visible: visibleSummaries.length, total: stats.totalModels, activeFilterCount, query});
 
-    // DetailsModal still needs the legacy shape (Phase 19 replaces it); ModelCard now renders
-    // straight off ModelSummary (Phase 16) — no toLegacyModel() in the render path below.
-    const models = useMemo(() => summaries.map(toLegacyModel), [summaries]);
+    // Back (or refresh) lands where the reader left off; returning via a details page's
+    // breadcrumb brings that model's item into view instead (ROADMAP Phase 19).
+    useScrollRestoration({ready: carsQuery.isSuccess, focusId: readFocusModel(location.state)});
 
-    // ?model= looks up the full (unfiltered) list — a shared/deep link should open its model
-    // regardless of the current filters, matching the pre-Phase-13 behavior.
-    const getModelById = useCallback((id: string): DiecastModel | undefined => {
-        return findModelById(models, id);
-    }, [models]);
-
-    const modelId = searchParams.get("model");
-
-    const modelFromUrl = useMemo(() => {
-        if (!modelId) {
-            return null;
-        }
-
-        return getModelById(modelId) ?? null;
-    }, [modelId, getModelById]);
+    // Opening a model remembers the current filters/search/sort, so the details page's
+    // "Collection" breadcrumb can return to exactly this view.
+    const linkState = useMemo((): ModelLinkState => ({collectionSearch: location.search}), [location.search]);
 
     useEffect(() => {
         const onScroll = () => {
@@ -120,17 +103,6 @@ export function CollectionPage() {
             window.removeEventListener("scroll", onScroll);
         };
     }, []);
-
-    const openModal = useCallback((slug: string) => {
-        setSearchParams(withModelParam(searchParams, slug), {replace: false});
-    }, [searchParams, setSearchParams]);
-
-    const closeModal = useCallback(() => {
-        setIsModalOpen(false);
-        lastOpenedModelIdRef.current = null;
-
-        setSearchParams(withoutModelParam(searchParams), {replace: false});
-    }, [searchParams, setSearchParams]);
 
     const changeViewMode = useCallback((mode: ViewMode) => {
         if (mode === viewMode) return;
@@ -152,44 +124,12 @@ export function CollectionPage() {
         window.scrollTo({top: 0, behavior: "smooth"});
     };
 
-    useEffect(() => {
-        if (!modelId || !modelFromUrl) {
-            // Legacy scroll-then-open logic; removed in ROADMAP Phase 19.
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setIsModalOpen(false);
-            lastOpenedModelIdRef.current = null;
-            return;
-        }
-
-        if (lastOpenedModelIdRef.current === modelId) {
-            return;
-        }
-
-        const card = document.getElementById(String(modelFromUrl.id));
-
-        if (!card) {
-            setIsModalOpen(true);
-            lastOpenedModelIdRef.current = modelId;
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            card.scrollIntoView({behavior: "smooth", block: "center"});
-
-            const openTimeoutId = window.setTimeout(() => {
-                setIsModalOpen(true);
-                lastOpenedModelIdRef.current = modelId;
-            }, 450);
-
-            return () => {
-                window.clearTimeout(openTimeoutId);
-            };
-        }, 150);
-
-        return () => {
-            window.clearTimeout(timeoutId);
-        };
-    }, [modelId, modelFromUrl, visibleSummaries]);
+    // Pre-Phase-19 shared links (`/?model=<id>`, also reached via `/cars?model=`) opened a modal;
+    // the model now has its own page. After every hook, so hook order never changes.
+    const legacyRedirect = getLegacyModelRedirect(searchParams);
+    if (legacyRedirect) {
+        return <Navigate to={legacyRedirect.to} state={legacyRedirect.state} replace/>;
+    }
 
     return (
         <div className="layout">
@@ -253,19 +193,12 @@ export function CollectionPage() {
                     ) : (
                         <div ref={resultsRef} className={RESULTS_CLASS[viewMode]}>
                             {visibleSummaries.map((m) => {
-                                const onClick = () => openModal(m.slug);
-                                if (viewMode === "list") return <ModelListRow key={m.slug} model={m} onClick={onClick}/>;
-                                if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} onClick={onClick}/>;
-                                return <ModelCard key={m.slug} model={m} onClick={onClick}/>;
+                                if (viewMode === "list") return <ModelListRow key={m.slug} model={m} linkState={linkState}/>;
+                                if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} linkState={linkState}/>;
+                                return <ModelCard key={m.slug} model={m} linkState={linkState}/>;
                             })}
                         </div>
                     )}
-
-                    <DetailsModal
-                        model={modelFromUrl}
-                        isOpen={!!modelFromUrl && isModalOpen}
-                        onClose={closeModal}
-                    />
                 </main>
             </div>
 

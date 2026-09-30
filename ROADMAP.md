@@ -57,7 +57,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 16 | Model Card Redesign | ✅ Done | — |
 | 17 | Collection Hero & Grid | ✅ Done | Hero background image (optional — slot ready) |
 | 18 | View Modes | ✅ Done | — (Showcase deferred by owner) |
-| 19 | Model Details Page | ⬜ | Decide public "My Collection" fields |
+| 19 | Model Details Page | ✅ Done | Heart / "Add to Collection" meaning (open decision 7) |
 | 20 | Gallery, Lightbox & Quick View | ⬜ | — |
 | 21 | Supabase Storage Migration | ⬜ | Run image migration |
 | 22 | Manufacturer & Brand Browsing | ⬜ | Mockups (none exist) |
@@ -506,25 +506,27 @@ Approved view modes implemented and persisted; Showcase built or explicitly defe
 
 ---
 
-## Phase 19 — Model Details Page
+## Phase 19 — Model Details Page ✅
 
 ### Goal
 A collector-catalogue page at `/models/:slug`.
 
 ### Tasks
-- [ ] Layout per mockup: breadcrumb (`Collection › Brand › Model`; model-line level only if the owner wants it and data exists), header (brand logo, title, year · manufacturer · scale · category), six spec tiles, tabs (*Overview / Specifications / Gallery / My Collection / Notes*)
-- [ ] **Sections/tabs render only when they have data** (no fabricated description/tags/features)
-- [ ] Racing information shown only for racing models; "My Collection" shows only the public fields chosen in Phase 4
-- [ ] Back-to-collection preserves previous filters; unknown slug → 404
-- [ ] Legacy redirect: `/?model=<id>` (and `/cars?model=`) → `/models/<id>`; remove scroll-then-open timeout logic
-- [ ] Admin buttons (Edit/Delete/…) placeholders wired in Phase 24/25
+- [x] Layout per mockup: breadcrumb (`Collection › Brand › Model`; model-line level only if the owner wants it and data exists), header (brand logo, title, year · manufacturer · scale · category), six spec tiles, tabs (*Overview / Specifications / Gallery / My Collection / Notes*) *(`src/pages/model-details-page/`. Breadcrumb is `🏠 Collection › Brand › Model` — no model-line level (no data, docs/SCHEMA.md §8); "Brand" links to the collection filtered by that brand until the brand page exists (Phase 22). Photo left with the card's manufacturer/scale badges, header right: brand logo, `<h1>`, "year · manufacturer · scale · [category pill]", racing pills, gold rule, then the six tiles (Brand, Manufacturer, Category, Scale, Color(s), Year — 3×2, 2×3 on mobile). Brand/Manufacturer/Category tiles are links to the collection filtered by that value (they carry a › affordance). Tabs are the WAI-ARIA pattern: roving tabindex, ←/→/Home/End)*
+- [x] **Sections/tabs render only when they have data** (no fabricated description/tags/features) *(pure rules in `src/utils/model-details.ts` — `getAvailableTabs()`: **Overview** only with a description, key features or tags; **Specifications** always (it's the full fact sheet, so no page is ever empty); **Gallery (n)** only with more than one image (plain thumbnails for now, the viewer is Phase 20); **My Collection** only when a public collection field is set. With a single section there's no tab bar — just a "Specifications" heading. `Model.tags` added to the service (`model_tags` → `tags`, 0 rows today))*
+- [x] Racing information shown only for racing models; "My Collection" shows only the public fields chosen in Phase 4 *(racing pills (number/driver+flag) in the header and a "Racing" spec group — car number, driver, team, series, event — each only when set, audit D7. My Collection = Added / Condition / Location only (decision 5); dates render "12 Apr 2025" with fixed month names, not Intl — en-GB ICU gives "Sept")*
+- [x] Back-to-collection preserves previous filters; unknown slug → 404 *(opening a model passes the collection's query string in router location state (`src/utils/model-link.ts`, validated on read — history state is untrusted); the "Collection" crumb returns to exactly those filters/search/sort and brings the model's card into view + focus. Browser **Back** restores the exact scroll offset via the new `useScrollRestoration()` hook (BrowserRouter has no `<ScrollRestoration>`; positions are saved in sessionStorage per `location.key` when an entry is left, so a refresh restores too). Unknown slug → PostgREST `PGRST116` → `not_found` → the app's 404 page, with no retry)*
+- [x] Legacy redirect: `/?model=<id>` (and `/cars?model=`) → `/models/<id>`; remove scroll-then-open timeout logic *(`getLegacyModelRedirect()` — any other params on the old link become the way back. The modal state, `lastOpenedModelIdRef`, both timeouts and `withModelParam`/`withoutModelParam` are gone; cards/rows are now real `<Link>`s (open-in-new-tab works) instead of buttons)*
+- [x] Admin buttons (Edit/Delete/…) placeholders wired in Phase 24/25 *(a marked slot in the details header; nothing is rendered to the public before auth exists)*
 
 ### Verification
-- [ ] Deep link + refresh works; old shared links redirect; tab state survives refresh
-- [ ] A model with no extra data looks intentional, not empty
+- [x] Deep link + refresh works; old shared links redirect; tab state survives refresh *(live: `/?model=mazda-rx-7-fd-1993-deagostini-red&brand=mazda` → `/models/mazda-rx-7-fd-1993-deagostini-red` with the crumb pointing at `/?brand=mazda`; `/cars?model=…&q=gt` redirects too. `?tab=collection` survives refresh (it's a `replace`, so tabs don't add Back steps; the default tab writes no param), and so does the way back. Crumb → `/?brand=mazda`, 4 cards, the RX-7 card focused. Scrolled to 3000px, opened a card, Back → 3000px, the card at the same 243px viewport offset. `/models/not-a-real-model` → 404. No console errors on a clean load)*
+- [x] A model with no extra data looks intentional, not empty *(e.g. `aston-martin-db11-2016-altaya-gray`: photo, header, six tiles, and a "Specifications" section — no empty tabs, no "—" placeholders, no fake copy. Checked at 360 (`scrollWidth` = 360), 768 and 1280 in dark + light. 25 new unit tests (`model-details.test.ts`, `model-link.test.ts`) plus tag assertions in `models.test.ts`; the 4 `withModelParam` tests went with the helpers)*
 
 ### Definition of Done
-Details page replaces the modal deep-link path with parity of information.
+Details page replaces the modal deep-link path with parity of information. *(every field the modal showed — image, brand, manufacturer, category, year, colors, scale, driver, car number — is on the page)*
+
+**Deviations from the mockup (all from decisions already recorded, none invented here):** no heart / "Add to Collection" (open decision 7 — meaning still undecided); no "Collected" badge and no "Notes" tab (docs/SCHEMA.md: every model is owned, and notes are admin-private); no description blurb under the title (there's one `description` field — it lives in Overview, not twice); no thumbnail strip, prev/next, `1 / n` or fullscreen button on the photo (Phase 20); no "…" / Edit (Phase 24/25). `DetailsModal` is now unreferenced but left in place — Phase 20 deletes it with `toLegacyModel()`/`findModelById()`.
 
 ---
 
@@ -892,7 +894,7 @@ Owner go/no-go recorded; site stable on Supabase.
 | 4 | ~~Confirm trucks are excluded~~ → excluded; schema has no truck data (Phase 4) | Ph 4 / 11 |
 | 5 | ~~Public "My Collection" fields~~ → condition, added, location **public**; notes private; **no collected/status field** (all owned) (Phase 4) | Ph 4 |
 | 6 | Description editor: rich text (WYSIWYG) vs plain/markdown-lite | Ph 26 |
-| 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? Breadcrumb "model line" level — wanted? | Ph 19 / 20 |
+| 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? *(Phase 19 ships without them.)* Breadcrumb "model line" level — wanted? *(no data; crumb is `Collection › Brand › Model`)* | Ph 20 |
 | 8 | ~~Corvette / scale~~ → **merge Corvette into Chevrolet**; **all 227 are 1:43** (Phase 4) | Ph 4 / 7 |
 | 9 | ~~npm or pnpm~~ → **npm** (decided in Phase 2) | Ph 2 |
 | 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? *Project is on the free plan (second account); decide before launch* | Ph 5 / 37 |

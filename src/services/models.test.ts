@@ -116,11 +116,18 @@ describe("getModelBySlug", () => {
         width: null, height: null, alt: null, created_at: "", updated_at: "",
     }];
 
-    it("fetches the model, its colors, and its images — and combines them", async () => {
+    const tagRows = [
+        {tag: {id: "t-2", slug: "wrc", name: "WRC", created_at: "", updated_at: ""}},
+        {tag: {id: "t-1", slug: "italian", name: "Italian", created_at: "", updated_at: ""}},
+        {tag: null},
+    ];
+
+    it("fetches the model, its colors, images and tags — and combines them", async () => {
         from.mockImplementation((table: string) => {
             if (table === "models") return chainable({data: modelRow, error: null});
             if (table === "model_colors") return chainable({data: colorRows, error: null});
             if (table === "model_images") return chainable({data: imageRows, error: null});
+            if (table === "model_tags") return chainable({data: tagRows, error: null});
             throw new Error(`unexpected table ${table}`);
         });
 
@@ -132,6 +139,8 @@ describe("getModelBySlug", () => {
         expect(model.name).toBe("Abarth 124 Rally RGT");
         expect(model.colors).toEqual([{slug: "green", name: "Green"}]);
         expect(model.images).toHaveLength(1);
+        expect(from).toHaveBeenCalledWith("model_tags");
+        expect(model.tags).toEqual([{slug: "italian", name: "Italian"}, {slug: "wrc", name: "WRC"}]);
     });
 
     it("surfaces a not-found error for an unknown slug (.single() with 0 rows)", async () => {

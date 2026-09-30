@@ -1,10 +1,11 @@
-/* List + Compact collection views (ROADMAP Phase 18). Both rows are one <button> each, like the
+/* List + Compact collection views (ROADMAP Phase 18). Both rows are one link each, like the
    grid card — so the same resets, hover and explicit focus-ring override apply (see ModelCard.css
    for why the focus rule must be explicit). */
 
 .listRow,
 .compactRow {
     appearance: none;
+    text-decoration: none;
     width: 100%;
     font: inherit;
     text-align: left;
@@ -182,7 +183,7 @@
 
 /* Compact ------------------------------------------------------------------------------------
    Dense, table-like rows in one bordered block. Every row uses the same column template, so the
-   cells line up into columns without being a real <table> (each row is a single button). */
+   cells line up into columns without being a real <table> (each row is a single link). */
 
 .modelCompactList {
     display: flex;

@@ -6,8 +6,6 @@ import {
     getCollectionFiltersFromSearchParams,
     getSearchQueryFromSearchParams,
     getSortFromSearchParams,
-    withModelParam,
-    withoutModelParam,
     withSearchQuery,
     withSort,
 } from "./url-params.ts";
@@ -134,27 +132,5 @@ describe("sort param", () => {
         const input = params("sort=brand");
         withSort(input, "year-asc");
         expect(input.toString()).toBe("sort=brand");
-    });
-});
-
-describe("model param", () => {
-    it("adds ?model= while keeping filters", () => {
-        const next = withModelParam(params("brand=ford"), "ford-escort");
-        expect(next.toString()).toBe("brand=ford&model=ford-escort");
-    });
-
-    it("replaces an existing model id", () => {
-        expect(withModelParam(params("model=a"), "b").getAll("model")).toEqual(["b"]);
-    });
-
-    it("removes ?model= while keeping filters", () => {
-        expect(withoutModelParam(params("brand=ford&model=x&color=red")).toString()).toBe("brand=ford&color=red");
-    });
-
-    it("does not mutate its input", () => {
-        const input = params("model=x");
-        withoutModelParam(input);
-        withModelParam(input, "y");
-        expect(input.toString()).toBe("model=x");
     });
 });

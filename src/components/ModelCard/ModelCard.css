@@ -1,7 +1,8 @@
 .card {
-    /* Reset <button> defaults — the whole card is one focusable/clickable control now
-       (ROADMAP Phase 16: "fixes the non-focusable card"), not just the thumbnail image. */
+    /* The whole card is one focusable link to the details page (ROADMAP Phase 16/19), not just
+       the thumbnail image. */
     appearance: none;
+    text-decoration: none;
     display: block;
     width: 100%;
     background: var(--color-surface);

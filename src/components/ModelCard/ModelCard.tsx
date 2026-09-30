@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {Link} from "react-router-dom";
 
 import {ColorCircle} from "../ColorCircle/ColorCircle";
 import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
@@ -6,15 +7,18 @@ import {LogoOrText} from "./LogoOrText.tsx";
 
 import type {ModelSummary} from "../../services/types.ts";
 import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
+import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
 
 type ModelCardProps = {
     model: ModelSummary;
-    onClick: () => void;
+    linkState?: ModelLinkState;
 };
 
-export function ModelCard({model, onClick}: ModelCardProps) {
+// The whole card is one link to the model's details page (ROADMAP Phase 19; a <button> that
+// opened a modal before). `id={slug}` lets the collection bring it back into view on return.
+export function ModelCard({model, linkState}: ModelCardProps) {
     const [imageBroken, setImageBroken] = useState(false);
 
     const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
@@ -22,7 +26,7 @@ export function ModelCard({model, onClick}: ModelCardProps) {
     const hasDriver = !!model.driver;
 
     return (
-        <button type="button" className="card" id={model.slug} onClick={onClick}>
+        <Link className="card" id={model.slug} to={modelPath(model.slug)} state={linkState}>
             <div className="thumb">
                 {imageUrl && !imageBroken ? (
                     <img
@@ -75,6 +79,6 @@ export function ModelCard({model, onClick}: ModelCardProps) {
                 <span aria-hidden="true">•</span>
                 <CategoryLabel category={model.category.name}/>
             </div>
-        </button>
+        </Link>
     );
 }
