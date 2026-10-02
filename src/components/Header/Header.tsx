@@ -56,12 +56,27 @@ export function Header({count}: Props) {
     const location = useLocation();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [raw, setRaw] = useState(() => getSearchQueryFromSearchParams(searchParams));
+    const urlQuery = getSearchQueryFromSearchParams(searchParams);
+    const [raw, setRaw] = useState(urlQuery);
+    // What this box last wrote to ?q= — so an outside change (Back/Forward, the collection's
+    // "Clear search", Phase 29) can be told apart from the box's own debounced write, which the
+    // typing may already have moved past. Adjusted during render, React's pattern for "state that
+    // follows a changing input" — no sync effect.
+    const [writtenQuery, setWrittenQuery] = useState(urlQuery);
+    const [seenQuery, setSeenQuery] = useState(urlQuery);
+    if (urlQuery !== seenQuery) {
+        setSeenQuery(urlQuery);
+        if (urlQuery !== writtenQuery) {
+            setWrittenQuery(urlQuery);
+            setRaw(urlQuery);
+        }
+    }
     const inSection = (section: string | null) => !!section && location.pathname.startsWith(section);
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
             if (location.pathname === "/") {
+                setWrittenQuery(raw.trim() ? raw : "");
                 setSearchParams((current) => withSearchQuery(current, raw), {replace: true});
             } else if (raw.trim()) {
                 navigate(`/?q=${encodeURIComponent(raw.trim())}`);

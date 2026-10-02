@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {ImagePlaceholder, Skeleton} from "../States/States.tsx";
 
 type GalleryImageProps = {
     src: string | null;
@@ -15,15 +16,15 @@ export function GalleryImage({src, alt, width, height, className = "galleryImage
 
     if (!src || status === "error") {
         return (
-            <div className="galleryFallback" role="img" aria-label={alt}>
-                {src ? "Image unavailable" : "No photo yet"}
+            <div className="galleryFallback" role="img" aria-label={`${alt} — ${src ? "image unavailable" : "no photo yet"}`}>
+                <ImagePlaceholder reason={src ? "broken" : "missing"}/>
             </div>
         );
     }
 
     return (
         <>
-            {status === "loading" && <div className="galleryImageSkeleton thumbSkeleton" aria-hidden="true"/>}
+            {status === "loading" && <Skeleton as="div" className="galleryImageSkeleton"/>}
             <img
                 className={`${className}${status === "loaded" ? " galleryImageLoaded" : ""}`}
                 src={src}

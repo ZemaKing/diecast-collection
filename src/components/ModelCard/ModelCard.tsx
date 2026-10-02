@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {ColorCircle} from "../ColorCircle/ColorCircle";
 import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
 import {LogoOrText} from "./LogoOrText.tsx";
+import {ImagePlaceholder} from "../States/States.tsx";
 
 import {Eye} from "../../icons/Eye.tsx";
 import type {ModelSummary} from "../../services/types.ts";
@@ -43,7 +44,7 @@ export function ModelCard({model, linkState, onQuickView}: ModelCardProps) {
                         onError={() => setImageBroken(true)}
                     />
                 ) : (
-                    <div className="thumbFallback" aria-hidden="true">{model.name}</div>
+                    <ImagePlaceholder reason={imageUrl ? "broken" : "missing"}/>
                 )}
 
                 <div className="thumbTopRow">

@@ -67,6 +67,15 @@ Sampled from the mockups: `#F5C33B` for text ("227", nav underline, Clear all) a
 ### Charts (Phase 23)
 Every statistics chart compares magnitudes, so all bars share **one** hue, `--chart-bar`: the gold in dark (11:1 on the card), and `#A87A0A` in light, since the gold fill is only 1.6:1 on white and a chart mark needs ≥ 3:1 (3.85:1 on white, 3.28:1 on the sunken well). Identity comes from text labels (plus a real swatch/logo), never from bar color. The category colors are **not** a chart palette: run through the dataviz validator they fail colorblind separation (Premium ↔ Supercar ΔE 1.2 for protanopia) and the normal-vision floor (Racing ↔ Rally ΔE 11) — fine for the labelled pills and text they were made for, not for telling bars apart.
 
+### States: loading, empty, error (Phase 29)
+One vocabulary, `src/components/States/` — never ad-hoc markup:
+- **`<Skeleton>`** — the only shimmer (`.skeleton`, keyframes `skeletonShimmer`, off under reduced motion). The caller's class gives it the box of what replaces it (`thumb`, `statTile`, …) so nothing reflows when data lands; `variant="line"` + `skeletonBarTitle`/`skeletonBarMeta` for text lines. Always `aria-hidden`; the loading region says "Loading…" in words.
+- **`<EmptyState title icon actions compact>`** — dashed box, icon, title, explanation, a button per way out (`stateButton`, `stateButtonPrimary`). The collection's copy is `describeEmptyResults()` (no models / no search results / no filter results / both).
+- **`<ErrorState error onRetry retrying title compact>`** — solid box, `role="alert"`. Copy comes from `describeError()` (`src/utils/error-display.ts`) by cause: **offline** (`navigator.onLine` false), **unreachable** (network failure while online — also how a paused project can look), **paused** (HTTP 540 "Project paused"), **unavailable** (other 5xx), **config**, else the `AppError` message. "Try again" only when retrying can help.
+- **`<ImagePlaceholder reason="missing"|"broken">`** — the legacy `COMING_SOON` image as a local, themed line drawing ("Photo coming soon" / "Image unavailable"; icon only at `size="small"`). Used by cards, list/compact rows, the gallery and lightbox.
+- **`<OfflineBanner>`** (app-wide toast) and **`<PageLoading>`** (lazy-page Suspense fallback). A page that throws while rendering hits the route error boundary (`RouteErrorPage`, the data router's `errorElement`).
+- Queries use `networkMode: "always"` so offline fails fast into an `ErrorState` instead of an endless skeleton, and refetch by themselves on reconnect.
+
 ### Light theme
 No light mockup exists. The light values are **derived** (same hues, darker text variants) so the existing toggle keeps working. This is flagged for owner review; see ROADMAP open decision #3.
 

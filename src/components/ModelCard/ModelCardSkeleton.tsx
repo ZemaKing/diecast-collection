@@ -1,15 +1,16 @@
 import "./ModelCard.css";
+import {Skeleton} from "../States/States.tsx";
 
 // Same shape/dimensions as ModelCard, so the grid doesn't jump when real cards replace these.
 export function ModelCardSkeleton() {
     return (
         <div className="card cardSkeleton" aria-hidden="true">
-            <div className="thumb thumbSkeleton"/>
+            <Skeleton as="div" className="thumb"/>
             <div className="cardTitle">
-                <span className="skeletonBar skeletonBarTitle"/>
+                <Skeleton variant="line" className="skeletonBarTitle"/>
             </div>
             <div className="cardMeta">
-                <span className="skeletonBar skeletonBarMeta"/>
+                <Skeleton variant="line" className="skeletonBarMeta"/>
             </div>
         </div>
     );

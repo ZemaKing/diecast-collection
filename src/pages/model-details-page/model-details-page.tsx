@@ -37,10 +37,11 @@ import {collectionPath, readAdminNotice, readCollectionSearch, type ModelLinkSta
 
 // The page reuses the card's photo badges (manufacturer/scale) and skeleton shimmer — imported
 // explicitly, since a direct load of /models/:slug never renders a ModelCard.
-// Likewise the collection page's container/error styles (`.layout`, `.content`, `.contentError`).
+// Likewise the collection page's container styles (`.layout`, `.content`).
 import "../../components/ModelCard/ModelCard.css";
 import "../collection-page/collection-page.css";
 import "./model-details-page.css";
+import {ErrorState, Skeleton} from "../../components/States/States.tsx";
 
 // The model details page (ROADMAP Phase 19), `/models/:slug` — replaces the `?model=` modal
 // deep link. Every section below renders only when its data exists (docs/SCHEMA.md principle 4:
@@ -97,14 +98,7 @@ export function ModelDetailsPage() {
                     {modelQuery.isPending ? (
                         <DetailsSkeleton/>
                     ) : modelQuery.isError ? (
-                        <div className="contentError">
-                            <p>{modelQuery.error.message}</p>
-                            {modelQuery.error.retryable && (
-                                <button type="button" className="retryButton" onClick={() => modelQuery.refetch()}>
-                                    Try again
-                                </button>
-                            )}
-                        </div>
+                        <ErrorState error={modelQuery.error} onRetry={() => modelQuery.refetch()} retrying={modelQuery.isFetching}/>
                     ) : (
                         <ModelDetails model={modelQuery.data}/>
                     )}
@@ -409,10 +403,10 @@ function CollectionCard({facts}: {facts: SpecRow[]}) {
 function DetailsSkeleton() {
     return (
         <div className="detailsTop detailsSkeleton" aria-busy="true" aria-label="Loading model">
-            <div className="detailsMedia"><div className="detailsMediaFrame thumbSkeleton"/></div>
+            <div className="detailsMedia"><Skeleton as="div" className="detailsMediaFrame"/></div>
             <div className="detailsInfo">
-                <span className="skeletonBar skeletonBarTitle"/>
-                <span className="skeletonBar skeletonBarMeta"/>
+                <Skeleton variant="line" className="skeletonBarTitle"/>
+                <Skeleton variant="line" className="skeletonBarMeta"/>
                 <SpecTilesSkeleton/>
             </div>
         </div>

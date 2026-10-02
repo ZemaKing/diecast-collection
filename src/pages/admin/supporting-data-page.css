@@ -204,3 +204,15 @@
         max-width: none;
     }
 }
+
+/* Loading rows (<Skeleton>, Phase 29) — roughly a table row each. */
+.dataLoading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.dataLoadingRow {
+    height: 44px;
+    border-radius: var(--radius-md);
+}

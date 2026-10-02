@@ -67,7 +67,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 26 | Model Form — Rich Sections | ✅ Done | — (markdown-lite chosen; migration `20260930180000` applied) |
 | 27 | Image Management CRUD | ✅ Done | — (migration `20261001090000` applied; owner's form upload checked 2026-10-02) |
 | 28 | Supporting Data Management | ✅ Done | — (migration `20261002090000` applied; review the address-stays-on-rename choice) |
-| 29 | Loading / Empty / Error States | ⬜ | — |
+| 29 | Loading / Empty / Error States | ✅ Done | Review the state copy ("taking a break", "Photo coming soon" …) |
 | 30 | Desktop Fidelity Pass | ⬜ | — |
 | 31 | Tablet Responsive Pass | ⬜ | **Tablet mockups** |
 | 32 | Mobile Responsive Pass | ⬜ | **Mobile mockups** |
@@ -789,22 +789,30 @@ The "New Car" workflow needs zero developer steps. *(done 2026-10-02 — a new b
 
 ---
 
-## Phase 29 — Loading / Empty / Error States
+## Phase 29 — Loading / Empty / Error States ✅
 
 ### Goal
 One consistent state vocabulary.
 
 ### Tasks
-- [ ] `Skeleton`, `EmptyState`, `ErrorState` (with retry) components from tokens
-- [ ] Cover: collection loading, details loading, no models, no search results, no filter results, missing image (use the `COMING_SOON` placeholder idea as a **local** asset), Supabase failure, offline/network failure, paused project message
-- [ ] Error boundary at route level
+- [x] `Skeleton`, `EmptyState`, `ErrorState` (with retry) components from tokens *(`src/components/States/`: **`<Skeleton>`** is now the app's only shimmer — the four copies of the gradient/keyframes (card, hero count, statistics, gallery) are gone, every skeleton (cards, rows, browse tiles, details, statistics, hero count, gallery, form photo tiles) uses it with its own size class; **`<EmptyState>`** (icon, title, explanation, a button per way out; `compact` for cards/tables); **`<ErrorState>`** (`role="alert"`, cause-specific copy from `describeError()`, "Try again" → "Trying again…" while the refetch runs, only when retrying can help). All tokens; documented in `docs/DESIGN-TOKENS.md` § States. Every `.contentError`/`.contentEmpty`/`.retryButton` and the admin pages' inline "Loading…/error + Try again" text replaced — collection, details, browse index + detail, statistics, model edit page, admin drafts card, supporting-data table (now skeleton rows))*
+- [x] Cover: collection loading, details loading, no models, no search results, no filter results, missing image (use the `COMING_SOON` placeholder idea as a **local** asset), Supabase failure, offline/network failure, paused project message *(**Empty**: `describeEmptyResults()` (`collection-summary.ts`) — no models yet / `No models match "q"` (+ what search looks at) / no match for these N filters / search **and** filters, with **Clear search** and/or **Clear filters**; the header's search box now follows an outside `?q=` change (Back, Clear search) without fighting the typing. **Missing image**: `<ImagePlaceholder>`, a themed line-drawn coupe + "Photo coming soon" (no photo) / "Image unavailable" (failed load), icon-only in list/compact rows — on cards, rows, the details gallery, Quick View and the lightbox (replaces the model-name-as-text fallback). **Errors** by `describeError()`: *You're offline* (browser offline), *Can't reach the collection* (network failure while online — also mentions a possibly paused database), *The collection is taking a break* (HTTP 540 "Project paused"), *temporarily unavailable* (other 5xx), *isn't set up correctly* (config, no retry). For that, `unwrap()` now passes the response's HTTP status to `toAppError()` — before, a code-less 503/540 came out as "Something went wrong". **Offline**: queries and mutations run with `networkMode: "always"` — TanStack's default *paused* an offline query, leaving the skeleton up forever (and a Save on "Saving…") — and `refetchOnReconnect: true` explicitly, since TanStack turns it off under "always" (found in the browser; pinned by a test). An app-wide **offline banner** says cached pages still work. Lazy admin pages show **`<PageLoading>`** (header + skeleton) instead of a blank `Suspense fallback={null}`)*
+- [x] Error boundary at route level *(`RouteErrorPage` is the data router's `errorElement` (`main.tsx`): self-contained (no header or queries — they might be what failed), Reload / Back to the collection, the stack in dev only; a lazy chunk missing after a deploy says "This page needs a reload". Leaving the route (Back, a link) clears it)*
 
 ### Verification
-- [ ] Each state reproduced (throttle/offline/mock failures) and screenshotted
-- [ ] No blank screens anywhere
+- [x] Each state reproduced (throttle/offline/mock failures) and screenshotted *(in the browser pane, with `fetch` to Supabase replaced in the page and `navigator.onLine` overridden: loading skeletons (collection, details); no search results → Clear search (URL and header box both cleared); 3 filters with no result; search + filter (both buttons); details page **offline** → "You're offline" + banner → `online` event while the server answers **540** → refetched by itself into "taking a break" → network restored + Try again → the model loads; collection list reset against a **503** → "temporarily unavailable" (hero/toolbar stay); a card and a list row with a broken photo → "Image unavailable"; the new-model form's preview → "Photo coming soon"; a temporary throw in the About page → the route error page, and Back → the collection renders again (throw removed afterwards). 360 px dark: no horizontal overflow. 24 new unit tests (`error-display`, `describeEmptyResults`, `unwrap` status, the query client's offline defaults))*
+- [x] No blank screens anywhere *(the three remaining blanks were the lazy pages' `null` fallback, an offline query (endless skeleton) and an uncaught render error — all three covered above)*
 
 ### Definition of Done
-All listed states implemented and reachable.
+All listed states implemented and reachable. *(done 2026-10-02)*
+
+**Notes / deviations:**
+- **Paused project detection** relies on Supabase answering 540. If a paused project's answer lacks CORS headers, the browser only sees a network failure — that's why the "Can't reach the collection" copy mentions a paused database too. Not reproducible without actually pausing the project.
+- **The model form's own alerts** (save errors, "Some lists couldn't load") stay inline form alerts — they sit next to the form state they're about, which an `ErrorState` box would replace.
+- `AdminRoute`'s "Checking access…" line and the edit page's "Loading model…" are kept as text (brief, not blank).
+- The header's "N models" pill says "0 models" while the list failed to load — pre-existing, left for the Phase 30 pass.
+- `scripts/images/batch.test.ts` ("redoes a source…") sometimes times out at Vitest's 5 s under load — CPU-bound `sharp` work, pre-existing and unrelated (fails the same with this phase stashed); worth a longer timeout.
+- Bundle: visitors 655.8 → 663.9 kB (+8 kB: state components, error page, placeholder art).
 
 ---
 

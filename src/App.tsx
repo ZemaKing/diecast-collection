@@ -1,6 +1,8 @@
 import {lazy, Suspense} from "react";
 import {Navigate, Route, Routes, useLocation, useParams} from "react-router-dom";
 import {AdminRoute} from "./components/AdminRoute/AdminRoute";
+import {PageLoading} from "./components/States/PageLoading.tsx";
+import {OfflineBanner} from "./components/States/States.tsx";
 import {useResetQueriesOnUserChange} from "./hooks/useSession";
 import {AboutPage} from "./pages/about-page/about-page";
 import {AdminHomePage} from "./pages/admin/admin-home-page";
@@ -42,34 +44,37 @@ export default function App() {
     useResetQueriesOnUserChange();
 
     return (
-        <Routes>
-            <Route path="/" element={<CollectionPage/>}/>
-            <Route path="/models/:slug" element={<ModelDetailsPage/>}/>
-            {/* Manufacturer & brand browsing (Phase 22) — same components, keyed per kind so
-                switching between the two never reuses an instance. */}
-            <Route path="/manufacturers" element={<BrowseIndexPage key="manufacturers" kind="manufacturers"/>}/>
-            <Route path="/manufacturers/:slug" element={<BrowseDetailRoute kind="manufacturers"/>}/>
-            <Route path="/brands" element={<BrowseIndexPage key="brands" kind="brands"/>}/>
-            <Route path="/brands/:slug" element={<BrowseDetailRoute kind="brands"/>}/>
-            <Route path="/statistics" element={<StatisticsPage/>}/>
-            <Route path="/about" element={<AboutPage/>}/>
-            {/* Owner sign-in and the guarded admin area (Phase 24). Public pages never need auth. */}
-            <Route path="/login" element={<LoginPage/>}/>
-            <Route path="/admin" element={<AdminRoute/>}>
-                <Route index element={<AdminHomePage/>}/>
-                {/* The model form (Phase 25). */}
-                <Route path="models/new" element={<Suspense fallback={null}><NewModelPage/></Suspense>}/>
-                <Route path="models/:slug/edit" element={<Suspense fallback={null}><EditModelPage/></Suspense>}/>
-                {/* Brands, manufacturers, drivers, tags, colors, categories (Phase 28). */}
-                <Route path="data" element={<Suspense fallback={null}><SupportingDataPage/></Suspense>}/>
+        <>
+            <Routes>
+                <Route path="/" element={<CollectionPage/>}/>
+                <Route path="/models/:slug" element={<ModelDetailsPage/>}/>
+                {/* Manufacturer & brand browsing (Phase 22) — same components, keyed per kind so
+                    switching between the two never reuses an instance. */}
+                <Route path="/manufacturers" element={<BrowseIndexPage key="manufacturers" kind="manufacturers"/>}/>
+                <Route path="/manufacturers/:slug" element={<BrowseDetailRoute kind="manufacturers"/>}/>
+                <Route path="/brands" element={<BrowseIndexPage key="brands" kind="brands"/>}/>
+                <Route path="/brands/:slug" element={<BrowseDetailRoute kind="brands"/>}/>
+                <Route path="/statistics" element={<StatisticsPage/>}/>
+                <Route path="/about" element={<AboutPage/>}/>
+                {/* Owner sign-in and the guarded admin area (Phase 24). Public pages never need auth. */}
+                <Route path="/login" element={<LoginPage/>}/>
+                <Route path="/admin" element={<AdminRoute/>}>
+                    <Route index element={<AdminHomePage/>}/>
+                    {/* The model form (Phase 25). */}
+                    <Route path="models/new" element={<Suspense fallback={<PageLoading/>}><NewModelPage/></Suspense>}/>
+                    <Route path="models/:slug/edit" element={<Suspense fallback={<PageLoading/>}><EditModelPage/></Suspense>}/>
+                    {/* Brands, manufacturers, drivers, tags, colors, categories (Phase 28). */}
+                    <Route path="data" element={<Suspense fallback={<PageLoading/>}><SupportingDataPage/></Suspense>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                </Route>
+                <Route path="/cars" element={<RedirectToCollection/>}/>
+                <Route path="/trucks" element={<RedirectToCollection/>}/>
+                {TokensPage && (
+                    <Route path="/dev/tokens" element={<Suspense fallback={<PageLoading/>}><TokensPage/></Suspense>}/>
+                )}
                 <Route path="*" element={<NotFoundPage/>}/>
-            </Route>
-            <Route path="/cars" element={<RedirectToCollection/>}/>
-            <Route path="/trucks" element={<RedirectToCollection/>}/>
-            {TokensPage && (
-                <Route path="/dev/tokens" element={<Suspense fallback={null}><TokensPage/></Suspense>}/>
-            )}
-            <Route path="*" element={<NotFoundPage/>}/>
-        </Routes>
+            </Routes>
+            <OfflineBanner/>
+        </>
     );
 }

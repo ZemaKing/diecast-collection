@@ -29,6 +29,7 @@ import {slugify} from "../../utils/slug.ts";
 import "../../components/PageIntro/PageIntro.css";
 import "../collection-page/collection-page.css";
 import "./browse-page.css";
+import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
 
 const SKELETON_KEYS = Array.from({length: 10}, (_, i) => `skeleton-${i}`);
 
@@ -90,19 +91,14 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
 
                 <main className="main">
                     {modelsQuery.isError ? (
-                        <div className="contentError">
-                            <p>{modelsQuery.error.message}</p>
-                            <button type="button" className="retryButton" onClick={() => modelsQuery.refetch()}>
-                                Try again
-                            </button>
-                        </div>
+                        <ErrorState error={modelsQuery.error} onRetry={() => modelsQuery.refetch()} retrying={modelsQuery.isFetching}/>
                     ) : !entry ? (
                         <>
                             <div className="browseProfile" aria-hidden="true">
-                                <div className="browseLogo browseLogo-profile thumbSkeleton"/>
+                                <Skeleton as="div" className="browseLogo browseLogo-profile"/>
                                 <div className="browseProfileText">
-                                    <span className="skeletonBar skeletonBarTitle"/>
-                                    <span className="skeletonBar skeletonBarMeta"/>
+                                    <Skeleton variant="line" className="skeletonBarTitle"/>
+                                    <Skeleton variant="line" className="skeletonBarMeta"/>
                                 </div>
                             </div>
                             <div className="modelGrid">
@@ -164,7 +160,11 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
                             </div>
 
                             {visible.length === 0 ? (
-                                <div className="contentEmpty">No {entry.name} models in the selected categories.</div>
+                                <EmptyState
+                                    title={`No ${entry.name} models in the selected categories`}
+                                    icon="filter"
+                                    actions={<button type="button" className="stateButton stateButtonPrimary" onClick={clearFilters}>Show all categories</button>}
+                                />
                             ) : (
                                 <div className="modelGrid">
                                     {visible.map((m) => (

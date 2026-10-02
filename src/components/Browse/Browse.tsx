@@ -12,6 +12,7 @@ import {pluralizeModels} from "../../utils/collection-summary.ts";
 
 import "../ModelCard/ModelCard.css";
 import "./Browse.css";
+import {Skeleton} from "../States/States.tsx";
 
 // Shared building blocks of the manufacturer and brand pages (ROADMAP Phase 22) — the same
 // pattern for both, fed by getBrowseEntries()/getBrowseEntry().
@@ -72,10 +73,10 @@ export function BrowseTile({kind, entry}: {kind: BrowseKind; entry: BrowseEntry}
 export function BrowseTileSkeleton() {
     return (
         <div className="browseTile browseTileSkeleton" aria-hidden="true">
-            <div className="browseLogo browseLogo-tile thumbSkeleton"/>
+            <Skeleton as="div" className="browseLogo browseLogo-tile"/>
             <div className="browseTileBody">
-                <span className="skeletonBar skeletonBarTitle"/>
-                <span className="skeletonBar skeletonBarMeta"/>
+                <Skeleton variant="line" className="skeletonBarTitle"/>
+                <Skeleton variant="line" className="skeletonBarMeta"/>
             </div>
         </div>
     );

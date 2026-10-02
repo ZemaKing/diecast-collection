@@ -23,6 +23,7 @@ import {logoSrc} from "../../utils/model-display.ts";
 
 import "../collection-page/collection-page.css";
 import "./statistics-page.css";
+import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
 
 // How many brands/manufacturers the ranked lists show before "See all".
 const TOP_N = 10;
@@ -66,14 +67,11 @@ export function StatisticsPage() {
                     {modelsQuery.isPending ? (
                         <StatisticsSkeleton/>
                     ) : modelsQuery.isError ? (
-                        <div className="contentError">
-                            <p>{modelsQuery.error.message}</p>
-                            <button type="button" className="retryButton" onClick={() => modelsQuery.refetch()}>
-                                Try again
-                            </button>
-                        </div>
+                        <ErrorState error={modelsQuery.error} onRetry={() => modelsQuery.refetch()} retrying={modelsQuery.isFetching}/>
                     ) : total === 0 ? (
-                        <div className="contentEmpty">No models in the collection yet.</div>
+                        <EmptyState title="No models yet">
+                            <p>The numbers appear here once the collection has its first model.</p>
+                        </EmptyState>
                     ) : (
                         <>
                             <div className="statsKpis">
@@ -219,13 +217,13 @@ function StatisticsSkeleton() {
     return (
         <div aria-hidden="true">
             <div className="statsKpis">
-                {["a", "b", "c", "d"].map((key) => <div key={key} className="statTile statsSkeleton statsSkeletonTile"/>)}
+                {["a", "b", "c", "d"].map((key) => <Skeleton as="div" key={key} className="statTile statsSkeletonTile"/>)}
             </div>
             <div className="statsHighlights">
-                {["a", "b", "c"].map((key) => <div key={key} className="statsHighlight statsSkeleton statsSkeletonHighlight"/>)}
+                {["a", "b", "c"].map((key) => <Skeleton as="div" key={key} className="statsHighlight statsSkeletonHighlight"/>)}
             </div>
             <div className="statsCharts">
-                <div className="chartCard statsChartWide statsSkeleton statsSkeletonChart"/>
+                <Skeleton as="div" className="chartCard statsChartWide statsSkeletonChart"/>
             </div>
         </div>
     );

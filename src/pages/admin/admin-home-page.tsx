@@ -3,6 +3,7 @@ import {useQuery} from "@tanstack/react-query";
 
 import {Header} from "../../components/Header/Header";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
+import {ErrorState, Skeleton} from "../../components/States/States.tsx";
 
 import {useModelCount} from "../../hooks/useModelCount.ts";
 import {useSession, useSignOut} from "../../hooks/useSession.ts";
@@ -72,12 +73,9 @@ export function AdminHomePage() {
                         <section className="adminCard" aria-labelledby="admin-drafts">
                             <h2 id="admin-drafts" className="adminCardTitle">Drafts</h2>
                             {draftsQuery.isPending ? (
-                                <p className="adminCardBody">Loading…</p>
+                                <Skeleton className="adminCardValueSkeleton"/>
                             ) : draftsQuery.isError ? (
-                                <p className="adminCardBody">
-                                    {draftsQuery.error.message}{" "}
-                                    <button type="button" className="adminLinkButton" onClick={() => draftsQuery.refetch()}>Try again</button>
-                                </p>
+                                <ErrorState compact error={draftsQuery.error} title="Couldn't load drafts" onRetry={() => draftsQuery.refetch()} retrying={draftsQuery.isFetching}/>
                             ) : draftsQuery.data.length === 0 ? (
                                 <>
                                     <p className="adminCardValue">0</p>

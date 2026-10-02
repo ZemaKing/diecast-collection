@@ -3,6 +3,7 @@ import {useState} from "react";
 import {heroSubtitle} from "../../utils/collection-summary.ts";
 
 import "./CollectionHero.css";
+import {Skeleton} from "../States/States.tsx";
 
 type CollectionHeroProps = {
     // null while the collection is loading (or failed) — the title then renders without a number
@@ -31,7 +32,7 @@ export function CollectionHero({count, scales, isLoading, artUrl = null}: Collec
                     {count !== null && <span className="heroCount">{count}</span>}
                     {isLoading && (
                         <>
-                            <span className="heroCountSkeleton" aria-hidden="true"/>
+                            <Skeleton className="heroCountSkeleton"/>
                             <span className="visuallyHidden">Loading</span>
                         </>
                     )}

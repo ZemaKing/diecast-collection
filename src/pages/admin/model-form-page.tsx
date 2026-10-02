@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 
 import {Breadcrumb} from "../../components/Breadcrumb/Breadcrumb.tsx";
 import {Header} from "../../components/Header/Header";
+import {ErrorState} from "../../components/States/States.tsx";
 import {NotFoundPage} from "../not-found-page/not-found-page";
 import {ModelForm} from "./model-form.tsx";
 
@@ -72,14 +73,12 @@ export function EditModelPage() {
                 />
                 <main className="main">
                     {error ? (
-                        <div className="contentError">
-                            <p>{error.message}</p>
-                            {error.retryable && (
-                                <button type="button" className="retryButton" onClick={() => (modelQuery.isError ? modelQuery.refetch() : notesQuery.refetch())}>
-                                    Try again
-                                </button>
-                            )}
-                        </div>
+                        <ErrorState
+                            error={error}
+                            title="Couldn't load this model"
+                            onRetry={() => (modelQuery.isError ? modelQuery.refetch() : notesQuery.refetch())}
+                            retrying={modelQuery.isFetching || notesQuery.isFetching}
+                        />
                     ) : !model || notesQuery.isPending ? (
                         <p className="formLoading" role="status">Loading model…</p>
                     ) : (

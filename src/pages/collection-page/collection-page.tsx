@@ -10,6 +10,7 @@ import {ModelCard} from "../../components/ModelCard/ModelCard";
 import {ModelCardSkeleton} from "../../components/ModelCard/ModelCardSkeleton";
 import {ModelCompactRow, ModelListRow, ModelRowSkeleton} from "../../components/ModelCard/ModelRow.tsx";
 import {QuickView} from "../../components/QuickView/QuickView.tsx";
+import {EmptyState, ErrorState} from "../../components/States/States.tsx";
 
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
@@ -20,7 +21,7 @@ import {filterModels, getFacetCounts, searchModels, sortModels} from "../../serv
 import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
-import {describeResults} from "../../utils/collection-summary.ts";
+import {describeEmptyResults, describeResults} from "../../utils/collection-summary.ts";
 import {getLegacyModelRedirect, readFocusModel, type ModelLinkState} from "../../utils/model-link.ts";
 import type {ViewMode} from "../../utils/view-mode.ts";
 
@@ -61,7 +62,7 @@ function findScrollAnchor(container: HTMLElement | null): ScrollAnchor | null {
 export function CollectionPage() {
     const [searchParams] = useSearchParams();
     const location = useLocation();
-    const {filters, query, sort, toggleFilter, clearFilters, setSort} = useCollectionQuery();
+    const {filters, query, sort, toggleFilter, clearFilters, clearQuery, setSort} = useCollectionQuery();
     const {viewMode, setViewMode} = useViewMode();
 
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -187,16 +188,15 @@ export function CollectionPage() {
                                 : <ModelRowSkeleton key={key} variant={viewMode}/>)}
                         </div>
                     ) : carsQuery.isError ? (
-                        <div className="contentError">
-                            <p>{carsQuery.error.message}</p>
-                            <button type="button" className="retryButton" onClick={() => carsQuery.refetch()}>
-                                Try again
-                            </button>
-                        </div>
+                        <ErrorState error={carsQuery.error} onRetry={() => carsQuery.refetch()} retrying={carsQuery.isFetching}/>
                     ) : visibleSummaries.length === 0 ? (
-                        <div className="contentEmpty">
-                            {query.trim() ? `No models match "${query.trim()}".` : "No models match the selected filters."}
-                        </div>
+                        <CollectionEmpty
+                            total={stats.totalModels}
+                            activeFilterCount={activeFilterCount}
+                            query={query}
+                            onClearSearch={clearQuery}
+                            onClearFilters={clearFilters}
+                        />
                     ) : (
                         <div ref={resultsRef} className={RESULTS_CLASS[viewMode]}>
                             {visibleSummaries.map((m) => {
@@ -219,5 +219,41 @@ export function CollectionPage() {
                 </button>
             )}
         </div>
+    );
+}
+
+type CollectionEmptyProps = {
+    total: number;
+    activeFilterCount: number;
+    query: string;
+    onClearSearch: () => void;
+    onClearFilters: () => void;
+};
+
+// No models at all / no search results / no filter results / both (Phase 29) — copy from
+// describeEmptyResults(), with a button for each way out.
+function CollectionEmpty({total, activeFilterCount, query, onClearSearch, onClearFilters}: CollectionEmptyProps) {
+    const empty = describeEmptyResults({total, activeFilterCount, query});
+    const icon = empty.kind === "no-models" ? "collection" : empty.kind === "no-filter-results" ? "filter" : "search";
+
+    return (
+        <EmptyState
+            title={empty.title}
+            icon={icon}
+            actions={(empty.canClearSearch || empty.canClearFilters) && (
+                <>
+                    {empty.canClearSearch && (
+                        <button type="button" className="stateButton stateButtonPrimary" onClick={onClearSearch}>Clear search</button>
+                    )}
+                    {empty.canClearFilters && (
+                        <button type="button" className={`stateButton${empty.canClearSearch ? "" : " stateButtonPrimary"}`} onClick={onClearFilters}>
+                            Clear filters
+                        </button>
+                    )}
+                </>
+            )}
+        >
+            <p>{empty.message}</p>
+        </EmptyState>
     );
 }

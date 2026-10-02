@@ -60,13 +60,6 @@
 .galleryFallback {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-lg);
-    color: var(--color-text-subtle);
-    font-weight: var(--weight-semibold);
-    text-align: center;
 }
 
 /* Manufacturer logo / scale, overlaid like on the card. Clicks fall through to the photo. */
@@ -327,6 +320,11 @@
 
 .lightboxStage .galleryFallback {
     color: var(--color-on-scrim-muted);
+}
+
+.lightboxStage .imagePlaceholder {
+    background: transparent;
+    color: inherit;
 }
 
 .lightboxNav {

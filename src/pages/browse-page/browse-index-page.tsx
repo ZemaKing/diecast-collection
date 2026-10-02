@@ -3,6 +3,7 @@ import {useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
 import {BrowseTile, BrowseTileSkeleton} from "../../components/Browse/Browse.tsx";
+import {EmptyState, ErrorState} from "../../components/States/States.tsx";
 import {Header} from "../../components/Header/Header";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 
@@ -73,14 +74,11 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
                             {SKELETON_KEYS.map((key) => <BrowseTileSkeleton key={key}/>)}
                         </div>
                     ) : modelsQuery.isError ? (
-                        <div className="contentError">
-                            <p>{modelsQuery.error.message}</p>
-                            <button type="button" className="retryButton" onClick={() => modelsQuery.refetch()}>
-                                Try again
-                            </button>
-                        </div>
+                        <ErrorState error={modelsQuery.error} onRetry={() => modelsQuery.refetch()} retrying={modelsQuery.isFetching}/>
                     ) : entries.length === 0 ? (
-                        <div className="contentEmpty">No {labels.plural.toLowerCase()} yet.</div>
+                        <EmptyState title={`No ${labels.plural.toLowerCase()} yet`}>
+                            <p>They appear here as soon as the collection has a model.</p>
+                        </EmptyState>
                     ) : (
                         <ul className="browseGrid browseList">
                             {entries.map((entry) => (

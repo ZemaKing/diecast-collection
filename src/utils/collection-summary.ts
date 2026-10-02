@@ -48,3 +48,63 @@ export function describeResults({visible, total, activeFilterCount, query}: Resu
         isNarrowed,
     };
 }
+
+export type EmptyResultsInput = {
+    total: number;
+    activeFilterCount: number;
+    query: string;
+};
+
+export type EmptyResults = {
+    kind: "no-models" | "no-search-results" | "no-filter-results" | "no-search-and-filter-results";
+    title: string;
+    message: string;
+    // Which ways out the empty state offers.
+    canClearSearch: boolean;
+    canClearFilters: boolean;
+};
+
+// The collection's empty states (ROADMAP Phase 29): an empty collection, a search that matches
+// nothing, filters that match nothing, or both — each says why and offers the matching way out.
+export function describeEmptyResults({total, activeFilterCount, query}: EmptyResultsInput): EmptyResults {
+    const trimmed = query.trim();
+    const filters = `${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"}`;
+
+    if (total === 0) {
+        return {
+            kind: "no-models",
+            title: "No models yet",
+            message: "The collection is empty for now — models show up here as soon as they're added.",
+            canClearSearch: false,
+            canClearFilters: false,
+        };
+    }
+
+    if (trimmed && activeFilterCount > 0) {
+        return {
+            kind: "no-search-and-filter-results",
+            title: `No models match "${trimmed}" with ${filters}`,
+            message: "Try clearing the filters to search the whole collection, or change the search.",
+            canClearSearch: true,
+            canClearFilters: true,
+        };
+    }
+
+    if (trimmed) {
+        return {
+            kind: "no-search-results",
+            title: `No models match "${trimmed}"`,
+            message: "Search looks at names, brands, manufacturers, years, categories, drivers and car numbers. Check the spelling or try a shorter word.",
+            canClearSearch: true,
+            canClearFilters: false,
+        };
+    }
+
+    return {
+        kind: "no-filter-results",
+        title: activeFilterCount === 1 ? "No models match this filter" : `No models match these ${filters}`,
+        message: activeFilterCount === 1 ? "Try a different one, or clear it to see the whole collection." : "Try removing one of them, or clear them all.",
+        canClearSearch: false,
+        canClearFilters: true,
+    };
+}

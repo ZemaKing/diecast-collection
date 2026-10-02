@@ -17,8 +17,7 @@
 }
 
 .adminSignOut:focus-visible,
-.adminLink:focus-visible,
-.adminLinkButton:focus-visible {
+.adminLink:focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
 }
@@ -67,32 +66,27 @@
     line-height: var(--leading-tight);
 }
 
+/* Drafts count while it loads (<Skeleton>, Phase 29) — the value's own height. */
+.adminCardValueSkeleton {
+    width: 2.5ch;
+    height: var(--text-2xl);
+}
+
 .adminCardBody {
     margin: 0;
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
 }
 
-.adminLink,
-.adminLinkButton {
+.adminLink {
     border-radius: var(--radius-xs);
     color: var(--color-accent-text);
     font-weight: var(--weight-semibold);
     text-decoration: none;
 }
 
-.adminLink:hover,
-.adminLinkButton:hover {
+.adminLink:hover {
     text-decoration: underline;
-}
-
-.adminLinkButton {
-    padding: 0;
-    background: none;
-    border: 0;
-    cursor: pointer;
-    font-family: var(--font-sans);
-    font-size: inherit;
 }
 
 .adminDraftList {

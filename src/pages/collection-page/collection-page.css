@@ -41,40 +41,6 @@
     color: var(--color-text-muted);
 }
 
-.contentEmpty {
-    border: var(--border-width) dashed var(--color-border);
-    border-radius: var(--radius-lg);
-    color: var(--color-text-muted);
-    padding: var(--space-xl);
-}
-
-.contentError {
-    border: var(--border-width) dashed var(--color-border);
-    border-radius: var(--radius-lg);
-    color: var(--color-text-muted);
-    padding: var(--space-xl);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-md);
-}
-
-.retryButton {
-    background: var(--color-accent);
-    border: 0;
-    border-radius: var(--radius-md);
-    color: var(--color-on-accent);
-    cursor: pointer;
-    font-family: var(--font-sans);
-    font-weight: var(--weight-semibold);
-    min-height: var(--tap-target);
-    padding: 0 var(--space-lg);
-}
-
-.retryButton:hover {
-    background: var(--color-accent-hover);
-}
-
 /* One rule for every width: as many columns as fit at --card-min-width. With the container
    gutter that yields 1 column at 360, 3 at 768, 4 at 1024, 5 at 1280–1440 and 6 at 1920 — the
    mockups' desktop ~5 / tablet 3 / mobile 1 — with no per-breakpoint column counts to maintain.

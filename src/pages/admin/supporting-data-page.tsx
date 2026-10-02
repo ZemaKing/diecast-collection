@@ -8,6 +8,7 @@ import {ConfirmDialog} from "../../components/ConfirmDialog/ConfirmDialog.tsx";
 import {Header} from "../../components/Header/Header";
 import {LogoOrText} from "../../components/ModelCard/LogoOrText.tsx";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
+import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
 import {LookupDialog} from "./lookup-dialog.tsx";
 
 import {useModelCount} from "../../hooks/useModelCount.ts";
@@ -145,14 +146,14 @@ function LookupPanel({kind}: {kind: LookupKind}) {
             <div role="status">{notice && <p className="adminNotice">{notice}</p>}</div>
 
             {rowsQuery.isPending ? (
-                <p className="adminCardBody">Loading…</p>
+                <div className="dataLoading" aria-busy="true">
+                    <span className="visuallyHidden" role="status">Loading {labels.many}…</span>
+                    {["a", "b", "c", "d", "e"].map((key) => <Skeleton key={key} className="dataLoadingRow"/>)}
+                </div>
             ) : rowsQuery.isError ? (
-                <p className="adminCardBody" role="alert">
-                    {rowsQuery.error.message}{" "}
-                    <button type="button" className="adminLinkButton" onClick={() => rowsQuery.refetch()}>Try again</button>
-                </p>
+                <ErrorState compact error={rowsQuery.error} title={`Couldn't load ${labels.many}`} onRetry={() => rowsQuery.refetch()} retrying={rowsQuery.isFetching}/>
             ) : visible.length === 0 ? (
-                <p className="adminCardBody">{query.trim() ? `No ${labels.many} match “${query.trim()}”.` : `No ${labels.many} yet.`}</p>
+                <EmptyState compact title={query.trim() ? `No ${labels.many} match “${query.trim()}”` : `No ${labels.many} yet`}/>
             ) : (
                 <table className="dataTable">
                     <caption className="visuallyHidden">{labels.title}{query.trim() ? `, matching “${query.trim()}”` : ""}</caption>

@@ -12,6 +12,7 @@ import {
     getCollectionFiltersFromSearchParams,
     getSearchQueryFromSearchParams,
     getSortFromSearchParams,
+    withSearchQuery,
     withSort,
 } from "../utils/url-params.ts";
 
@@ -39,9 +40,14 @@ export function useCollectionQuery() {
         setSearchParams((current) => applyCollectionFiltersToSearchParams(current, EMPTY_FILTERS), {replace: false});
     }, [setSearchParams]);
 
+    // The empty state's "Clear search" (Phase 29); the header's search box follows the URL.
+    const clearQuery = useCallback(() => {
+        setSearchParams((current) => withSearchQuery(current, ""), {replace: false});
+    }, [setSearchParams]);
+
     const setSort = useCallback((value: SortOption) => {
         setSearchParams((current) => withSort(current, value), {replace: false});
     }, [setSearchParams]);
 
-    return {filters, query, sort, toggleFilter, clearFilters, setSort};
+    return {filters, query, sort, toggleFilter, clearFilters, clearQuery, setSort};
 }

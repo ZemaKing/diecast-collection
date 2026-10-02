@@ -11,6 +11,7 @@ import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
 import "./ModelRow.css";
+import {ImagePlaceholder, Skeleton} from "../States/States.tsx";
 
 // The List and Compact collection views (ROADMAP Phase 18). Same ModelSummary data as ModelCard,
 // same whole-row-is-one-link interaction (to the details page) and `id={slug}` (the collection
@@ -37,7 +38,7 @@ function RowThumb({model, className, children}: {model: ModelSummary; className:
                     onError={() => setBroken(true)}
                 />
             ) : (
-                <span className="rowThumbFallback" aria-hidden="true">{model.name}</span>
+                <ImagePlaceholder reason={imageUrl ? "broken" : "missing"} size="small"/>
             )}
             {children}
         </span>
@@ -129,10 +130,10 @@ export function ModelRowSkeleton({variant}: {variant: "list" | "compact"}) {
     if (variant === "list") {
         return (
             <div className="listRow rowSkeleton" aria-hidden="true">
-                <span className="listRowThumb thumbSkeleton"/>
+                <Skeleton className="listRowThumb"/>
                 <span className="listRowBody">
-                    <span className="skeletonBar skeletonBarTitle"/>
-                    <span className="skeletonBar skeletonBarMeta"/>
+                    <Skeleton variant="line" className="skeletonBarTitle"/>
+                    <Skeleton variant="line" className="skeletonBarMeta"/>
                 </span>
             </div>
         );
@@ -140,9 +141,9 @@ export function ModelRowSkeleton({variant}: {variant: "list" | "compact"}) {
 
     return (
         <div className="compactRow rowSkeleton" aria-hidden="true">
-            <span className="compactThumb thumbSkeleton"/>
+            <Skeleton className="compactThumb"/>
             <span className="compactMain">
-                <span className="skeletonBar skeletonBarTitle"/>
+                <Skeleton variant="line" className="skeletonBarTitle"/>
             </span>
         </div>
     );
