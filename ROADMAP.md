@@ -66,7 +66,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 25 | Model Form — Core & CRUD | ✅ Done | Review the form (migration `20260930150000` applied) |
 | 26 | Model Form — Rich Sections | ✅ Done | — (markdown-lite chosen; migration `20260930180000` applied) |
 | 27 | Image Management CRUD | ✅ Done | — (migration `20261001090000` applied; owner's form upload checked 2026-10-02) |
-| 28 | Supporting Data Management | ⬜ | — |
+| 28 | Supporting Data Management | ✅ Done | — (migration `20261002090000` applied; review the address-stays-on-rename choice) |
 | 29 | Loading / Empty / Error States | ⬜ | — |
 | 30 | Desktop Fidelity Pass | ⬜ | — |
 | 31 | Tablet Responsive Pass | ⬜ | **Tablet mockups** |
@@ -761,22 +761,31 @@ Owner can fully manage a model's images from the UI. *(done 2026-10-02: migratio
 
 ---
 
-## Phase 28 — Supporting Data Management
+## Phase 28 — Supporting Data Management ✅
 
 ### Goal
 Only as much admin as the form needs.
 
 ### Tasks
-- [ ] Quick-create dialogs from the form for manufacturer, brand (logo choose/upload), driver, tag, color
-- [ ] One simple list/rename page for lookups; deletion blocked while in use (FK `RESTRICT`); driver merge tool for the alias-cleanup case
-- [ ] No general CMS
+- [x] Quick-create dialogs from the form for manufacturer, brand (logo choose/upload), driver, tag, color *(one `LookupDialog` (`src/pages/admin/lookup-dialog.tsx`, native `<dialog>` via `useModalDialog`) for every table: name (+ the address it will get, `slugify(name)`, checked live against the table for duplicate names and addresses) plus, per kind, **logo** (brand/manufacturer: SVG ≤ 256 KB as is, or PNG/JPG/WEBP ≤ 5 MB resized in the browser to ≤ 512 px WebP with the Phase 21 helper; preview, Replace, Remove), **country code** (driver, with flag) or **swatch** (color: color picker or "Multi-color"). "Add “…”" in the Brand / Manufacturer / Driver / Color / Tag pickers now opens it with the typed name; saving **writes the row at once** and the form picks it like any existing one (the Color picker gained "Add", which it couldn't offer before — a color needs a hex). Enter saves the dialog and never reaches the model form. Brand/manufacturer pickers now show logos in the list and **inside the field** (the mockup's Brand field — Phase 25 deviation closed). Logos live in a new public bucket **`lookup-logos`** (`{brands|manufacturers}/{slug}-{random}.{svg|webp}`, never overwritten, admin-only writes); `logo_path` holds that key, and `resolveLogoUrl()` (`src/services/image-url.ts`) serves either it or the 64 `public/` files exactly as before. Same orphan-free order as Phase 27 photos (`saveLookup()`, `src/services/lookup-admin.ts`): upload → write row (a refused write deletes the new file) → delete the replaced file; `public/` logos are never deleted)*
+- [x] One simple list/rename page for lookups; deletion blocked while in use (FK `RESTRICT`); driver merge tool for the alias-cleanup case *(**`/admin/data`** (lazy chunk; dashboard card "Supporting data"), tabs Brands · Manufacturers · Drivers · Tags · Colors · Categories as `?tab=`. Each table: search (diacritic-insensitive), A–Z / Most models, "+ Add …", and per row logo/flag/swatch, address, **model count** (drafts included; linked to the collection filter for brand/manufacturer/color/category), **Edit** (the same dialog), **Delete** only when nothing uses it — otherwise "In use" with the reason; the database refuses anyway (23503 → "still used by a model"). **Merge…** on drivers: pick the driver to keep (searchable), migration `20261002090000` → `diecast.merge_drivers(from, into, dry_run)`: moves every model, keeps the flag if the kept driver had none, deletes the duplicate — one transaction, security invoker + explicit `is_admin()`. A rename/logo/swatch change refreshes the cached model list, so cards, filters, browse pages and Statistics show it at once)*
+- [x] No general CMS *(no bulk edits, no free-form fields; categories can be renamed only (a new one needs `--cat-*` tokens — a code change), and addresses are fixed after creation)*
 
 ### Verification
-- [ ] Adding a model with a brand-new brand needs no SQL or file edits
-- [ ] Renaming a manufacturer updates all its models' display
+- [x] Adding a model with a brand-new brand needs no SQL or file edits *(live in the browser pane, owner signed in by hand: in a new model's form, "Add “ZZ Test Brand”" → dialog → a generated SVG attached as the logo → **Add brand**: the row exists, is chosen, and its logo is served from `lookup-logos` inside the Brand field and on the Live Preview card; same for a new color "ZZ Teal" (#008080 — the swatch followed it) and a tag. The model itself was never saved. Then on `/admin/data`: two test drivers created (one with FI), merged (flag carried over), renamed, deleted; the test brand's logo removed (its Storage file then answered 400) and the brand, color and tag deleted — every count back to 45 / 138 / 13 / 0. Categories show Edit only. 360 px (dialog and table, no overflow) and dark theme checked; no console errors)*
+- [x] Renaming a manufacturer updates all its models' display *(`npm run verify:rls`: the admin renames a fixture manufacturer and **anon** reads the new name from `model_summaries` for its model (the name is a join, never copied onto models); in the app the dialog invalidates the model caches. The same run proves: anon/non-admin can't rename lookups, run `merge_drivers` or upload/delete logos; a manufacturer in use can't be deleted (23503); merge refuses itself (`ZK422`) and unknown drivers (`ZK404`), a dry run changes nothing, the real one moves the model and deletes the duplicate; an SVG logo uploads, is publicly readable, non-images are refused. **133/133 passed** (was 114). `verify:types`: all 13 relations match. 38 new unit tests (`lookup-admin` utils + service order/cleanup/messages, `resolveLogoUrl`))*
 
 ### Definition of Done
-The "New Car" workflow needs zero developer steps.
+The "New Car" workflow needs zero developer steps. *(done 2026-10-02 — a new brand, manufacturer, driver, color or tag, logo included, is created from the form)*
+
+**Notes / deviations:**
+- **Addresses stay fixed on rename** (brand `/brands/dtm` stays `dtm` if DTM is renamed), like model addresses: shared filter links and browse URLs keep working. Say if you'd rather have an editable address with a "links will break" warning.
+- **Quick-created rows are saved immediately**, not with the model: a logo needs somewhere to live before the model exists, and a lookup is shared data. A row created for a model you then discard stays — delete it on `/admin/data` (it shows 0 models). `save_model()`'s own "create" path (Phases 25–26) is still supported by the database but no longer used by the form.
+- **SVG logos are stored as uploaded** (not sanitized): only the admin can upload, and the app only ever shows them through `<img>`, where scripts don't run.
+- **Bug found and fixed in the browser:** the logo preview fell back to text, because `resolveLogoUrl()` read the preview's `blob:` URL as a Storage key; any `scheme:` URL now passes through (tested).
+- `scripts/verify-types.mjs` couldn't parse `database.types.ts` on a Windows checkout (CRLF from `core.autocrlf`); it now normalizes line endings.
+- Flags render as letters ("FI") in Chromium on Windows (no flag emoji font) — pre-existing, the same everywhere flags appear.
+- Bundle: visitors +0 kB (655.8 kB); the admin chunks are `supporting-data-page` 7 kB and a shared `lookup-dialog` chunk (dialog + form styles) used by both admin pages.
 
 ---
 

@@ -1,0 +1,206 @@
+/* /admin/data (Phase 28). No mockup — the admin dashboard's cards and the details page's tab strip. */
+
+.dataBack {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.dataTabs {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.dataTab {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: var(--border-width-strong) solid transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.dataTab:hover {
+    color: var(--color-text);
+}
+
+.dataTab[aria-current="page"] {
+    color: var(--color-accent-text);
+    border-bottom-color: var(--color-accent);
+    font-weight: var(--weight-bold);
+}
+
+.dataTab:focus-visible {
+    outline: none;
+    box-shadow: inset var(--focus-ring);
+}
+
+.dataPanel {
+    min-width: 0;
+}
+
+.dataToolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.dataPanelTitle {
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-extrabold);
+}
+
+.dataPanelCount {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-semibold);
+}
+
+.dataSearch {
+    flex: 1 1 200px;
+    max-width: 320px;
+}
+
+.dataSort {
+    flex: none;
+    width: auto;
+}
+
+.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+}
+
+.dataTable th,
+.dataTable td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: var(--border-width) solid var(--color-border-subtle);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.dataTable thead th {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+.dataTable tbody tr:last-child > * {
+    border-bottom: 0;
+}
+
+.dataTable tbody tr:hover {
+    background: var(--color-surface-hover);
+}
+
+.dataName {
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+}
+
+.dataNameInner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.dataLogo {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 32px;
+    padding: var(--space-2xs);
+    background: var(--color-surface-sunken);
+    border: var(--border-width) solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.dataLogoImg {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.dataLogoNone {
+    color: var(--color-text-subtle);
+}
+
+.dataFlag {
+    font-size: var(--text-md);
+}
+
+.dataColCount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.dataTable th.dataColCount {
+    text-align: right;
+}
+
+.dataActions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dataActions > * + * {
+    margin-left: var(--space-xs);
+}
+
+.dataDelete {
+    color: var(--color-danger);
+}
+
+.dataInUse {
+    display: inline-block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    cursor: help;
+}
+
+/* Phones: the address column goes (it's in the edit dialog), the action buttons may wrap. */
+@media (max-width: 639px) {
+    .dataColAddress {
+        display: none;
+    }
+
+    .dataTable th,
+    .dataTable td {
+        padding: var(--space-sm);
+    }
+
+    .dataActions {
+        white-space: normal;
+    }
+
+    .dataActions > * {
+        margin: var(--space-2xs) 0 var(--space-2xs) var(--space-xs);
+    }
+
+    .dataSearch {
+        max-width: none;
+    }
+}

@@ -1,6 +1,7 @@
 // `npm run verify:rls` — proves the RLS rules from ROADMAP Phase 6, the Phase 21 Storage bucket
-// policies, the Phase 25 model-form write path (diecast.save_model) and the Phase 27 photo
-// management (upload → save → reorder → remove, no orphans) against a live project,
+// policies, the Phase 25 model-form write path (diecast.save_model), the Phase 27 photo
+// management (upload → save → reorder → remove, no orphans) and the Phase 28 supporting data
+// (rename / delete-while-in-use / driver merge / logo bucket) against a live project,
 // using only the PUBLIC anon key plus two real logins (never the service-role key):
 //
 //   RLS_ADMIN_EMAIL / RLS_ADMIN_PASSWORD  — the owner (row in diecast.admin_users)
@@ -73,6 +74,9 @@ async function cleanup(admin, f) {
     // Models created through save_model (Phase 25 checks) — their colors cascade.
     await admin.from("models").delete().like("slug", `zz-rls-form%-${suffix}`);
     await admin.from("tags").delete().like("slug", `zz-rls-form%-${suffix}`);
+    // Phase 28 driver-merge fixtures point at the published model — unhook them first.
+    await admin.from("models").update({driver_id: null}).in("id", [f.published?.id, f.draft?.id].filter(Boolean));
+    await admin.from("drivers").delete().like("slug", `zz-rls-drv%-${suffix}`);
     await admin.from("models").delete().in("id", [f.published?.id, f.draft?.id].filter(Boolean));
     await admin.from("tags").delete().in("id", [f.tag?.id, f.spareTag?.id].filter(Boolean));
     await admin.from("colors").delete().in("id", [f.color?.id, f.spareColor?.id].filter(Boolean));
@@ -138,6 +142,11 @@ async function checkOutsider(who, c, f, uid) {
     check(who, "DELETE model_images removes nothing", !!imgDelErr || imgDel.length === 0, imgDelErr?.code ?? `${imgDel?.length} rows`);
     const {data: lookupDel, error: lookupErr} = await c.from("brands").delete().eq("id", f.brand.id).select();
     check(who, "DELETE brands removes nothing", !!lookupErr || lookupDel.length === 0, lookupErr?.code ?? `${lookupDel?.length} rows`);
+    // Supporting data (Phase 28): outsiders can't rename a lookup or merge drivers.
+    const {data: lookupUpd, error: lookupUpdErr} = await c.from("manufacturers").update({name: "HACKED"}).eq("id", f.manufacturer.id).select();
+    check(who, "UPDATE (rename) manufacturers changes nothing", !!lookupUpdErr || lookupUpd.length === 0, lookupUpdErr?.code ?? `${lookupUpd?.length} rows`);
+    const {error: mergeErr} = await c.rpc("merge_drivers", {p_from_slug: "x", p_into_slug: "y"});
+    check(who, "merge_drivers denied", denied(mergeErr), mergeErr ? `${mergeErr.code} ${mergeErr.message}` : "MERGE RAN");
 
     // The model form's write path (Phase 25): save_model() runs with the caller's rights.
     const {error: createErr} = await c.rpc("save_model", {p_model: formPayload(f, slug(`form-${who}`))});
@@ -215,6 +224,49 @@ async function checkModelForm(admin, anon, user, f) {
     check("admin", "DELETE models works", !delErr && gone?.length === 1, delErr?.message ?? `${gone?.length} rows`);
     const {count: leftColors} = await admin.from("model_colors").select("model_id", {count: "exact", head: true}).eq("model_id", formModel?.id ?? "");
     check("admin", "deleting a model removes its colors (cascade)", leftColors === 0, `${leftColors} left`);
+}
+
+// Phase 28 — supporting data, as the admin: a lookup in use can't be deleted (FK RESTRICT), a
+// rename shows on its models for everyone, and merge_drivers moves the models then deletes the
+// duplicate in one transaction (dry run leaves everything as it was).
+async function checkSupportingData(admin, anon, f) {
+    const {error: inUse} = await admin.from("manufacturers").delete().eq("id", f.manufacturer.id).select();
+    check("admin", "a manufacturer in use can't be deleted (FK RESTRICT)", inUse?.code === "23503", inUse ? inUse.code : "DELETED");
+
+    const renamed = `ZZ RLS Mfr renamed ${suffix}`;
+    const {error: renameErr} = await admin.from("manufacturers").update({name: renamed}).eq("id", f.manufacturer.id);
+    const {data: summary} = await anon.from("model_summaries").select("manufacturer_name").eq("id", f.published.id).single();
+    check("anon", "a renamed manufacturer shows on its models", !renameErr && summary?.manufacturer_name === renamed,
+        renameErr?.message ?? summary?.manufacturer_name);
+
+    const driver = async (key, extra = {}) => {
+        const {data, error} = await admin.from("drivers").insert({slug: slug(`drv-${key}`), name: `ZZ RLS Driver ${key} ${suffix}`, ...extra}).select().single();
+        if (error) throw new Error(`driver fixture failed: ${error.message}`);
+        return data;
+    };
+    const dupe = await driver("a", {country_code: "FI"});
+    const keep = await driver("b");
+    await admin.from("models").update({driver_id: dupe.id}).eq("id", f.published.id);
+
+    const merge = (from, into, dryRun = false) => admin.rpc("merge_drivers", {p_from_slug: from, p_into_slug: into, p_dry_run: dryRun});
+    const {error: self} = await merge(dupe.slug, dupe.slug);
+    check("admin", "merging a driver into itself is refused", self?.code === "ZK422", self?.code ?? "ACCEPTED");
+    const {error: unknown} = await merge(slug("drv-nobody"), keep.slug);
+    check("admin", "merging an unknown driver is refused", unknown?.code === "ZK404", unknown?.code ?? "ACCEPTED");
+
+    const {data: dry, error: dryErr} = await merge(dupe.slug, keep.slug, true);
+    const {count: stillThere} = await admin.from("drivers").select("id", {count: "exact", head: true}).eq("id", dupe.id);
+    check("admin", "a dry-run merge reports and changes nothing", !dryErr && dry?.moved === 1 && dry?.dry_run === true && stillThere === 1,
+        dryErr?.message ?? JSON.stringify(dry));
+
+    const {data: merged, error: mergeErr} = await merge(dupe.slug, keep.slug);
+    const {data: model} = await admin.from("models").select("driver_id").eq("id", f.published.id).single();
+    const {count: gone} = await admin.from("drivers").select("id", {count: "exact", head: true}).eq("id", dupe.id);
+    const {data: kept} = await admin.from("drivers").select("country_code").eq("id", keep.id).single();
+    check("admin", "merge_drivers moves the models and deletes the duplicate",
+        !mergeErr && merged?.moved === 1 && model?.driver_id === keep.id && gone === 0,
+        mergeErr?.message ?? JSON.stringify({merged, model, gone}));
+    check("admin", "merge keeps the duplicate's flag when the kept driver had none", kept?.country_code === "FI", kept?.country_code);
 }
 
 async function checkAdmin(admin, f) {
@@ -327,7 +379,33 @@ async function checkModelImages(admin, f) {
     check("admin", "no orphaned files are left", (left ?? []).length === 0, `${left?.length} left`);
 }
 
+// Phase 28: the lookup-logos bucket — same rules as model-images, SVG allowed.
+const LOGO_BUCKET = "lookup-logos";
+const logoPath = `zz-rls/${suffix}.svg`;
+const svg = () => new Blob(['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"/>'], {type: "image/svg+xml"});
+
+async function checkLogoStorage(anon, user, admin) {
+    for (const [who, c] of [["anon", anon], ["user", user]]) {
+        const {error} = await c.storage.from(LOGO_BUCKET).upload(`zz-rls/${who}-${suffix}.svg`, svg(), {contentType: "image/svg+xml"});
+        check(who, "logo upload denied", !!error, error?.message ?? "UPLOAD SUCCEEDED");
+    }
+    const {error: upErr} = await admin.storage.from(LOGO_BUCKET).upload(logoPath, svg(), {contentType: "image/svg+xml", cacheControl: "604800"});
+    check("admin", "logo upload (SVG) works", !upErr, upErr?.message ?? "");
+    const {error: typeErr} = await admin.storage.from(LOGO_BUCKET).upload(`zz-rls/${suffix}.txt`, new Blob(["x"]), {contentType: "text/plain"});
+    check("admin", "logo bucket rejects non-image types", !!typeErr, typeErr?.message ?? "UPLOAD SUCCEEDED");
+    const status = (await fetch(admin.storage.from(LOGO_BUCKET).getPublicUrl(logoPath).data.publicUrl)).status;
+    check("anon", "reads an uploaded logo via its public URL", status === 200, `HTTP ${status}`);
+    for (const [who, c] of [["anon", anon], ["user", user]]) {
+        const {data: removed} = await c.storage.from(LOGO_BUCKET).remove([logoPath]);
+        check(who, "logo delete removes nothing", !removed?.length, `${removed?.length} removed`);
+    }
+    const {error: removeErr} = await admin.storage.from(LOGO_BUCKET).remove([logoPath]);
+    check("admin", "logo delete works", !removeErr, removeErr?.message ?? "");
+}
+
 async function cleanupStorage(admin) {
+    const {data: logos} = await admin.storage.from(LOGO_BUCKET).list("zz-rls");
+    if (logos?.length) await admin.storage.from(LOGO_BUCKET).remove(logos.map((o) => `zz-rls/${o.name}`));
     const {data} = await admin.storage.from(BUCKET).list("zz-rls");
     if (data?.length) await admin.storage.from(BUCKET).remove(data.map((o) => `zz-rls/${o.name}`));
     const {data: left} = await admin.storage.from(BUCKET).list("zz-rls");
@@ -348,6 +426,7 @@ try {
     await checkOutsider("user", user, fixtures, userId);
     await checkAdmin(admin, fixtures);
     await checkModelForm(admin, client(), user, fixtures);
+    await checkSupportingData(admin, client(), fixtures);
 } catch (error) {
     check("setup", "fixtures / run", false, error.message);
 } finally {
@@ -361,6 +440,12 @@ try {
     await checkModelImages(admin, fixtures);
 } catch (error) {
     check("setup", "storage / photo checks", false, error.message);
+}
+// The Phase 28 logo bucket (migration 20261002090000) — separate, so a missing bucket doesn't hide the rest.
+try {
+    await checkLogoStorage(client(), user, admin);
+} catch (error) {
+    check("setup", "logo storage checks", false, error.message);
 } finally {
     await cleanupStorage(admin);
     await cleanup(admin, fixtures);

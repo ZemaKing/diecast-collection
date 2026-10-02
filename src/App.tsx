@@ -15,6 +15,8 @@ import {StatisticsPage} from "./pages/statistics-page/statistics-page";
 // The model form (Phase 25) is for the owner only — its own chunk, so visitors never download it.
 const NewModelPage = lazy(() => import("./pages/admin/model-form-page").then((m) => ({default: m.NewModelPage})));
 const EditModelPage = lazy(() => import("./pages/admin/model-form-page").then((m) => ({default: m.EditModelPage})));
+// Supporting data (Phase 28) — owner only, its own chunk too.
+const SupportingDataPage = lazy(() => import("./pages/admin/supporting-data-page").then((m) => ({default: m.SupportingDataPage})));
 
 // Dev-only token reference; the DEV guard lets Vite drop it from production builds.
 const TokensPage = import.meta.env.DEV ? lazy(() => import("./pages/dev-tokens/tokens-page")) : null;
@@ -58,6 +60,8 @@ export default function App() {
                 {/* The model form (Phase 25). */}
                 <Route path="models/new" element={<Suspense fallback={null}><NewModelPage/></Suspense>}/>
                 <Route path="models/:slug/edit" element={<Suspense fallback={null}><EditModelPage/></Suspense>}/>
+                {/* Brands, manufacturers, drivers, tags, colors, categories (Phase 28). */}
+                <Route path="data" element={<Suspense fallback={null}><SupportingDataPage/></Suspense>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Route>
             <Route path="/cars" element={<RedirectToCollection/>}/>

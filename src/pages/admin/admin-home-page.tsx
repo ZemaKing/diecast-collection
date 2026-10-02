@@ -9,7 +9,7 @@ import {useSession, useSignOut} from "../../hooks/useSession.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getDraftModels} from "../../services/models.ts";
 import type {ModelSummary} from "../../services/types.ts";
-import {editModelPath, modelPath, NEW_MODEL_PATH, readAdminNotice} from "../../utils/model-link.ts";
+import {editModelPath, modelPath, NEW_MODEL_PATH, readAdminNotice, SUPPORTING_DATA_PATH} from "../../utils/model-link.ts";
 
 import "../collection-page/collection-page.css";
 import "../../components/ModelAdminActions/ModelAdminActions.css";
@@ -59,6 +59,14 @@ export function AdminHomePage() {
                             <h2 id="admin-published" className="adminCardTitle">Published</h2>
                             <p className="adminCardValue">{count}</p>
                             <p className="adminCardBody">Models visitors can see. <Link to="/" className="adminLink">Open the collection</Link></p>
+                        </section>
+
+                        <section className="adminCard" aria-labelledby="admin-data">
+                            <h2 id="admin-data" className="adminCardTitle">Supporting data</h2>
+                            <p className="adminCardBody">
+                                Brands and manufacturers (with their logos), drivers, tags, colors and categories — rename, add, tidy up.
+                            </p>
+                            <p className="adminCardBody"><Link to={SUPPORTING_DATA_PATH} className="adminLink">Manage supporting data</Link></p>
                         </section>
 
                         <section className="adminCard" aria-labelledby="admin-drafts">

@@ -117,7 +117,7 @@ Deliberately **not** on `models`:
 | `id` | `uuid` | no | PK | |
 | `slug` | `text` | no | unique, slug check | `Citroën` → `citroen`, `Leo Models` → `leo-models`, `iScale` → `iscale` |
 | `name` | `text` | no | unique (case-insensitive: unique index on `lower(name)`) | Display name incl. diacritics |
-| `logo_path` | `text` | yes | | See §7. e.g. `/brands/Citroën.svg` |
+| `logo_path` | `text` | yes | | See §7. e.g. `/brands/Citroën.svg`, or a `lookup-logos` key for one uploaded in the admin (Phase 28) |
 | `created_at` / `updated_at` | `timestamptz` | no | | |
 
 After import: **45 brands** (46 minus Corvette), **19 manufacturers**.
@@ -191,6 +191,7 @@ Import: one row per model (position 0, `is_primary = true`, both postimg URLs) �
 | `is_admin()` | `returns boolean language sql stable security definer set search_path = ''` → `exists (select 1 from diecast.admin_users where user_id = auth.uid())` | Single gate used by every admin policy |
 | `set_updated_at()` | trigger `before update` on every table with `updated_at` | |
 | `is_hex_palette(text[])` | immutable SQL function used by the `livery_hex` CHECK | Array-element CHECKs can't use subqueries directly |
+| `merge_drivers(p_from_slug text, p_into_slug text, p_dry_run boolean)` | security invoker + explicit `is_admin()`; migration `20261002090000` (Phase 28) | Driver alias clean-up (D5): every model of `from` gets `into` (which inherits `from`'s country code if it had none), then `from` is deleted — one transaction. `ZK404` unknown driver, `ZK422` same driver |
 | `save_model(p_model jsonb, p_original_slug text, p_dry_run boolean)` | security invoker; migrations `20260930150000` → `20260930180000` (rich fields) → `20261001090000` (photos) | The admin form's single write path: model row, colors, and — when their keys are present — description, key features, tags, private notes and the ordered photo list, in one transaction. User-facing errors use SQLSTATE class `ZK` |
 | `model_summaries` (view, **`security_invoker = true`** so RLS applies) | One row per model, with: slug, name, year, scale, is_racing, car_number, `livery_hex`, added_at, is_published; brand/manufacturer/category **slug + name** (+ logo paths); driver name; `color_slugs text[]` in position order; primary image thumb + full (resolved columns); condition/location | The single query behind `getModels()` (Phase 9). Keeps the client free of N+1 joins |
 
@@ -268,7 +269,7 @@ Phase 7's importer must print exactly these numbers, and Phase 8 verifies them. 
 - No file renames, and no risk of breaking the current app during migration.
 - All 45 brands and 19 manufacturers have a logo file (checked).
 - `Corvette.svg` becomes unused after the merge; it's removed in Phase 36 with the truck-only logos.
-- Uploading new logos to Storage (Phase 28) just writes a different `logo_path`. The resolver accepts both a `/…` public path and a Storage key.
+- **Uploaded logos (Phase 28):** the admin's brand/manufacturer dialog uploads to the public bucket **`lookup-logos`** (migration `20261002090000`; admin-only writes, 256 KB, SVG/WebP/PNG) at `{brands|manufacturers}/{slug}-{12 hex}.{svg|webp}` — a new key per upload, never overwritten — and stores that key in `logo_path`. `resolveLogoUrl()` (`src/services/image-url.ts`): `/…` → `encodeURI` (public/), a `scheme:` URL → as is, anything else → the bucket's public URL. A replaced or removed uploaded logo's file is deleted after the row is written; files in `public/` are never touched by the app.
 
 ## 8. Mockup fields → schema
 

@@ -6,22 +6,25 @@ import {ColorCircle} from "../../components/ColorCircle/ColorCircle.tsx";
 import {Combobox, type ComboboxItem} from "../../components/Combobox/Combobox.tsx";
 import {ConfirmDialog} from "../../components/ConfirmDialog/ConfirmDialog.tsx";
 import {DeleteModelDialog} from "../../components/ModelAdminActions/DeleteModelDialog.tsx";
+import {LogoOrText} from "../../components/ModelCard/LogoOrText.tsx";
 import {ModelCard} from "../../components/ModelCard/ModelCard.tsx";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 import {ImagesEditor} from "./model-form-images.tsx";
+import {LookupDialog} from "./lookup-dialog.tsx";
 import {Checklist, DescriptionEditor, KeyFeaturesEditor} from "./model-form-rich.tsx";
 
 import {useDebouncedValue} from "../../hooks/useDebouncedValue.ts";
 import {Check} from "../../icons/Check.tsx";
 import {Close} from "../../icons/Close.tsx";
 import type {AppError} from "../../lib/errors.ts";
+import type {SaveLookupResult} from "../../services/lookup-admin.ts";
 import {getBrands, getCategories, getColors, getDrivers, getManufacturers, getTags} from "../../services/lookups.ts";
 import {isSlugTaken} from "../../services/model-admin.ts";
 import {saveModelWithImages, type SaveWithImagesResult, type UploadProgress} from "../../services/model-images.ts";
 import {getModels} from "../../services/models.ts";
 import type {Model, ModelSummary} from "../../services/types.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
-import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
+import {countryCodeToFlagEmoji, logoSrc} from "../../utils/model-display.ts";
 import {CONDITION_LABELS} from "../../utils/model-details.ts";
 import {
     CONDITION_OPTIONS,
@@ -45,9 +48,12 @@ import {
     type ModelFormValues,
 } from "../../utils/model-form.ts";
 import {modelPath, type AdminNoticeState} from "../../utils/model-link.ts";
-import {SLUG_PATTERN, slugify} from "../../utils/slug.ts";
+import {SLUG_PATTERN} from "../../utils/slug.ts";
 
 import "./model-form.css";
+
+// The pickers whose "Add “…”" opens a quick-create dialog (Phase 28).
+type QuickCreateKind = "brands" | "manufacturers" | "drivers" | "tags" | "colors";
 
 type ModelFormProps = {
     initial: ModelFormValues;
@@ -83,6 +89,8 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const [preparingImages, setPreparingImages] = useState(0);
     const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
     const [currentYear] = useState(() => new Date().getFullYear());
+    // "Add “…”" in a picker opens a quick-create dialog for that table (Phase 28).
+    const [creating, setCreating] = useState<{kind: QuickCreateKind; name: string} | null>(null);
     // Set right before a deliberate navigation (after save/delete) so the guard lets it through.
     const leavingRef = useRef(false);
 
@@ -185,16 +193,20 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     };
 
     // ---- colors & swatch ----------------------------------------------------------------------
-    const setColors = (colorSlugs: string[]) =>
-        setValues((v) => ({...v, colorSlugs, liveryHex: liveryLinked ? liveryFromColors(colorSlugs, colors) : v.liveryHex}));
+    // `colorList`: a color created a moment ago isn't in the cached list yet.
+    const setColors = (colorSlugs: string[], colorList = colors) =>
+        setValues((v) => ({...v, colorSlugs, liveryHex: liveryLinked ? liveryFromColors(colorSlugs, colorList) : v.liveryHex}));
     const setLivery = (liveryHex: string[]) => {
         setLiveryLinked(false);
         set("liveryHex", liveryHex);
     };
 
     // ---- options --------------------------------------------------------------------------------
-    const lookupOptions = (rows: {slug: string; name: string}[] | undefined): ComboboxItem[] =>
-        (rows ?? []).map((r) => ({value: r.slug, label: r.name}));
+    const lookupOptions = (rows: {slug: string; name: string; logoPath?: string | null}[] | undefined): ComboboxItem[] =>
+        (rows ?? []).map((r) => {
+            const src = logoSrc(r.logoPath ?? null);
+            return {value: r.slug, label: r.name, icon: src ? <img src={src} alt="" className="comboboxLogo"/> : undefined};
+        });
     const driverOptions: ComboboxItem[] = (driversQuery.data ?? []).map((d) => ({
         value: d.slug,
         label: d.name,
@@ -223,8 +235,29 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
 
     const lookupError = [brandsQuery, manufacturersQuery, categoriesQuery, colorsQuery, driversQuery, tagsQuery].find((q) => q.isError)?.error;
 
-    const newChoice = (label: string): LookupChoice => ({slug: slugify(label), name: label, isNew: true});
     const choice = (option: ComboboxItem): LookupChoice => ({slug: option.value, name: option.label, isNew: false});
+    // The dialog has already written the row, so the form picks it like any existing one.
+    const onCreated = (kind: QuickCreateKind, {row}: SaveLookupResult) => {
+        const picked: LookupChoice = {slug: row.slug, name: row.name, isNew: false};
+        if (kind === "brands") set("brand", picked);
+        else if (kind === "manufacturers") set("manufacturer", picked);
+        else if (kind === "drivers") set("driver", picked);
+        else if (kind === "tags") setValues((v) => (v.tags.some((t) => t.slug === picked.slug) ? v : {...v, tags: [...v.tags, picked]}));
+        else setColors([...values.colorSlugs, row.slug], [...colors, {slug: row.slug, name: row.name, hex: row.hex}]);
+        setCreating(null);
+    };
+    const existingRows: Record<QuickCreateKind, {slug: string; name: string}[]> = {
+        brands: brandsQuery.data ?? [],
+        manufacturers: manufacturersQuery.data ?? [],
+        drivers: driversQuery.data ?? [],
+        tags: tagsQuery.data ?? [],
+        colors,
+    };
+    // The chosen brand's / manufacturer's logo inside its field, as in the mockup.
+    const chosenLogo = (rows: {slug: string; logoPath: string | null}[] | undefined, chosen: LookupChoice | null) => {
+        const logoPath = chosen ? rows?.find((r) => r.slug === chosen.slug)?.logoPath ?? null : null;
+        return logoPath ? <LogoOrText key={logoPath} logoPath={logoPath} name="" imgClassName="comboboxLogo"/> : undefined;
+    };
 
     // Props every field control shares: id, error wiring.
     const control = (field: ModelFormField, hint = false) => {
@@ -315,16 +348,15 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                 htmlFor={fieldId("brand")}
                                 error={visibleErrors.brand}
                                 errorId={`${fieldId("brand")}-error`}
-                                hint={values.brand?.isNew ? `“${values.brand.name}” will be added as a new brand (no logo yet).` : undefined}
-                                hintId={`${fieldId("brand")}-hint`}
                             >
                                 <Combobox
-                                    {...lookupControl(control("brand", !!values.brand?.isNew))}
+                                    {...lookupControl(control("brand"))}
                                     options={lookupOptions(brandsQuery.data)}
                                     value={values.brand?.slug ?? null}
                                     displayLabel={values.brand?.name ?? null}
+                                    leading={chosenLogo(brandsQuery.data, values.brand)}
                                     onSelect={(o) => set("brand", choice(o))}
-                                    onCreate={(label) => set("brand", newChoice(label))}
+                                    onCreate={(name) => setCreating({kind: "brands", name})}
                                     createHint="new brand"
                                     placeholder="Search brands…"
                                 />
@@ -335,16 +367,15 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                 htmlFor={fieldId("manufacturer")}
                                 error={visibleErrors.manufacturer}
                                 errorId={`${fieldId("manufacturer")}-error`}
-                                hint={values.manufacturer?.isNew ? `“${values.manufacturer.name}” will be added as a new manufacturer (no logo yet).` : undefined}
-                                hintId={`${fieldId("manufacturer")}-hint`}
                             >
                                 <Combobox
-                                    {...lookupControl(control("manufacturer", !!values.manufacturer?.isNew))}
+                                    {...lookupControl(control("manufacturer"))}
                                     options={lookupOptions(manufacturersQuery.data)}
                                     value={values.manufacturer?.slug ?? null}
                                     displayLabel={values.manufacturer?.name ?? null}
+                                    leading={chosenLogo(manufacturersQuery.data, values.manufacturer)}
                                     onSelect={(o) => set("manufacturer", choice(o))}
-                                    onCreate={(label) => set("manufacturer", newChoice(label))}
+                                    onCreate={(name) => setCreating({kind: "manufacturers", name})}
                                     createHint="new manufacturer"
                                     placeholder="Search manufacturers…"
                                 />
@@ -413,6 +444,8 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                     value={null}
                                     displayLabel={null}
                                     onSelect={(o) => setColors([...values.colorSlugs, o.value])}
+                                    onCreate={(name) => setCreating({kind: "colors", name})}
+                                    createHint="new color"
                                     placeholder={values.colorSlugs.length >= MAX_COLORS ? `Up to ${MAX_COLORS} colors` : values.colorSlugs.length > 0 ? "Add a color…" : "Search colors…"}
                                     disabled={values.colorSlugs.length >= MAX_COLORS}
                                 />
@@ -469,16 +502,14 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                     htmlFor={fieldId("driver")}
                                     error={visibleErrors.driver}
                                     errorId={`${fieldId("driver")}-error`}
-                                    hint={values.driver?.isNew ? `“${values.driver.name}” will be added as a new driver.` : undefined}
-                                    hintId={`${fieldId("driver")}-hint`}
                                 >
                                     <Combobox
-                                        {...lookupControl(control("driver", !!values.driver?.isNew))}
+                                        {...lookupControl(control("driver"))}
                                         options={driverOptions}
                                         value={values.driver?.slug ?? null}
                                         displayLabel={values.driver?.name ?? null}
                                         onSelect={(o) => set("driver", choice(o))}
-                                        onCreate={(label) => set("driver", newChoice(label))}
+                                        onCreate={(name) => setCreating({kind: "drivers", name})}
                                         createHint="new driver"
                                         onClear={() => set("driver", null)}
                                         placeholder="Search or add a driver…"
@@ -628,7 +659,6 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                     {values.tags.map((tag) => (
                                         <li key={tag.slug} className="tagChip">
                                             <span>{tag.name}</span>
-                                            {tag.isNew && <span className="tagChipNew">new</span>}
                                             <button
                                                 type="button"
                                                 className="colorChipRemove"
@@ -647,10 +677,7 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                                 value={null}
                                 displayLabel={null}
                                 onSelect={(o) => set("tags", [...values.tags, choice(o)])}
-                                onCreate={(label) => {
-                                    const tag = newChoice(label);
-                                    if (!values.tags.some((t) => t.slug === tag.slug)) set("tags", [...values.tags, tag]);
-                                }}
+                                onCreate={(name) => setCreating({kind: "tags", name})}
                                 createHint="new tag"
                                 placeholder={values.tags.length >= MAX_TAGS ? `Up to ${MAX_TAGS} tags` : "Search or add a tag…"}
                                 disabled={values.tags.length >= MAX_TAGS}
@@ -732,6 +759,17 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
                     onDeleted={() => {
                         leavingRef.current = true;
                     }}
+                />
+            )}
+
+            {creating && (
+                <LookupDialog
+                    kind={creating.kind}
+                    editing={null}
+                    initialName={creating.name}
+                    existing={existingRows[creating.kind]}
+                    onClose={() => setCreating(null)}
+                    onSaved={(result) => onCreated(creating.kind, result)}
                 />
             )}
 

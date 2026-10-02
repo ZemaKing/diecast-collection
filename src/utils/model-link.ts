@@ -6,6 +6,8 @@ export function modelPath(slug: string): string {
 
 // The admin model form (Phase 25). The slug is stable, so an edit link never goes stale.
 export const NEW_MODEL_PATH = "/admin/models/new";
+// Supporting data — brands, manufacturers, drivers, tags, colors, categories (Phase 28).
+export const SUPPORTING_DATA_PATH = "/admin/data";
 
 export function editModelPath(slug: string): string {
     return `/admin/models/${encodeURIComponent(slug)}/edit`;

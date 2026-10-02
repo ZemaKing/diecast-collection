@@ -168,3 +168,11 @@
     color: var(--color-text-muted);
     font-size: var(--text-sm);
 }
+
+/* A brand / manufacturer logo in the list and inside the field (Phase 28). */
+.comboboxLogo {
+    display: block;
+    width: 32px;
+    height: 20px;
+    object-fit: contain;
+}

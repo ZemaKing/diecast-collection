@@ -29,6 +29,20 @@ export function resolveImageUrl({storagePath, externalUrl}: ImageSource, project
     return externalUrl?.trim() || null;
 }
 
+// Brand / manufacturer logos (docs/SCHEMA.md §7, Phase 28). `logo_path` is either a file shipped in
+// public/ ("/brands/Aston Martin.svg" — encodeURI so spaces and "ë" round-trip in <img src>) or, for
+// a logo uploaded in the admin, a key in the public `lookup-logos` bucket ("brands/x-1a2b.svg").
+export const LOOKUP_LOGOS_BUCKET = "lookup-logos";
+
+export function resolveLogoUrl(logoPath: string | null | undefined, projectUrl: string = supabaseProjectUrl()): string | null {
+    const path = logoPath?.trim();
+    if (!path) return null;
+    if (path.startsWith("/")) return encodeURI(path);
+    // Already a URL — http(s), or the blob: preview of a logo picked in the admin but not saved yet.
+    if (/^[a-z][a-z0-9+.-]*:/i.test(path)) return path;
+    return projectUrl ? publicStorageUrl(projectUrl, path, LOOKUP_LOGOS_BUCKET) : null;
+}
+
 // Read at call time (not import time) so it never throws: src/lib/env.ts is what validates it.
 // `import.meta.env` is undefined outside Vite (tsx scripts), hence the optional chaining.
 function supabaseProjectUrl(): string {

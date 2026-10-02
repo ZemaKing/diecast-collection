@@ -532,6 +532,10 @@ export type Database = {
             }
             is_admin: {Args: never; Returns: boolean}
             is_hex_palette: {Args: {p: string[]}; Returns: boolean}
+            merge_drivers: {
+                Args: {p_dry_run?: boolean; p_from_slug: string; p_into_slug: string}
+                Returns: Json
+            }
             resolve_model_lookup: {Args: {p_ref: Json; p_table: string}; Returns: string}
             save_model: {
                 Args: {p_dry_run?: boolean; p_model: Json; p_original_slug?: string}

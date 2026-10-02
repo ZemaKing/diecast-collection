@@ -6,7 +6,8 @@ import {readFileSync} from "node:fs";
 import {createClient} from "@supabase/supabase-js";
 
 const env = process.env;
-const source = readFileSync(new URL("../src/lib/database.types.ts", import.meta.url), "utf8");
+// Normalized: a Windows checkout (core.autocrlf) has CRLF line endings.
+const source = readFileSync(new URL("../src/lib/database.types.ts", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 
 // Collect `name: { Row: { col: type ... } }` blocks.
 const relations = {};

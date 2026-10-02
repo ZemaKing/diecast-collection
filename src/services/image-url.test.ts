@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 
-import {MODEL_IMAGES_BUCKET, publicStorageUrl, resolveImageUrl} from "./image-url.ts";
+import {LOOKUP_LOGOS_BUCKET, MODEL_IMAGES_BUCKET, publicStorageUrl, resolveImageUrl, resolveLogoUrl} from "./image-url.ts";
 
 const PROJECT = "https://abcdefghijklmnopqrst.supabase.co";
 
@@ -49,5 +49,30 @@ describe("resolveImageUrl", () => {
         expect(resolveImageUrl({storagePath: null, externalUrl: null}, PROJECT)).toBeNull();
         expect(resolveImageUrl({storagePath: "  ", externalUrl: " "}, PROJECT)).toBeNull();
         expect(resolveImageUrl({storagePath: undefined, externalUrl: undefined}, PROJECT)).toBeNull();
+    });
+});
+
+describe("resolveLogoUrl", () => {
+    it("encodes a logo shipped in public/", () => {
+        expect(resolveLogoUrl("/brands/Aston Martin.svg", PROJECT)).toBe("/brands/Aston%20Martin.svg");
+        expect(resolveLogoUrl("/brands/Citroën.svg", PROJECT)).toBe("/brands/Citro%C3%ABn.svg");
+    });
+
+    it("turns an uploaded logo's key into its public URL in the lookup-logos bucket", () => {
+        expect(LOOKUP_LOGOS_BUCKET).toBe("lookup-logos");
+        expect(resolveLogoUrl("brands/alpine-1a2b3c.svg", PROJECT)).toBe(
+            `${PROJECT}/storage/v1/object/public/lookup-logos/brands/alpine-1a2b3c.svg`,
+        );
+    });
+
+    it("passes a full URL through (http, or a blob: preview)", () => {
+        expect(resolveLogoUrl("https://example.com/a.svg", PROJECT)).toBe("https://example.com/a.svg");
+        expect(resolveLogoUrl("blob:http://localhost:5173/1234", PROJECT)).toBe("blob:http://localhost:5173/1234");
+    });
+
+    it("returns null for no logo, or a key it can't resolve without a project URL", () => {
+        expect(resolveLogoUrl(null, PROJECT)).toBeNull();
+        expect(resolveLogoUrl("  ", PROJECT)).toBeNull();
+        expect(resolveLogoUrl("brands/a.svg", "")).toBeNull();
     });
 });

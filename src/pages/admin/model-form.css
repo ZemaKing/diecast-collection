@@ -755,12 +755,6 @@
     font-size: var(--text-sm);
 }
 
-.tagChipNew {
-    color: var(--color-accent-text);
-    font-size: var(--text-2xs);
-    font-weight: var(--weight-bold);
-    text-transform: uppercase;
-}
 
 /* ---- live preview & checklist --------------------------------------------------------------- */
 

@@ -7,3 +7,4 @@ export * from "./browse.ts";
 export * from "./auth-state.ts";
 export * from "./auth.ts";
 export * from "./model-admin.ts";
+export * from "./lookup-admin.ts";
