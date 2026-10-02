@@ -65,7 +65,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 24 | Authentication & Admin Protection | ✅ Done | Optional: set your display name to "ZemaKing" (avatar shows "ZK"); apply the Phase 21 storage migration (3 storage RLS checks wait on it) |
 | 25 | Model Form — Core & CRUD | ✅ Done | Review the form (migration `20260930150000` applied) |
 | 26 | Model Form — Rich Sections | ✅ Done | — (markdown-lite chosen; migration `20260930180000` applied) |
-| 27 | Image Management CRUD | 🟡 Built & RLS-verified, awaiting a UI upload | Add a photo to a draft in the form and check card / gallery / reorder |
+| 27 | Image Management CRUD | ✅ Done | — (migration `20261001090000` applied; owner's form upload checked 2026-10-02) |
 | 28 | Supporting Data Management | ⬜ | — |
 | 29 | Loading / Empty / Error States | ⬜ | — |
 | 30 | Desktop Fidelity Pass | ⬜ | — |
@@ -724,7 +724,7 @@ Form matches the mockup's seven sections plus preview/checklist.
 
 ---
 
-## Phase 27 — Image Management CRUD 🟡
+## Phase 27 — Image Management CRUD ✅
 
 ### Goal
 Upload, order and remove photos safely.
@@ -736,11 +736,11 @@ Upload, order and remove photos safely.
 - [x] Storage + table policies tested (anon/non-admin denied) *(`npm run verify:rls` gained anon + non-admin checks that UPDATE/DELETE on `model_images` changes nothing (INSERT and every Storage write were already covered), and an admin photo cycle: upload two photos → save → first is primary; an unchanged list writes nothing; reorder moves the primary; a path outside the model's folder (`ZK422`), another model's photo id (`ZK404`) and 11 photos are refused; removing them all reports every file, the files delete, the public URL no longer answers 200, the folder is empty. **Run by the owner after applying both migrations: 114/114 passed** (the 3 Phase 21 Storage checks included))*
 
 ### Verification
-- [ ] Upload → visible in gallery/card; delete → 404 in Storage; reorder persists *(**Database + Storage side proven live** by `verify:rls` (upload → save → reorder persists with the primary following → remove → files deleted, public URL no longer 200, no orphans). `verify:model-form`: all 227 models still round-trip unchanged with their photos, no file would be removed, and a photos-only edit is detected (the script's own create control first reused the sample's photo ids and was — correctly — refused with `ZK404`; fixed to send no photos). **Still open: one upload through the form UI** (Claude can't pick files from the owner's disk). Checked before the bucket existed, in the browser on a real model's edit page (nothing saved): dropping a 2400×1600 PNG, a JPEG and a GIF → two "New" tiles (thumbs 400×267 / 400×300), the GIF refused by name; Make main photo, drag onto the main slot, Remove (focus stays in the section), lightbox preview "2 / 3", Live Preview card + checklist following along; 360 px: no overflow; light + dark. 26 new unit tests (`model-images`, service order: upload → save → delete, cleanup on a refused save, orphans reported). `verify:model-form` now round-trips every model's photos (an untouched save must change nothing **and remove no file**) and adds a photos-only control)*
+- [x] Upload → visible in gallery/card; delete → 404 in Storage; reorder persists *(**Owner confirmed 2026-10-02: a photo uploaded through the form works.** **Database + Storage side proven live** by `verify:rls` (upload → save → reorder persists with the primary following → remove → files deleted, public URL no longer 200, no orphans). `verify:model-form`: all 227 models still round-trip unchanged with their photos, no file would be removed, and a photos-only edit is detected (the script's own create control first reused the sample's photo ids and was — correctly — refused with `ZK404`; fixed to send no photos). The upload through the form UI was the owner's step (Claude can't pick files from the owner's disk) — done 2026-10-02. Checked before the bucket existed, in the browser on a real model's edit page (nothing saved): dropping a 2400×1600 PNG, a JPEG and a GIF → two "New" tiles (thumbs 400×267 / 400×300), the GIF refused by name; Make main photo, drag onto the main slot, Remove (focus stays in the section), lightbox preview "2 / 3", Live Preview card + checklist following along; 360 px: no overflow; light + dark. 26 new unit tests (`model-images`, service order: upload → save → delete, cleanup on a refused save, orphans reported). `verify:model-form` now round-trips every model's photos (an untouched save must change nothing **and remove no file**) and adds a photos-only control)*
 - [x] Cannot leave a published model with no primary image without a warning *(publishing — Save Model / Publish / Save Changes — with no photo opens "Publish without a photo?" (focus on **Keep editing**; **Publish anyway** continues). Drafts save without asking. With primary = first photo, "no primary" can only mean "no photos". Checked in the browser)*
 
 ### Definition of Done
-Owner can fully manage a model's images from the UI. *(built; migrations applied and verified; pending one live upload through the form)*
+Owner can fully manage a model's images from the UI. *(done 2026-10-02: migrations applied and verified, owner's live upload through the form works)*
 
 **Manual (owner):**
 1. Apply `supabase/migrations/20260930120000_diecast_storage.sql` (Phase 21 bucket + policies) and `20261001090000_diecast_save_model_images.sql` in the SQL editor.
