@@ -27,6 +27,7 @@
     "images:migrate": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts upload",
     "images:check": "tsx --env-file-if-exists=.env.local scripts/images/cli.ts scripts/migrate-images/job.ts verify",
     "images:flip": "tsx --env-file-if-exists=.env.local scripts/migrate-images/flip.ts",
+    "icons": "node scripts/generate-icons.mjs",
     "images:verify": "tsx --env-file-if-exists=.env.local scripts/migrate-images/verify.ts",
     "db:types":"supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
     "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"

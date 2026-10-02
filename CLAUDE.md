@@ -20,6 +20,7 @@ A React + TypeScript + Vite single-page app that showcases a personal diecast ca
 - `npm run lint` — run ESLint over the whole repo
 - `npm test` — run the Vitest suite once (`npm run test:watch` for watch mode)
 - `npm run preview` — preview the production build locally
+- `npm run icons` — regenerate the PWA/app icons (`public/icon-*.png`, `apple-touch-icon.png`, `favicon.ico`) from `public/favicon.svg`; `public/manifest.webmanifest` lists them
 
 **Tests**: Vitest (jsdom environment, configured in `vite.config.ts`), files are `src/**/*.test.{ts,tsx}` co-located with the code (a `*.test-data.ts` file is a test-only fixture/helper module, not a suite — Vitest only picks up `*.test.ts`). `src/utils/collection-filters.test.ts` and `src/services/*.test.ts` are *characterization tests* asserting against the real `src/data/car-models.json` (kept as a migration source, test fixture and backup — never imported by app/runtime code, only by tests and `scripts/import/`) — so **adding a car changes some expected counts** in both; update them deliberately.
 
