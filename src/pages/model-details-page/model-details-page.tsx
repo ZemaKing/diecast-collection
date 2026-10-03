@@ -116,7 +116,46 @@ function ModelDetails({model}: {model: Model}) {
 
     return (
         <>
+            {/* Header first in the DOM (Phase 31): below desktop the title sits above the photo, as
+                in the mockup's narrow details panel; on desktop the grid puts the photo on the left. */}
             <article className="detailsTop" aria-labelledby="model-title">
+                <header className="detailsHeader">
+                    <div className="detailsHeaderRow">
+                        <span className="detailsBrandLogo">
+                            <LogoOrText logoPath={model.brand.logoPath} name={model.brand.name} textClassName="detailsBrandText"/>
+                        </span>
+                        {isAdmin && <ModelAdminActions model={model}/>}
+                    </div>
+
+                    <h1 id="model-title" className="detailsTitle">{model.name}</h1>
+
+                    <p className="detailsMeta">
+                        <span className="detailsMetaYear">{model.year}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{model.manufacturer.name}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{model.scale}</span>
+                        <span className="detailsCategoryPill"><CategoryLabel category={model.category.name}/></span>
+                    </p>
+
+                    {hasRacingBadges && (
+                        <p className="detailsRacing">
+                            {model.carNumber !== null && <span className="detailsRacingNumber">#{model.carNumber}</span>}
+                            {model.driver && (
+                                <span className="detailsRacingDriver">
+                                    <img className="detailsRacingWheel" src="/wheel.svg" alt="" aria-hidden="true"/>
+                                    <span>{model.driver.name}</span>
+                                    {model.driver.countryCode && (
+                                        <span aria-hidden="true">{countryCodeToFlagEmoji(model.driver.countryCode)}</span>
+                                    )}
+                                </span>
+                            )}
+                        </p>
+                    )}
+
+                    <span className="detailsRule" aria-hidden="true"/>
+                </header>
+
                 <div className="detailsMedia">
                     <ModelGallery
                         images={gallery.photos}
@@ -128,44 +167,7 @@ function ModelDetails({model}: {model: Model}) {
                     />
                 </div>
 
-                <div className="detailsInfo">
-                    <header className="detailsHeader">
-                        <div className="detailsHeaderRow">
-                            <span className="detailsBrandLogo">
-                                <LogoOrText logoPath={model.brand.logoPath} name={model.brand.name} textClassName="detailsBrandText"/>
-                            </span>
-                            {isAdmin && <ModelAdminActions model={model}/>}
-                        </div>
-
-                        <h1 id="model-title" className="detailsTitle">{model.name}</h1>
-
-                        <p className="detailsMeta">
-                            <span className="detailsMetaYear">{model.year}</span>
-                            <span aria-hidden="true">·</span>
-                            <span>{model.manufacturer.name}</span>
-                            <span aria-hidden="true">·</span>
-                            <span>{model.scale}</span>
-                            <span className="detailsCategoryPill"><CategoryLabel category={model.category.name}/></span>
-                        </p>
-
-                        {hasRacingBadges && (
-                            <p className="detailsRacing">
-                                {model.carNumber !== null && <span className="detailsRacingNumber">#{model.carNumber}</span>}
-                                {model.driver && (
-                                    <span className="detailsRacingDriver">
-                                        <img className="detailsRacingWheel" src="/wheel.svg" alt="" aria-hidden="true"/>
-                                        <span>{model.driver.name}</span>
-                                        {model.driver.countryCode && (
-                                            <span aria-hidden="true">{countryCodeToFlagEmoji(model.driver.countryCode)}</span>
-                                        )}
-                                    </span>
-                                )}
-                            </p>
-                        )}
-
-                        <span className="detailsRule" aria-hidden="true"/>
-                    </header>
-
+                <div className="detailsTiles">
                     <SpecTiles model={model} linked="all"/>
                 </div>
             </article>
@@ -402,12 +404,12 @@ function CollectionCard({facts}: {facts: SpecRow[]}) {
 function DetailsSkeleton() {
     return (
         <div className="detailsTop detailsSkeleton" aria-busy="true" aria-label="Loading model">
-            <div className="detailsMedia"><Skeleton as="div" className="detailsMediaFrame"/></div>
-            <div className="detailsInfo">
+            <div className="detailsHeader">
                 <Skeleton variant="line" className="skeletonBarTitle"/>
                 <Skeleton variant="line" className="skeletonBarMeta"/>
-                <SpecTilesSkeleton/>
             </div>
+            <div className="detailsMedia"><Skeleton as="div" className="detailsMediaFrame"/></div>
+            <div className="detailsTiles"><SpecTilesSkeleton/></div>
         </div>
     );
 }

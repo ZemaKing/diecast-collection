@@ -189,9 +189,10 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
 
     const closeSheet = () => setIsSheetOpen(false);
 
-    // The "Filters" button/sheet only exists below tablet (640px) — the four triggers are always
-    // inline above that. Esc closes the sheet and returns focus to the toggle button; resizing
-    // (or rotating) past tablet closes it too, so it can't get stuck open behind the inline row.
+    // The "Filters" button/sheet only exists below desktop (1024px; a bottom sheet on phones, a side
+    // sheet on tablets — Phase 31) — the four triggers are inline above that. Esc closes the sheet
+    // and returns focus to the toggle button; resizing (or rotating) into desktop closes it too, so
+    // it can't get stuck open behind the inline row.
     useEffect(() => {
         if (!isSheetOpen) return;
 
@@ -202,15 +203,15 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
         };
         document.addEventListener("keydown", onKeyDown);
 
-        const tabletUp = window.matchMedia(MEDIA.tabletUp);
-        const onTabletUp = (e: MediaQueryListEvent) => {
+        const desktopUp = window.matchMedia(MEDIA.desktopUp);
+        const onDesktopUp = (e: MediaQueryListEvent) => {
             if (e.matches) setIsSheetOpen(false);
         };
-        tabletUp.addEventListener("change", onTabletUp);
+        desktopUp.addEventListener("change", onDesktopUp);
 
         return () => {
             document.removeEventListener("keydown", onKeyDown);
-            tabletUp.removeEventListener("change", onTabletUp);
+            desktopUp.removeEventListener("change", onDesktopUp);
         };
     }, [isSheetOpen]);
 
@@ -228,7 +229,7 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                 <button
                     ref={filtersToggleRef}
                     type="button"
-                    className="filtersToggle"
+                    className={`filtersToggle${activeCount > 0 ? " filtersToggleActive" : ""}`}
                     onClick={() => setIsSheetOpen((open) => !open)}
                     aria-expanded={isSheetOpen}
                     aria-controls="collectionFilterSheet"
@@ -283,8 +284,8 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                 </div>
             )}
 
-            {/* Mobile bottom sheet — same content/fields as the desktop triggers above, CSS-only
-                below 640px (see CollectionToolbar.css); never rendered/visible at tablet+. */}
+            {/* Bottom sheet (phone) / side sheet (tablet) — same content/fields as the desktop
+                triggers above (see CollectionToolbar.css); never visible at desktop. */}
             {isSheetOpen && (
                 <>
                     <div className="sheetScrim" onClick={closeSheet}/>

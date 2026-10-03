@@ -69,7 +69,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 28 | Supporting Data Management | ✅ Done | — (migration `20261002090000` applied; review the address-stays-on-rename choice) |
 | 29 | Loading / Empty / Error States | ✅ Done | Review the state copy ("taking a break", "Photo coming soon" …) |
 | 30 | Desktop Fidelity Pass | ✅ Done | Review desktop visuals (screenshots in `docs/screenshots/phase-30/`); sign in by hand so the Create/Edit form can be checked |
-| 31 | Tablet Responsive Pass | ⬜ | **Tablet mockups** |
+| 31 | Tablet Responsive Pass | ✅ Done | Review tablet layout (built from the mockup's tablet inset + the system — no full Tablet mockups) |
 | 32 | Mobile Responsive Pass | ⬜ | **Mobile mockups** |
 | 33 | Performance | ⬜ | — |
 | 34 | Accessibility | ⬜ | — |
@@ -842,20 +842,25 @@ Owner accepts desktop visuals.
 
 ---
 
-## Phase 31 — Tablet Responsive Pass
+## Phase 31 — Tablet Responsive Pass ✅
 
 ### Goal
 Designed-for-tablet, not shrunken desktop.
 
 ### Tasks
-- [ ] Use the **Tablet mockups** (to be supplied): navigation, columns (3 in inset), toolbar wrapping, filter presentation, gallery/detail layout, form layout, touch targets ≥ 44 px
-- [ ] Remove `overflow-x: hidden` from `html, body` and fix any real overflow it was hiding
+- [x] Use the **Tablet mockups** (to be supplied): navigation, columns (3 in inset), toolbar wrapping, filter presentation, gallery/detail layout, form layout, touch targets ≥ 44 px *(owner's choice: no full Tablet mockups exist, so the collection follows the "Tablet view (3 columns)" inset in `Mockup Overall.png` and the rest follows the system. **Header** (640–1023): two rows — logo · search · count · avatar · theme · socials on top, all five nav links inline underneath (the inset shows the nav, not a hamburger); the hamburger/drawer is now phone-only and closes itself when the width crosses into tablet. **Toolbar**: the inset's **Filters** button (gold-outlined with a count when filters are active) + view buttons + "Sort: …" on one row, chips below; it opens the filter panel as a **right-hand side sheet** (400px) instead of the phone's bottom sheet; the four inline triggers are desktop-only now (≥ 1024) and the sheet closes when the width crosses into desktop. **Grid**: already 3 columns at 768 (`auto-fill`), unchanged. **Details**: title block → photo → spec tiles below desktop (the mockup's narrow details panel puts the title above the photo — the header is now first in the DOM, the desktop grid still puts the photo on the left, so reading/focus order matches what's shown); the Specifications list is two columns from 640. Touch targets: the controls touched here are all `--tap-target` (44px) tall)*
+- [x] Remove `overflow-x: hidden` from `html, body` and fix any real overflow it was hiding *(removed; every route (collection plain + filtered, details, both browse indexes, a brand page, statistics, about, login, admin, 404) measured in iframes at 360 / 640 / 768 / 900 / 1023 / 1024 / 1280: no element wider than the viewport — it was hiding nothing)*
 
 ### Verification
-- [ ] 768 and 1024, portrait/landscape; no horizontal scroll; touch-only flows work
+- [x] 768 and 1024, portrait/landscape; no horizontal scroll; touch-only flows work *(browser pane, dark: 768×1024 and 1024×768, plus 640 and 360: collection, filtered collection, side sheet open → Escape closes it, details. Header 100px (two rows) at 640–1023, 64px at 1024; no horizontal scroll anywhere. Quick View's button stays hidden on `hover: none` devices, and every card is still a plain link, so touch-only browsing works. `npm test`, lint and build pass)*
 
 ### Definition of Done
-Tablet matches its mockups.
+Tablet matches its mockups. *(done 2026-10-03 against the inset — owner to review)*
+
+**Notes / deviations:**
+- **Chips stay on their own row** under the Filters/Sort row (the inset puts them inline) — robust with many chips.
+- **Create/Edit form not checked at tablet** — behind sign-in (Claude can't type the owner's password); its CSS already goes one column below 1024. Check it signed in.
+- Details layout below 640 also changed (title above the photo) since the DOM order is shared — Phase 32 can revisit with the mobile mockups.
 
 ---
 

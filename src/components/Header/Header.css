@@ -374,13 +374,41 @@
     max-width: none;
 }
 
-/* Tablet: search + count inline, the nav links stay in the drawer (five links, the search and
-   the actions don't fit one row below desktop — Phase 24, when the avatar joined the row).
-   Desktop: everything inline, no drawer. */
+/* Tablet (Phase 31): two rows — logo, search, count and actions on top, the five nav links
+   inline underneath (the tablet mockup shows the nav, not a hamburger; they don't fit one row
+   with the search below desktop). No drawer from tablet up. Desktop: one row. */
 @media (min-width: 640px) {
     .siteSearch,
     .modelCountPill {
         display: flex;
+    }
+
+    .siteHeaderInner {
+        flex-wrap: wrap;
+        row-gap: var(--space-xs);
+        padding-bottom: 0;
+    }
+
+    /* a smaller basis keeps logo · search · actions on one row down to 640px (signed in too) */
+    .siteSearch {
+        flex-basis: 120px;
+    }
+
+    .siteNav {
+        display: flex;
+        order: 1;
+        flex: 1 0 100%;
+        min-height: var(--tap-target);
+        /* links start flush with the logo, their padding hangs into the gutter */
+        margin-left: calc(-1 * var(--space-sm));
+    }
+
+    .siteNavLink {
+        border-top: 0;
+    }
+
+    .menuButton {
+        display: none;
     }
 
     /* The drawer's own search box and social links are for phones only — tablet has them inline. */
@@ -395,19 +423,25 @@
 }
 
 @media (min-width: 1024px) {
-    .siteNav {
-        display: flex;
-    }
-
-    .menuButton {
-        display: none;
-    }
-}
-
-@media (min-width: 1024px) {
     .siteHeaderInner {
+        flex-wrap: nowrap;
         height: var(--header-height);
         padding-top: 0;
         padding-bottom: 0;
+    }
+
+    .siteSearch {
+        flex-basis: 220px;
+    }
+
+    .siteNav {
+        order: 0;
+        flex: none;
+        min-height: 0;
+        margin-left: 0;
+    }
+
+    .siteNavLink {
+        border-top: var(--border-width-strong) solid transparent;
     }
 }

@@ -101,17 +101,17 @@ export function Header() {
         };
         document.addEventListener("keydown", onKeyDown);
 
-        // The drawer is below-desktop content; if a resize (or rotation) crosses into desktop, the
-        // inline nav takes over and a stuck-open drawer would double up.
-        const desktopUp = window.matchMedia(MEDIA.desktopUp);
-        const onDesktopUp = (e: MediaQueryListEvent) => {
+        // The drawer is phone-only content (Phase 31: tablet shows the nav inline); if a resize (or
+        // rotation) crosses into tablet, the inline nav takes over and a stuck-open drawer would double up.
+        const tabletUp = window.matchMedia(MEDIA.tabletUp);
+        const onTabletUp = (e: MediaQueryListEvent) => {
             if (e.matches) setIsMenuOpen(false);
         };
-        desktopUp.addEventListener("change", onDesktopUp);
+        tabletUp.addEventListener("change", onTabletUp);
 
         return () => {
             document.removeEventListener("keydown", onKeyDown);
-            desktopUp.removeEventListener("change", onDesktopUp);
+            tabletUp.removeEventListener("change", onTabletUp);
         };
     }, [isMenuOpen]);
 

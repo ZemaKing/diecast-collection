@@ -539,14 +539,6 @@
 }
 
 @media (min-width: 640px) {
-    .toolbarTriggers {
-        display: flex;
-    }
-
-    .filtersToggle {
-        display: none;
-    }
-
     .viewModeButton {
         width: var(--tap-target);
     }
@@ -557,6 +549,32 @@
         height: auto;
         overflow: visible;
         clip-path: none;
+    }
+
+    /* Tablet (Phase 31): the tablet mockup's "Filters" button, and its panel as a right-hand side
+       sheet instead of a bottom sheet. */
+    .filterSheet {
+        top: 0;
+        left: auto;
+        width: min(400px, 85vw);
+        max-height: none;
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+}
+
+/* The active "Filters" button is gold-outlined, like the mockup. */
+.filtersToggleActive {
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent);
+}
+
+@media (min-width: 1024px) {
+    .toolbarTriggers {
+        display: flex;
+    }
+
+    .filtersToggle {
+        display: none;
     }
 
     /* The sheet is unreachable at this width (its only trigger is hidden above), but hide it

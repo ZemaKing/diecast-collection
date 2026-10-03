@@ -4,23 +4,36 @@
 
 /* ---- Top: photo + header/spec tiles ---- */
 
+/* Below desktop: title → photo → spec tiles, one column (the mockup's narrow details panel,
+   Phase 31). Desktop: the photo on the left, title and tiles stacked on the right. */
 .detailsTop {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "header" "media" "tiles";
     gap: var(--space-xl);
     margin-bottom: var(--space-2xl);
+}
+
+.detailsTiles {
+    grid-area: tiles;
+    min-width: 0;
 }
 
 @media (min-width: 1024px) {
     .detailsTop {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-        gap: var(--space-2xl);
+        grid-template-areas: "media header" "media tiles";
+        /* the tiles row takes any extra height, so the title and tiles stay together at the top */
+        grid-template-rows: auto 1fr;
+        gap: var(--space-xl) var(--space-2xl);
         align-items: start;
     }
 }
 
 .detailsMedia {
+    grid-area: media;
     margin: 0;
+    min-width: 0;
 }
 
 .detailsMediaFrame {
@@ -33,14 +46,8 @@
     box-shadow: var(--shadow-md);
 }
 
-.detailsInfo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-    min-width: 0;
-}
-
 .detailsHeader {
+    grid-area: header;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
@@ -150,8 +157,8 @@
     border-radius: var(--radius-pill);
 }
 
-.detailsSkeleton .detailsInfo {
-    gap: var(--space-md);
+.detailsSkeleton {
+    row-gap: var(--space-md);
 }
 
 .detailsSkeleton .skeletonBarTitle {
@@ -311,7 +318,7 @@
     font-size: var(--text-sm);
 }
 
-/* Two columns on desktop even with one group, so a lone list doesn't stretch its labels and
+/* Two columns from tablet up even with one group, so a lone list doesn't stretch its labels and
    values across the whole page (Phase 30). */
 .specGroups {
     display: grid;
@@ -319,7 +326,7 @@
     gap: var(--space-xl) var(--space-3xl);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 640px) {
     .specGroups {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
