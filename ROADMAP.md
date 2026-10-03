@@ -71,7 +71,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 30 | Desktop Fidelity Pass | ✅ Done | Review desktop visuals (screenshots in `docs/screenshots/phase-30/`); sign in by hand so the Create/Edit form can be checked |
 | 31 | Tablet Responsive Pass | ✅ Done | Review tablet layout (built from the mockup's tablet inset + the system — no full Tablet mockups) |
 | 32 | Mobile Responsive Pass | ✅ Done | Review mobile layout (built from the mockup's mobile + filter-panel insets); check add/edit on a phone signed in |
-| 33 | Performance | ⬜ | — |
+| 33 | Performance | ✅ Done | Run `supabase/checks/performance.sql` once (EXPLAIN); decide on an 800px image variant (optional) |
 | 34 | Accessibility | ⬜ | — |
 | 35 | End-to-End Testing | ⬜ | Separate test Supabase project |
 | 36 | Legacy Cleanup | ⬜ | Explicit approval to delete archives |
@@ -887,22 +887,27 @@ Mobile matches its mockups; every flow (browse, filter, view, admin add/edit) co
 
 ---
 
-## Phase 33 — Performance
+## Phase 33 — Performance ✅
 
 ### Goal
 Measure, then optimize.
 
 ### Tasks
-- [ ] Baseline first: Lighthouse/Web Vitals, bundle analysis, payload of `getModels()`
-- [ ] Image sizing (`width/height`, `srcset`/thumb usage), `fetchpriority` for first row, lazy elsewhere
-- [ ] Query payload (select only summary columns), DB indexes checked with `EXPLAIN`, caching
-- [ ] Decide on pagination/infinite scroll from measurements (not assumptions); memoization only where profiler shows cost
+- [x] Baseline first: Lighthouse/Web Vitals, bundle analysis, payload of `getModels()` *(new `npm run perf:vitals` — dependency-free lab Web Vitals via headless Edge/CDP, mobile + desktop throttling, `--waterfall`; sourcemap byte attribution of the bundle; summaries 275 kB raw / 34.5 kB gzip)*
+- [x] Image sizing (`width/height`, `srcset`/thumb usage), `fetchpriority` for first row, lazy elsewhere *(first 4 items eager + high priority, details main photo high, logos lazy; no srcset — no mid-size variant, see doc)*
+- [x] Query payload (select only summary columns), DB indexes checked with `EXPLAIN`, caching *(`SUMMARY_COLUMNS`; details page in one round trip; `supabase/checks/performance.sql` for the owner; `/assets` immutable on Vercel, vendor chunks)*
+- [x] Decide on pagination/infinite scroll from measurements (not assumptions); memoization only where profiler shows cost *(neither — 227-card render ≈ 200 ms at 4× CPU, TBT < 200 ms)*
 
 ### Verification
-- [ ] Before/after numbers recorded in `docs/performance.md`
+- [x] Before/after numbers recorded in `docs/performance.md` *(mobile collection LCP 3.9 → 2.9 s, CLS 0.066 → 0.002, 84 → 29 requests; JS 194 → 177 kB gzip. Tests 798/798 pass, lint is clean, build ok)*
 
 ### Definition of Done
-Targets met or consciously accepted (e.g. LCP, CLS, JS size), documented.
+Targets met or consciously accepted (e.g. LCP, CLS, JS size), documented. *(Done 2026-10-03: mobile slow-4G LCP ~2.9 s accepted; everything else met)*
+
+**Notes / deviations:**
+- Self-hosted font (new dependency `@fontsource-variable/nunito-sans`): it removes two third-party origins and ~150 kB of Google Fonts from the critical path. Weight axis only (no `opsz`): identical rendering from 12 px up.
+- `@supabase/realtime-js` is replaced by a stub at build time (guarded by a contract test).
+- Hero CLS fix: a Phase 29 specificity bug.
 
 ---
 

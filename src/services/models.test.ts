@@ -6,6 +6,7 @@ const from = vi.fn();
 vi.mock("../lib/supabase.ts", () => ({supabase: {from: (...args: unknown[]) => from(...args)}}));
 
 const {getDraftModels, getModelBySlug, getModels, getRecentlyAddedModels} = await import("./models.ts");
+const {SUMMARY_COLUMNS} = await import("./mappers.ts");
 
 const summaryRow = {
     id: "11111111-1111-1111-1111-111111111111",
@@ -75,9 +76,12 @@ describe("getModels / getRecentlyAddedModels", () => {
     });
 
     it("getModels reads model_summaries and maps every row", async () => {
-        from.mockReturnValue(chainable({data: [summaryRow], error: null}));
+        const query = chainable({data: [summaryRow], error: null});
+        from.mockReturnValue(query);
         const models = await getModels();
         expect(from).toHaveBeenCalledWith("model_summaries");
+        // Only the summary columns (Phase 33), never "*".
+        expect(query.calls).toContainEqual(["select", [SUMMARY_COLUMNS]]);
         expect(models).toHaveLength(1);
         expect(models[0]!.slug).toBe(summaryRow.slug);
     });
@@ -162,6 +166,29 @@ describe("getModelBySlug", () => {
         expect(model.images).toHaveLength(1);
         expect(from).toHaveBeenCalledWith("model_tags");
         expect(model.tags).toEqual([{slug: "italian", name: "Italian"}, {slug: "wrc", name: "WRC"}]);
+    });
+
+    it("asks for everything at once — the children are filtered by the model's slug, not its id", async () => {
+        const queries = new Map<string, ReturnType<typeof chainable>>();
+        let inFlight = 0;
+        let maxInFlight = 0;
+        from.mockImplementation((table: string) => {
+            const data = {models: modelRow, model_colors: colorRows, model_images: imageRows, model_tags: tagRows}[table];
+            const query = chainable({data, error: null});
+            // Count queries started before any has been awaited: all four, if nothing waits on the model row.
+            inFlight++;
+            maxInFlight = Math.max(maxInFlight, inFlight);
+            queueMicrotask(() => inFlight--);
+            queries.set(table, query);
+            return query;
+        });
+
+        await getModelBySlug("abarth-124-rally-rgt-2017-altaya-green");
+
+        expect(maxInFlight).toBe(4);
+        for (const table of ["model_colors", "model_images", "model_tags"]) {
+            expect(queries.get(table)!.calls).toContainEqual(["eq", ["model.slug", "abarth-124-rally-rgt-2017-altaya-green"]]);
+        }
     });
 
     it("surfaces a not-found error for an unknown slug (.single() with 0 rows)", async () => {

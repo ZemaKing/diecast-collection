@@ -21,7 +21,7 @@ import type {SaveLookupResult} from "../../services/lookup-admin.ts";
 import {getBrands, getCategories, getColors, getDrivers, getManufacturers, getTags} from "../../services/lookups.ts";
 import {isSlugTaken} from "../../services/model-admin.ts";
 import {saveModelWithImages, type SaveWithImagesResult, type UploadProgress} from "../../services/model-images.ts";
-import {getModels} from "../../services/models.ts";
+import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import type {Model, ModelSummary} from "../../services/types.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
 import {countryCodeToFlagEmoji, logoSrc} from "../../utils/model-display.ts";
@@ -101,7 +101,7 @@ export function ModelForm({initial, original, cancelTo}: ModelFormProps) {
     const driversQuery = useQuery({queryKey: ["drivers"], queryFn: getDrivers});
     const tagsQuery = useQuery({queryKey: ["tags"], queryFn: getTags});
     // Existing series/team/event/location values, offered as suggestions.
-    const summariesQuery = useQuery({queryKey: ["models", "cars"], queryFn: getModels});
+    const summariesQuery = useQuery(modelSummariesQuery);
 
     const colors = colorsQuery.data ?? [];
 

@@ -4,18 +4,30 @@ import type {Tables} from "../lib/database.types.ts";
 import {resolveImageUrl} from "./image-url.ts";
 import type {Category, Driver, LookupRef, Model, ModelColor, ModelImage, ModelSummary, Tag} from "./types.ts";
 
-type SummaryRow = Tables<"model_summaries">;
+// The model_summaries columns list views read (Phase 33) — selected explicitly instead of "*", so
+// the view's id, is_published and timestamps aren't downloaded 227 times. One string literal, so
+// supabase-js types the selected rows from it (a column missing here fails to compile where the
+// rows meet mapModelSummary()).
+export const SUMMARY_COLUMNS = "slug,name,year,scale,is_racing,car_number,livery_hex,team,event,series,condition,location,added_at,brand_slug,brand_name,brand_logo_path,manufacturer_slug,manufacturer_name,manufacturer_logo_path,category_slug,category_name,category_sort_order,driver_slug,driver_name,driver_country_code,color_slugs,color_names,image_storage_path,image_external_url,thumb_storage_path,thumb_external_url,image_width,image_height,image_count";
+
+type SummaryColumn =
+    | "slug" | "name" | "year" | "scale" | "is_racing" | "car_number" | "livery_hex" | "team" | "event" | "series"
+    | "condition" | "location" | "added_at" | "brand_slug" | "brand_name" | "brand_logo_path" | "manufacturer_slug"
+    | "manufacturer_name" | "manufacturer_logo_path" | "category_slug" | "category_name" | "category_sort_order"
+    | "driver_slug" | "driver_name" | "driver_country_code" | "color_slugs" | "color_names" | "image_storage_path"
+    | "image_external_url" | "thumb_storage_path" | "thumb_external_url" | "image_width" | "image_height" | "image_count";
+
+export type SummaryRow = Pick<Tables<"model_summaries">, SummaryColumn>;
 
 export function mapModelSummary(row: SummaryRow): ModelSummary {
-    if (!row.id || !row.slug || !row.name || row.year == null || !row.scale) {
-        throw new Error(`model_summaries row is missing a required field (id ${row.id ?? "?"})`);
+    if (!row.slug || !row.name || row.year == null || !row.scale) {
+        throw new Error(`model_summaries row is missing a required field (slug ${row.slug ?? "?"})`);
     }
     const colorSlugs = row.color_slugs ?? [];
     const colorNames = row.color_names ?? [];
     const hasImage = !!(row.image_external_url || row.image_storage_path);
 
     return {
-        id: row.id,
         slug: row.slug,
         name: row.name,
         year: row.year,
@@ -29,8 +41,6 @@ export function mapModelSummary(row: SummaryRow): ModelSummary {
         condition: row.condition,
         location: row.location,
         addedAt: row.added_at,
-        createdAt: row.created_at ?? "",
-        updatedAt: row.updated_at ?? "",
         brand: {slug: row.brand_slug ?? "", name: row.brand_name ?? "", logoPath: row.brand_logo_path},
         manufacturer: {slug: row.manufacturer_slug ?? "", name: row.manufacturer_name ?? "", logoPath: row.manufacturer_logo_path},
         category: {slug: row.category_slug ?? "", name: row.category_name ?? "", sortOrder: row.category_sort_order ?? 0},

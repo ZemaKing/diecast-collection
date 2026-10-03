@@ -8,10 +8,8 @@ import {Header} from "../../components/Header/Header";
 import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
-import type {AppError} from "../../lib/errors.ts";
 import {getBrowseEntries, sortBrowseEntries, type BrowseKind, type BrowseSort} from "../../services/browse.ts";
-import {getModels} from "../../services/models.ts";
-import type {ModelSummary} from "../../services/types.ts";
+import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import {BROWSE_LABELS, getBrowseSortFromSearchParams, withBrowseSort} from "../../utils/browse-link.ts";
 import {pluralizeModels} from "../../utils/collection-summary.ts";
 
@@ -33,7 +31,7 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
     const order = getBrowseSortFromSearchParams(searchParams);
     const labels = BROWSE_LABELS[kind];
 
-    const modelsQuery = useQuery<ModelSummary[], AppError>({queryKey: ["models", "cars"], queryFn: getModels});
+    const modelsQuery = useQuery(modelSummariesQuery);
     const models = useMemo(() => modelsQuery.data ?? [], [modelsQuery.data]);
     const entries = useMemo(() => sortBrowseEntries(getBrowseEntries(models, kind), order), [models, kind, order]);
 

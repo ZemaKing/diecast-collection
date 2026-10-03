@@ -65,6 +65,7 @@ export function ModelGallery({
                         alt={current ? imageAlt(current, modelLabel, wrapIndex(index, count), count) : modelLabel}
                         width={current?.width}
                         height={current?.height}
+                        priority
                     />
                 </div>
 

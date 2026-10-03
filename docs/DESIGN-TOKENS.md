@@ -50,7 +50,7 @@ Some pre-redesign files still use other widths: 1280/1500/1800 in the grid and c
 ## Decisions
 
 ### Typography: Nunito Sans replaces Jost
-The mockups use a humanist-geometric sans. It has a double-story `a`, a straight-sided `M` and wide proportions, and reads as Avenir Next Demi. Jost is Futura-style: narrower, with a splayed `M`. Side by side against the mockup hero, Nunito Sans was the closest free match (Figtree was the runner-up, rounder). It loads as a variable font (400–800, with the `opsz` axis) with `display=swap`. Revert by changing `--font-sans` and the Google Fonts link in `index.html`.
+The mockups use a humanist-geometric sans. It has a double-story `a`, a straight-sided `M` and wide proportions, and reads as Avenir Next Demi. Jost is Futura-style: narrower, with a splayed `M`. Side by side against the mockup hero, Nunito Sans was the closest free match (Figtree was the runner-up, rounder). It loads as a variable font with `display: swap` — **self-hosted since Phase 33** (`@fontsource-variable/nunito-sans`, imported in `main.tsx`, family `"Nunito Sans Variable"`; not preloaded — see `docs/performance.md`). It was Google Fonts with the `opsz` axis; the self-hosted files have the weight axis only (31 kB instead of 49 kB for latin), which renders identically from 12px up (`opsz` tops out at 12) and imperceptibly differently for the 11px `--text-2xs` badges. Revert by changing `--font-sans` and the imports in `main.tsx`.
 
 ### Gold
 Sampled from the mockups: `#F5C33B` for text ("227", nav underline, Clear all) and `#FCC03C` for the Edit button fill. One token, `#F5C33B`, is used for both. In light theme gold is 1.6:1 on white. It stays as a fill (with dark text), and `--color-accent-text` becomes `#8A6100`.

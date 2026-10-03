@@ -9,9 +9,13 @@
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 	<link rel="manifest" href="/manifest.webmanifest"/>
 	<meta name="theme-color" content="#06101c"/>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400..800&display=swap" rel="stylesheet">
+	<!-- Phase 33: open the Supabase connections while the JS downloads — the summary list (REST,
+	     CORS → the crossorigin pool) and the photos (Storage, plain <img> → the other pool) come
+	     next on every page. Nunito Sans is self-hosted (main.tsx) and deliberately not preloaded:
+	     on a slow connection the preload competed with the JS and cost ~140 ms of first paint, for no
+	     layout-shift gain (docs/performance.md). -->
+	<link rel="preconnect" href="%VITE_SUPABASE_URL%" crossorigin>
+	<link rel="preconnect" href="%VITE_SUPABASE_URL%">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 	<title>ZemaKing Diecast Collection</title>
 	<script>

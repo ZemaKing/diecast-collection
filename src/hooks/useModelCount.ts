@@ -3,9 +3,9 @@
 // loaded — while it's loading or failed the header shows no number rather than "0 models".
 import {useQuery} from "@tanstack/react-query";
 
-import {getModels} from "../services/models.ts";
+import {modelSummariesQuery} from "./model-queries.ts";
 
 export function useModelCount(): number | null {
-    const {data} = useQuery({queryKey: ["models", "cars"], queryFn: getModels});
+    const {data} = useQuery(modelSummariesQuery);
     return data ? data.length : null;
 }

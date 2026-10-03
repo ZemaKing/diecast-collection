@@ -10,12 +10,10 @@ import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {ChevronRight} from "../../icons/ChevronRight.tsx";
-import type {AppError} from "../../lib/errors.ts";
 import type {BrowseEntry, BrowseKind} from "../../services/browse.ts";
 import {getColors} from "../../services/lookups.ts";
-import {getModels} from "../../services/models.ts";
+import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import {formatShare, getCollectionBreakdown, getCollectionStats, topEntries} from "../../services/stats.ts";
-import type {ModelSummary} from "../../services/types.ts";
 import {BROWSE_LABELS, browseIndexPath, browsePath} from "../../utils/browse-link.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
 import {pluralizeModels} from "../../utils/collection-summary.ts";
@@ -39,7 +37,7 @@ function filterPath(key: "category" | "color", slug: string): string {
 // a meter (one share of a whole), everything else compares magnitudes with single-hue bars.
 // No pie charts, no per-color bars: the color chart's identity is its real swatch beside the name.
 export function StatisticsPage() {
-    const modelsQuery = useQuery<ModelSummary[], AppError>({queryKey: ["models", "cars"], queryFn: getModels});
+    const modelsQuery = useQuery(modelSummariesQuery);
     // Same query key as the Color filter's, so the swatches are usually already cached.
     const colorsQuery = useQuery({queryKey: ["colors"], queryFn: getColors});
 

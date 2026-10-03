@@ -39,7 +39,11 @@
     opacity: var(--hero-art-opacity);
 }
 
+/* Fills the row (the tagline, when shown, stays right-aligned). Shrink-wrapped, its width followed
+   the subtitle — a different sentence while loading — so on a 375px phone the title wrapped to two
+   lines until the data came, then snapped back: a 0.066 layout shift (Phase 33). */
 .heroContent {
+    flex: 1 1 auto;
     min-width: 0;
 }
 
@@ -65,9 +69,14 @@
     color: var(--color-accent-text);
 }
 
-.heroCountSkeleton {
+/* Inline, in place of the number. The selector has to outrank States.css's
+   `.skeleton[aria-hidden] { display: block }` — losing to it, the placeholder sat on its own line
+   and the title jumped from two lines to one when the data came (Phase 33). */
+.heroTitle .skeleton.heroCountSkeleton {
     display: inline-block;
-    width: 2.2em;
+    /* As wide as a three-digit count ("227" ≈ 1.77em), so the title keeps its line breaks when
+       the number arrives (Phase 33). */
+    width: 1.75em;
     height: 0.8em;
     vertical-align: baseline;
     /* shimmer from <Skeleton> (States.css) */

@@ -2,11 +2,10 @@ import {afterEach, describe, expect, it, vi} from "vitest";
 
 import type {Tables} from "../lib/database.types.ts";
 
-import {mapCategory, mapDriver, mapModel, mapModelImage, mapModelSummary} from "./mappers.ts";
+import {mapCategory, mapDriver, mapModel, mapModelImage, mapModelSummary, SUMMARY_COLUMNS, type SummaryRow} from "./mappers.ts";
 
-function summaryRow(overrides: Partial<Tables<"model_summaries">> = {}): Tables<"model_summaries"> {
+function summaryRow(overrides: Partial<SummaryRow> = {}): SummaryRow {
     return {
-        id: "11111111-1111-1111-1111-111111111111",
         slug: "abarth-124-rally-rgt-2017-altaya-green",
         name: "Abarth 124 Rally RGT",
         year: 2017,
@@ -20,9 +19,6 @@ function summaryRow(overrides: Partial<Tables<"model_summaries">> = {}): Tables<
         condition: null,
         location: null,
         added_at: null,
-        is_published: true,
-        created_at: "2026-01-01T00:00:00Z",
-        updated_at: "2026-01-01T00:00:00Z",
         brand_slug: "abarth",
         brand_name: "Abarth",
         brand_logo_path: "/brands/Abarth.svg",
@@ -49,10 +45,17 @@ function summaryRow(overrides: Partial<Tables<"model_summaries">> = {}): Tables<
 }
 
 describe("mapModelSummary", () => {
+    // getModels() selects SUMMARY_COLUMNS (Phase 33): exactly what the mapper reads — nothing it
+    // needs missing, and not the view's id/is_published/timestamps.
+    it("is fed exactly the selected summary columns", () => {
+        const selected = SUMMARY_COLUMNS.split(",");
+        expect([...selected].sort()).toEqual(Object.keys(summaryRow()).sort());
+        for (const unused of ["id", "is_published", "created_at", "updated_at"]) expect(selected).not.toContain(unused);
+    });
+
     it("maps every field to the domain shape", () => {
         const model = mapModelSummary(summaryRow());
         expect(model).toEqual({
-            id: "11111111-1111-1111-1111-111111111111",
             slug: "abarth-124-rally-rgt-2017-altaya-green",
             name: "Abarth 124 Rally RGT",
             year: 2017,
@@ -66,8 +69,6 @@ describe("mapModelSummary", () => {
             condition: null,
             location: null,
             addedAt: null,
-            createdAt: "2026-01-01T00:00:00Z",
-            updatedAt: "2026-01-01T00:00:00Z",
             brand: {slug: "abarth", name: "Abarth", logoPath: "/brands/Abarth.svg"},
             manufacturer: {slug: "altaya", name: "Altaya", logoPath: "/manufacturers/Altaya.svg"},
             category: {slug: "rally", name: "Rally", sortOrder: 10},

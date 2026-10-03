@@ -44,9 +44,9 @@ export type ModelImage = {
 
 // One row per model — everything the collection grid/toolbar/filters need. Backed by
 // `diecast.model_summaries` (already joins brand/manufacturer/category/driver/colors and picks
-// the primary image), read-only.
+// the primary image), read-only. Only what list views read — no id or timestamps (Phase 33: the
+// UUIDs alone were a fifth of the compressed payload); the full Model has those.
 export type ModelSummary = {
-    id: string;
     slug: string;
     name: string;
     year: number;
@@ -60,8 +60,6 @@ export type ModelSummary = {
     condition: string | null;
     location: string | null;
     addedAt: string | null;
-    createdAt: string;
-    updatedAt: string;
     brand: LookupRef;
     manufacturer: LookupRef;
     category: Category;
@@ -75,6 +73,9 @@ export type ModelSummary = {
 // description/key features/tags (not exposed by model_summaries), publish state, and the full
 // gallery.
 export type Model = Omit<ModelSummary, "image" | "imageCount"> & {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
     description: string | null;
     keyFeatures: string[];
     tags: Tag[];

@@ -30,12 +30,11 @@ type LegacyModel = {
 };
 
 export function buildModelSummaryFixtures(): ModelSummary[] {
-    return (carModels as LegacyModel[]).map((m, index): ModelSummary => {
+    return (carModels as LegacyModel[]).map((m): ModelSummary => {
         const brandName = BRAND_MERGES[m.brand] ?? m.brand;
         const colorNames = Array.isArray(m.color) ? m.color : [m.color];
 
         return {
-            id: `fixture-${index}`,
             slug: m.id,
             name: m.name,
             year: m.year,
@@ -49,8 +48,6 @@ export function buildModelSummaryFixtures(): ModelSummary[] {
             condition: null,
             location: null,
             addedAt: null,
-            createdAt: "2026-01-01T00:00:00Z",
-            updatedAt: "2026-01-01T00:00:00Z",
             brand: {slug: slugify(brandName), name: brandName, logoPath: `/brands/${brandName}.svg`},
             manufacturer: {slug: slugify(m.manufacturer), name: m.manufacturer, logoPath: `/manufacturers/${m.manufacturer}.svg`},
             category: {slug: slugify(m.category), name: m.category, sortOrder: CATEGORY_SORT_ORDER[m.category] ?? 99},

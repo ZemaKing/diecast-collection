@@ -15,14 +15,14 @@ import {EmptyState, ErrorState} from "../../components/States/States.tsx";
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {useViewMode} from "../../hooks/useViewMode.ts";
-import type {AppError} from "../../lib/errors.ts";
-import {getModels} from "../../services/models.ts";
+import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import {filterModels, getFacetCounts, searchModels, sortModels} from "../../services/collection-query.ts";
 import {getCollectionStats} from "../../services/stats.ts";
 import type {ModelSummary} from "../../services/types.ts";
 
 import {describeEmptyResults, describeResults} from "../../utils/collection-summary.ts";
 import {getLegacyModelRedirect, readFocusModel, type ModelLinkState} from "../../utils/model-link.ts";
+import {PRIORITY_IMAGE_COUNT} from "../../utils/model-display.ts";
 import type {ViewMode} from "../../utils/view-mode.ts";
 
 // A fixed key set (not an index) avoids remounting skeleton nodes on every render. 10 = two full
@@ -75,10 +75,7 @@ export function CollectionPage() {
     const scrollAnchorRef = useRef<ScrollAnchor | null>(null);
 
     // Cars are Supabase-backed (ROADMAP Phase 10) — trucks are retired (Phase 11).
-    const carsQuery = useQuery<ModelSummary[], AppError>({
-        queryKey: ["models", "cars"],
-        queryFn: getModels,
-    });
+    const carsQuery = useQuery(modelSummariesQuery);
     const summaries = useMemo(() => carsQuery.data ?? [], [carsQuery.data]);
 
     // Filter -> search -> sort, all on the Supabase domain shape (ModelSummary). Facets are
@@ -199,10 +196,11 @@ export function CollectionPage() {
                         />
                     ) : (
                         <div ref={resultsRef} className={RESULTS_CLASS[viewMode]}>
-                            {visibleSummaries.map((m) => {
-                                if (viewMode === "list") return <ModelListRow key={m.slug} model={m} linkState={linkState}/>;
-                                if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} linkState={linkState}/>;
-                                return <ModelCard key={m.slug} model={m} linkState={linkState} onQuickView={setQuickViewModel}/>;
+                            {visibleSummaries.map((m, index) => {
+                                const priority = index < PRIORITY_IMAGE_COUNT;
+                                if (viewMode === "list") return <ModelListRow key={m.slug} model={m} linkState={linkState} priority={priority}/>;
+                                if (viewMode === "compact") return <ModelCompactRow key={m.slug} model={m} linkState={linkState} priority={priority}/>;
+                                return <ModelCard key={m.slug} model={m} linkState={linkState} onQuickView={setQuickViewModel} priority={priority}/>;
                             })}
                         </div>
                     )}

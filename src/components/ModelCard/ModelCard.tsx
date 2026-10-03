@@ -8,7 +8,7 @@ import {ImagePlaceholder} from "../States/States.tsx";
 
 import {Eye} from "../../icons/Eye.tsx";
 import type {ModelSummary} from "../../services/types.ts";
-import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
+import {countryCodeToFlagEmoji, photoLoading} from "../../utils/model-display.ts";
 import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
@@ -18,6 +18,8 @@ type ModelCardProps = {
     linkState?: ModelLinkState;
     // Opens Quick View (ROADMAP Phase 20). Omitted → no trigger.
     onQuickView?: (model: ModelSummary) => void;
+    // In the first row: the photo loads eagerly at high priority (Phase 33, see photoLoading()).
+    priority?: boolean;
 };
 
 // The whole card is one link to the model's details page (ROADMAP Phase 19; a <button> that
@@ -25,7 +27,7 @@ type ModelCardProps = {
 // The Quick View button can't live inside the link (interactive content can't nest), so both sit
 // in a shell and the button is laid over the photo; `data-slug` lets the collection's view-mode
 // scroll anchoring find the card through the shell.
-export function ModelCard({model, linkState, onQuickView}: ModelCardProps) {
+export function ModelCard({model, linkState, onQuickView, priority = false}: ModelCardProps) {
     const [imageBroken, setImageBroken] = useState(false);
 
     const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
@@ -39,7 +41,7 @@ export function ModelCard({model, linkState, onQuickView}: ModelCardProps) {
                     <img
                         src={imageUrl}
                         alt={`${model.name} (${model.year})`}
-                        loading="lazy"
+                        {...photoLoading(priority)}
                         decoding="async"
                         onError={() => setImageBroken(true)}
                     />

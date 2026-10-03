@@ -354,7 +354,6 @@ export function toPreviewSummary(values: ModelFormValues, context: PreviewContex
     const number = values.carNumber.trim().toUpperCase();
 
     return {
-        id: "preview",
         slug: context.slug || "preview",
         name: values.name.trim() || "Model name",
         year,
@@ -368,8 +367,6 @@ export function toPreviewSummary(values: ModelFormValues, context: PreviewContex
         condition: null,
         location: null,
         addedAt: null,
-        createdAt: "",
-        updatedAt: "",
         brand: ref(values.brand, context.brands, "Brand"),
         manufacturer: ref(values.manufacturer, context.manufacturers, "Manufacturer"),
         category,

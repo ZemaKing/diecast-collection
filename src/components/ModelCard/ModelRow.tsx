@@ -6,7 +6,7 @@ import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
 import {LogoOrText} from "./LogoOrText.tsx";
 
 import type {ModelSummary} from "../../services/types.ts";
-import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
+import {countryCodeToFlagEmoji, photoLoading} from "../../utils/model-display.ts";
 import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
@@ -21,9 +21,11 @@ import {ImagePlaceholder, Skeleton} from "../States/States.tsx";
 type ModelRowProps = {
     model: ModelSummary;
     linkState?: ModelLinkState;
+    // In the first rows: the photo loads eagerly at high priority (Phase 33, see photoLoading()).
+    priority?: boolean;
 };
 
-function RowThumb({model, className, children}: {model: ModelSummary; className: string; children?: React.ReactNode}) {
+function RowThumb({model, className, priority, children}: {model: ModelSummary; className: string; priority: boolean; children?: React.ReactNode}) {
     const [broken, setBroken] = useState(false);
     const imageUrl = model.image?.thumbUrl ?? model.image?.url ?? null;
 
@@ -33,7 +35,7 @@ function RowThumb({model, className, children}: {model: ModelSummary; className:
                 <img
                     src={imageUrl}
                     alt={`${model.name} (${model.year})`}
-                    loading="lazy"
+                    {...photoLoading(priority)}
                     decoding="async"
                     onError={() => setBroken(true)}
                 />
@@ -63,10 +65,10 @@ function RacingInline({model}: {model: ModelSummary}) {
     );
 }
 
-export function ModelListRow({model, linkState}: ModelRowProps) {
+export function ModelListRow({model, linkState, priority = false}: ModelRowProps) {
     return (
         <Link className="listRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
-            <RowThumb model={model} className="listRowThumb">
+            <RowThumb model={model} className="listRowThumb" priority={priority}>
                 {/* Below tablet the aside column is dropped to give the title room; the scale
                     moves onto the photo instead, as on the grid card. */}
                 <span className="scaleBadge listRowThumbScale">{model.scale}</span>
@@ -101,10 +103,10 @@ export function ModelListRow({model, linkState}: ModelRowProps) {
     );
 }
 
-export function ModelCompactRow({model, linkState}: ModelRowProps) {
+export function ModelCompactRow({model, linkState, priority = false}: ModelRowProps) {
     return (
         <Link className="compactRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
-            <RowThumb model={model} className="compactThumb"/>
+            <RowThumb model={model} className="compactThumb" priority={priority}/>
 
             <span className="compactMain">
                 <span className="compactName">

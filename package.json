@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
+    "perf:vitals": "node scripts/perf/vitals.mjs",
     "supabase:check": "node --env-file-if-exists=.env.local scripts/check-supabase.mjs",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
@@ -29,10 +30,11 @@
     "images:flip": "tsx --env-file-if-exists=.env.local scripts/migrate-images/flip.ts",
     "icons": "node scripts/generate-icons.mjs",
     "images:verify": "tsx --env-file-if-exists=.env.local scripts/migrate-images/verify.ts",
-    "db:types":"supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
+    "db:types": "supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
     "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"
   },
   "dependencies": {
+    "@fontsource-variable/nunito-sans": "^5.3.0",
     "@supabase/supabase-js": "^2.117.2",
     "@tanstack/react-query": "^5.104.0",
     "react": "^19.2.0",

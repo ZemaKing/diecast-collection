@@ -15,15 +15,15 @@ import {NotFoundPage} from "../not-found-page/not-found-page";
 import {useCollectionQuery} from "../../hooks/useCollectionQuery.ts";
 import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {ChevronRight} from "../../icons/ChevronRight.tsx";
-import type {AppError} from "../../lib/errors.ts";
 import {getBrowseEntry, getBrowseModels, type BrowseKind} from "../../services/browse.ts";
 import {EMPTY_FILTERS, filterModels, getFacetCounts, sortModels} from "../../services/collection-query.ts";
-import {getModels} from "../../services/models.ts";
+import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import type {ModelSummary} from "../../services/types.ts";
 import {formatRelated, formatYears} from "../../utils/browse-display.ts";
 import {BROWSE_LABELS, browseCollectionPath, browseIndexPath, browsePath} from "../../utils/browse-link.ts";
 import {describeResults, pluralizeModels} from "../../utils/collection-summary.ts";
 import {readFocusModel} from "../../utils/model-link.ts";
+import {PRIORITY_IMAGE_COUNT} from "../../utils/model-display.ts";
 import {slugify} from "../../utils/slug.ts";
 
 import "../../components/PageIntro/PageIntro.css";
@@ -51,7 +51,7 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
     const openQuickView = useCallback((model: ModelSummary) => setQuickView({model, locationKey: location.key}), [location.key]);
     const closeQuickView = useCallback(() => setQuickView(null), []);
 
-    const modelsQuery = useQuery<ModelSummary[], AppError>({queryKey: ["models", "cars"], queryFn: getModels});
+    const modelsQuery = useQuery(modelSummariesQuery);
     const models = useMemo(() => modelsQuery.data ?? [], [modelsQuery.data]);
 
     const entry = useMemo(() => getBrowseEntry(models, kind, slug), [models, kind, slug]);
@@ -167,8 +167,8 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
                                 />
                             ) : (
                                 <div className="modelGrid">
-                                    {visible.map((m) => (
-                                        <ModelCard key={m.slug} model={m} onQuickView={openQuickView}/>
+                                    {visible.map((m, index) => (
+                                        <ModelCard key={m.slug} model={m} onQuickView={openQuickView} priority={index < PRIORITY_IMAGE_COUNT}/>
                                     ))}
                                 </div>
                             )}
