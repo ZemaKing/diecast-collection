@@ -70,7 +70,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 29 | Loading / Empty / Error States | ✅ Done | Review the state copy ("taking a break", "Photo coming soon" …) |
 | 30 | Desktop Fidelity Pass | ✅ Done | Review desktop visuals (screenshots in `docs/screenshots/phase-30/`); sign in by hand so the Create/Edit form can be checked |
 | 31 | Tablet Responsive Pass | ✅ Done | Review tablet layout (built from the mockup's tablet inset + the system — no full Tablet mockups) |
-| 32 | Mobile Responsive Pass | ⬜ | **Mobile mockups** |
+| 32 | Mobile Responsive Pass | ✅ Done | Review mobile layout (built from the mockup's mobile + filter-panel insets); check add/edit on a phone signed in |
 | 33 | Performance | ⬜ | — |
 | 34 | Accessibility | ⬜ | — |
 | 35 | End-to-End Testing | ⬜ | Separate test Supabase project |
@@ -864,20 +864,26 @@ Tablet matches its mockups. *(done 2026-10-03 against the inset — owner to rev
 
 ---
 
-## Phase 32 — Mobile Responsive Pass
+## Phase 32 — Mobile Responsive Pass ✅
 
 ### Goal
 Intentional mobile UX.
 
 ### Tasks
-- [ ] Use the **Mobile mockups** (to be supplied): hamburger nav, search row, "Filters (n)" + Sort, filter bottom sheet, 1-column cards, details, gallery swipe, forms, dialogs
-- [ ] Touch targets ≥ 44 px, safe-area insets, no hover-only affordances, no horizontal scroll
+- [x] Use the **Mobile mockups** (to be supplied): hamburger nav, search row, "Filters (n)" + Sort, filter bottom sheet, 1-column cards, details, gallery swipe, forms, dialogs *(as in Phase 31, no full Mobile mockups — built from the "Mobile view (1 column)" and "Filters panel" insets in `Mockup Overall.png`. **Header** (< 640): ☰ first, then "ZemaKing" (icon and tagline hidden, as in the inset), the "N models" count and actions on the right, and the **search box full width on its own row — always visible** (it used to live inside the drawer; the drawer's copy is gone). The drawer keeps the nav links + socials, scrolls if taller than the screen. **Toolbar**: "Filters" (count badge) · view buttons · "Sort" on one 360px row, chips below — unchanged from Phase 13–14, now 44px chips; filter bottom sheet unchanged (already matched the inset). **Cards**: 1 column (unchanged). **Details**: title → photo → tiles (Phase 31's order). Gallery swipe/lightbox/Quick View dialogs: unchanged (Phase 20 — the swipe was already pointer-event based, Quick View hidden on `hover: none`))*
+- [x] Touch targets ≥ 44 px, safe-area insets, no hover-only affordances, no horizontal scroll *(below desktop the theme toggle and social icons are 44px buttons and the 32px avatar gets an invisible 44px ring; the logo link and chips are 44px tall on phones. **Safe areas**: `viewport-fit=cover`; the header row pads by `env(safe-area-inset-left/right)`, the drawer and the filter sheet's "Show N models" footer by `env(safe-area-inset-bottom)`. The only hover-only control (Quick View) is already hidden on touch devices and every card stays a link. No horizontal scroll: see Verification)*
 
 ### Verification
-- [ ] 360 / 390 / 430 px; real device or emulation; one-thumb reachability of primary actions
+- [x] 360 / 390 / 430 px; real device or emulation; one-thumb reachability of primary actions *(browser-pane emulation: collection (filtered), drawer open → Escape, filter sheet open → Escape, details; every route measured in iframes at 360 / 390 / 430 (+ 640 / 1024 for regressions) — no horizontal scroll. Filters, Sort and the sheet's "Show N models" sit in the lower/middle band; the ☰ and search are at the top, as in the mockup. Tests 792/792, lint clean, build ok)*
 
 ### Definition of Done
-Mobile matches its mockups; every flow (browse, filter, view, admin add/edit) completes on a phone.
+Mobile matches its mockups; every flow (browse, filter, view, admin add/edit) completes on a phone. *(done 2026-10-03 against the insets — admin add/edit not checked on a phone: sign-in needed)*
+
+**Notes / deviations:**
+- **View-mode buttons stay 36px wide** below 640 (44px tall group) so Filters · views · Sort fit one 360px row — documented exception (Phase 18).
+- **"Filters" shows a count badge** rather than the inset's "Filters (2)" text — same information, kept from Phase 14.
+- **The sticky header is ~113px tall on phones** (two rows, as in the mockup). Say if you'd rather the search row scroll away.
+- **Admin form on a phone not checked** (sign-in); its CSS goes one column below 640 since Phase 25–27.
 
 ---
 

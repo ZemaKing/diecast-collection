@@ -126,6 +126,19 @@ export function Header() {
     return (
         <header className="siteHeader">
             <div className="siteHeaderInner">
+                {/* Phone only, first in the row as in the mobile mockup (Phase 32). */}
+                <button
+                    ref={menuButtonRef}
+                    type="button"
+                    className="menuButton"
+                    onClick={() => setIsMenuOpen((open) => !open)}
+                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                    aria-expanded={isMenuOpen}
+                    aria-controls={drawerId}
+                >
+                    {isMenuOpen ? <Close/> : <Menu/>}
+                </button>
+
                 <Link className="siteLogo" to="/" onClick={closeMenu}>
                     <img src="/favicon.svg" alt="" className="siteLogoIcon" width={40} height={40}/>
                     <span className="siteLogoText">
@@ -157,21 +170,10 @@ export function Header() {
                     <AccountMenu/>
                     <ThemeToggle/>
                     {/* Below 640px they move into the drawer: with the signed-in avatar the row
-                        otherwise pushed the menu button off a 360px screen. */}
+                        otherwise pushed the count off a 360px screen. */}
                     <span className="headerSocial">
                         <SocialLinks/>
                     </span>
-                    <button
-                        ref={menuButtonRef}
-                        type="button"
-                        className="menuButton"
-                        onClick={() => setIsMenuOpen((open) => !open)}
-                        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        aria-expanded={isMenuOpen}
-                        aria-controls={drawerId}
-                    >
-                        {isMenuOpen ? <Close/> : <Menu/>}
-                    </button>
                 </div>
             </div>
 
@@ -184,16 +186,6 @@ export function Header() {
                             </NavLink>
                         ))}
                     </nav>
-
-                    <label className="siteSearch siteSearchMobile" htmlFor={`${searchId}-mobile`}>
-                        <Search className="siteSearchIcon"/>
-                        <input id={`${searchId}-mobile`} {...searchInputProps}/>
-                        {raw && (
-                            <button type="button" className="siteSearchClear" onClick={() => setRaw("")} aria-label="Clear search">
-                                <Close width={12} height={12}/>
-                            </button>
-                        )}
-                    </label>
 
                     <div className="mobileSocial">
                         <SocialLinks/>

@@ -517,7 +517,8 @@
 
 .sheetFooter {
     flex: none;
-    padding: var(--space-md) var(--space-lg);
+    /* clear of the home indicator on notched phones (Phase 32) */
+    padding: var(--space-md) var(--space-lg) max(var(--space-md), env(safe-area-inset-bottom));
     border-top: var(--border-width) solid var(--color-border);
 }
 
@@ -536,6 +537,13 @@
 
 .sheetApplyButton:hover {
     background: var(--color-accent-hover);
+}
+
+/* Phone (Phase 32): chips are a full 44px touch target. */
+@media (max-width: 639.98px) {
+    .chip {
+        min-height: var(--tap-target);
+    }
 }
 
 @media (min-width: 640px) {
