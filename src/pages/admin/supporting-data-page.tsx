@@ -11,7 +11,6 @@ import {PageIntro} from "../../components/PageIntro/PageIntro.tsx";
 import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
 import {LookupDialog} from "./lookup-dialog.tsx";
 
-import {useModelCount} from "../../hooks/useModelCount.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {deleteLookup, getLookupRows, mergeDrivers, type MergeDriversResult, type SaveLookupResult} from "../../services/lookup-admin.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
@@ -42,13 +41,12 @@ import "./supporting-data-page.css";
 // table with model counts, add / rename (+ logo, flag, swatch), delete when unused, and the driver
 // merge for alias clean-up. Not a CMS: no bulk edits, no free-form columns. The open table is `?tab=`.
 export function SupportingDataPage() {
-    const count = useModelCount();
     const [searchParams] = useSearchParams();
     const kind = parseLookupTab(searchParams.get("tab"));
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
             <div className="content">
                 <main className="main">
                     <PageIntro

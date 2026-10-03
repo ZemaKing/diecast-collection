@@ -54,7 +54,7 @@ export function StatisticsPage() {
 
     return (
         <div className="layout">
-            <Header count={total}/>
+            <Header/>
 
             <div className="content">
                 <main className="main">

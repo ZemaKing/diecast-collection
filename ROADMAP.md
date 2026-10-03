@@ -68,7 +68,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 27 | Image Management CRUD | ✅ Done | — (migration `20261001090000` applied; owner's form upload checked 2026-10-02) |
 | 28 | Supporting Data Management | ✅ Done | — (migration `20261002090000` applied; review the address-stays-on-rename choice) |
 | 29 | Loading / Empty / Error States | ✅ Done | Review the state copy ("taking a break", "Photo coming soon" …) |
-| 30 | Desktop Fidelity Pass | ⬜ | — |
+| 30 | Desktop Fidelity Pass | ✅ Done | Review desktop visuals (screenshots in `docs/screenshots/phase-30/`); sign in by hand so the Create/Edit form can be checked |
 | 31 | Tablet Responsive Pass | ⬜ | **Tablet mockups** |
 | 32 | Mobile Responsive Pass | ⬜ | **Mobile mockups** |
 | 33 | Performance | ⬜ | — |
@@ -816,20 +816,29 @@ All listed states implemented and reachable. *(done 2026-10-02)*
 
 ---
 
-## Phase 30 — Desktop Fidelity Pass
+## Phase 30 — Desktop Fidelity Pass ✅
 
 ### Goal
 Verify the built product against the Desktop mockups.
 
 ### Tasks
-- [ ] Side-by-side review at 1440 and 1920: header, hero, toolbar, grid, cards, details, gallery, Create/Edit
-- [ ] Fix spacing/typography/hierarchy drift; list any *approved* deviations
+- [x] Side-by-side review at 1440 and 1920: header, hero, toolbar, grid, cards, details, gallery, Create/Edit *(full-resolution headless-Edge screenshots, dark theme, compared with the mockups: collection (plain + filtered), details, Quick View, lightbox, statistics, browse pages; 1920 collection. **Create/Edit not reviewed** — it's behind sign-in and Claude can't type the owner's password; left for the owner's review / a follow-up with the owner signed in)*
+- [x] Fix spacing/typography/hierarchy drift; list any *approved* deviations *(**Header**: logo name gold at 22px with a white tagline (were swapped), 40px icon; nav links full header height with the active one gold and its underline on the header's bottom edge; search box a rounded rectangle (was a pill), up to 360px; the "N models" count plain gold text (was a bordered pill) and **hidden until the list loads** — no more "0 models" while loading/failed (Phase 29 leftover): the Header now reads the count itself through `useModelCount()` (`number | null`), the `count` prop is gone from all 13 pages; avatar a dark bordered circle (was gold). **Toolbar**: chevrons on Brand/Manufacturer/Category/Color/Sort (new `src/icons/ChevronDown.tsx`, rotates when open; the "▾" character is gone); a trigger with a selection is gold-highlighted like the mockup's "Manufacturer: Ixo"; the view buttons are one segmented control; filter chips are neutral 32px chips with an × icon (were tiny gold pills). **Cards/rows**: meta separator "·" (was "•"). **Details**: title 28px (`--text-2xl`, the token's documented "details" step — 36px was larger than the mockup); meta line 16px; the spec list is two columns on desktop with a narrower label column (a lone list no longer spans 1,300px))*
 
 ### Verification
-- [ ] Screenshot set attached per screen; deviations documented
+- [x] Screenshot set attached per screen; deviations documented *(`docs/screenshots/phase-30/`: collection and details before/after at 1440, collection at 1920, Quick View. `npm test` 792/792, lint clean, build ok (no secrets in `dist/`); no horizontal overflow at 360/768 on the collection and details pages)*
 
 ### Definition of Done
 Owner accepts desktop visuals.
+
+**Notes / deviations (kept, for the owner to accept or reject):**
+- **No "Filters" button on desktop**: the mockup shows one beside the four triggers; ours exists below 640px only (Phase 13–14), since the inline triggers already hold every filter. Say if you want a desktop all-filters panel.
+- **Active trigger shows a count** ("Manufacturer 1") plus the chips, not the mockup's "Manufacturer: Ixo ×" — a trigger can hold several values.
+- **Details layout**: the mockup puts description, heart / Edit / ⋯ beside the photo and Overview + My Collection side by side under tabs; ours keeps Phase 19's tabs (one panel at a time) and has no heart (open decision 7). With no description the right column leaves space under the spec tiles.
+- **Photos stay 4:3** (the stored photos are 4:3); the mockup's main photo is closer to 3:2.
+- **Category pill** stays outlined (mockup: filled) — a filled tint would need per-category text colors re-checked for contrast (Phase 34).
+- **Header logo** still reuses `favicon.svg` (open decision 11 — no logo asset).
+- Not done here, still open: light-theme logo contrast (Phase 22 note), single-hue category-mix bar (Phase 23 note, owner's choice), the form side column's `sticky` (Phase 27 note — needs the form review).
 
 ---
 

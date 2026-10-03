@@ -1,7 +1,4 @@
-import {useQuery} from "@tanstack/react-query";
-
 import {Header} from "../../components/Header/Header";
-import {getModels} from "../../services/models.ts";
 
 import "./about-page.css";
 
@@ -9,12 +6,9 @@ import "./about-page.css";
 // sourced only from copy already approved in the mockup (diecast-details/Mockup Overall.png),
 // not invented. Replace with the owner's own words about the collection whenever they're ready.
 export function AboutPage() {
-    const {data} = useQuery({queryKey: ["models", "cars"], queryFn: getModels});
-    const count = data?.length ?? 0;
-
     return (
         <div className="aboutPage">
-            <Header count={count}/>
+            <Header/>
 
             <main className="aboutMain">
                 <div className="aboutCard">

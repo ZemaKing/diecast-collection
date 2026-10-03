@@ -71,7 +71,8 @@
 .detailsTitle {
     margin: 0;
     color: var(--color-text);
-    font-size: var(--text-3xl);
+    /* the details-title step (docs/DESIGN-TOKENS.md); 36px was larger than the mockup (Phase 30) */
+    font-size: var(--text-2xl);
     font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
@@ -91,7 +92,7 @@
     gap: var(--space-xs) var(--space-sm);
     margin: 0;
     color: var(--color-text-secondary);
-    font-size: var(--text-md);
+    font-size: var(--text-base);
 }
 
 .detailsMetaYear {
@@ -310,10 +311,18 @@
     font-size: var(--text-sm);
 }
 
+/* Two columns on desktop even with one group, so a lone list doesn't stretch its labels and
+   values across the whole page (Phase 30). */
 .specGroups {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: var(--space-xl);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl) var(--space-3xl);
+}
+
+@media (min-width: 1024px) {
+    .specGroups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .specList {
@@ -322,7 +331,7 @@
 
 .specListRow {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     gap: var(--space-md);
     padding: var(--space-sm) 0;
     border-top: var(--border-width) solid var(--color-border-subtle);

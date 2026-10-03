@@ -18,7 +18,7 @@ import {useScrollRestoration} from "../../hooks/useScrollRestoration.ts";
 import {useIsAdmin} from "../../hooks/useSession.ts";
 import {Check} from "../../icons/Check.tsx";
 import type {AppError} from "../../lib/errors.ts";
-import {getModelBySlug, getModels} from "../../services/models.ts";
+import {getModelBySlug} from "../../services/models.ts";
 import type {Model, ModelImage} from "../../services/types.ts";
 import {thumbSrc} from "../../utils/gallery.ts";
 import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
@@ -60,7 +60,6 @@ export function ModelDetailsPage() {
     const {slug = ""} = useParams();
     const location = useLocation();
 
-    const summariesQuery = useQuery({queryKey: ["models", "cars"], queryFn: getModels});
     const modelQuery = useQuery<Model, AppError>({
         queryKey: ["model", slug],
         queryFn: () => getModelBySlug(slug),
@@ -80,7 +79,7 @@ export function ModelDetailsPage() {
 
     return (
         <div className="layout">
-            <Header count={summariesQuery.data?.length ?? 0}/>
+            <Header/>
 
             <div className="content">
                 {/* "Collection" returns to the filters/search/sort the model was opened from; the

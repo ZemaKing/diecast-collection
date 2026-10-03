@@ -2,6 +2,7 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {Link} from "react-router-dom";
 
+import {ChevronDown} from "../../icons/ChevronDown.tsx";
 import {ChevronRight} from "../../icons/ChevronRight.tsx";
 
 import {Close} from "../../icons/Close.tsx";
@@ -123,10 +124,11 @@ function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug, 
     const {open, setOpen, ref} = useDetailsPopover();
 
     return (
-        <details ref={ref} className="filterTrigger" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+        <details ref={ref} className={`filterTrigger${selected.length > 0 ? " filterTriggerActive" : ""}`} open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
             <summary className="filterTriggerSummary">
                 {label}
                 {selected.length > 0 && <span className="filterTriggerCount">{selected.length}</span>}
+                <ChevronDown className="filterTriggerChevron"/>
             </summary>
             <div className="filterTriggerPanel">
                 <FilterFieldContent variant={variant} options={options} selected={selected} onToggle={onToggle} label={label} hexBySlug={hexBySlug} browse={browse}/>
@@ -155,7 +157,8 @@ export function SortTrigger({sort, onChange, showRelevance, hiddenOptions = []}:
                 "Sort"), which leaves room for the view-mode buttons on a 360px row. */}
             <summary className="filterTriggerSummary sortTriggerSummary">
                 {/* One inline span, so the summary's flex gap doesn't split "Sort" from ": …". */}
-                <span>Sort<span className="sortTriggerCurrent">: {currentLabel}</span> ▾</span>
+                <span>Sort<span className="sortTriggerCurrent">: {currentLabel}</span></span>
+                <ChevronDown className="filterTriggerChevron"/>
             </summary>
             <div className="filterTriggerPanel">
                 {options.map((option) => (
@@ -273,7 +276,7 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                             className="chip"
                             onClick={() => onToggle(chip.key, chip.slug)}
                         >
-                            {chip.name} <span aria-hidden="true">×</span>
+                            {chip.name} <Close width={14} height={14} aria-hidden="true"/>
                             <span className="visuallyHidden">Remove {chip.name} filter</span>
                         </button>
                     ))}

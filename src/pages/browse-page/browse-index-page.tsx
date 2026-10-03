@@ -43,7 +43,7 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
 
     return (
         <div className="layout">
-            <Header count={models.length}/>
+            <Header/>
 
             <div className="content">
                 <main className="main">

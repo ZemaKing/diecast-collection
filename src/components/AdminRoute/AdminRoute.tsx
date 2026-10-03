@@ -3,7 +3,6 @@ import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {Header} from "../Header/Header";
 
 import {useAdminState, useSession, useSignOut} from "../../hooks/useSession.ts";
-import {useModelCount} from "../../hooks/useModelCount.ts";
 
 import "./AdminRoute.css";
 
@@ -26,12 +25,11 @@ export function AdminRoute() {
 }
 
 function AdminGate({state, email}: {state: "checking" | "denied"; email: string | null}) {
-    const count = useModelCount();
     const signOut = useSignOut();
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
             <main className="adminGate">
                 {state === "checking" ? (
                     <p className="adminGateChecking" role="status">Checking access…</p>

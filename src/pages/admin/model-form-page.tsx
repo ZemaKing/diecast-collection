@@ -8,7 +8,6 @@ import {ErrorState} from "../../components/States/States.tsx";
 import {NotFoundPage} from "../not-found-page/not-found-page";
 import {ModelForm} from "./model-form.tsx";
 
-import {useModelCount} from "../../hooks/useModelCount.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {getPrivateNotes} from "../../services/model-admin.ts";
 import {getModelBySlug} from "../../services/models.ts";
@@ -20,12 +19,11 @@ import "../collection-page/collection-page.css";
 
 // `/admin/models/new` (Phase 25) — behind AdminRoute. A new model is added today unless changed.
 export function NewModelPage() {
-    const count = useModelCount();
     const [initial] = useState(() => emptyModelForm(localDateString(new Date())));
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
             <div className="content">
                 <Breadcrumb home={{to: "/"}} trail={[{label: "Dashboard", to: "/admin"}, {label: "Add Model"}]}/>
                 <main className="main">
@@ -42,7 +40,6 @@ export function NewModelPage() {
 // (what "unsaved changes" compares against) are complete.
 export function EditModelPage() {
     const {slug = ""} = useParams();
-    const count = useModelCount();
     const modelQuery = useQuery<Model, AppError>({
         queryKey: ["model", slug],
         queryFn: () => getModelBySlug(slug),
@@ -65,7 +62,7 @@ export function EditModelPage() {
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
             <div className="content">
                 <Breadcrumb
                     home={{to: "/"}}

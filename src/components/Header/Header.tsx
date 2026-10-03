@@ -6,16 +6,13 @@ import {Email} from "../../icons/Email.tsx";
 import {Instagram} from "../../icons/Instagram.tsx";
 import {Menu} from "../../icons/Menu.tsx";
 import {Search} from "../../icons/Search.tsx";
+import {useModelCount} from "../../hooks/useModelCount.ts";
 import {MEDIA} from "../../styles/breakpoints.ts";
 import {getSearchQueryFromSearchParams, withSearchQuery} from "../../utils/url-params.ts";
 import {ThemeToggle} from "../ThemeToggle/ThemeToggle.tsx";
 import {AccountMenu} from "./AccountMenu.tsx";
 
 import "./Header.css";
-
-type Props = {
-    count: number;
-};
 
 // Only routes that actually resolve to a real page today — Login lands in Phase 24, and adding a
 // nav link before then would violate "nav only links to pages that exist" (ROADMAP Phase 12).
@@ -41,7 +38,10 @@ function mobileNavLinkClass({isActive}: {isActive: boolean}) {
     return `mobileNavLink${isActive ? " mobileNavLinkActive" : ""}`;
 }
 
-export function Header({count}: Props) {
+export function Header() {
+    // "N models": read here (one cache shared by every page), hidden until the list has loaded —
+    // never "0 models" while it loads or failed (Phase 30).
+    const count = useModelCount();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
     const drawerId = useId();
@@ -153,7 +153,7 @@ export function Header({count}: Props) {
                 </label>
 
                 <div className="siteHeaderActions">
-                    <span className="modelCountPill">{count} models</span>
+                    {count !== null && <span className="modelCountPill">{count} models</span>}
                     <AccountMenu/>
                     <ThemeToggle/>
                     {/* Below 640px they move into the drawer: with the signed-in avatar the row

@@ -4,7 +4,6 @@ import {useMutation} from "@tanstack/react-query";
 
 import {Header} from "../../components/Header/Header";
 
-import {useModelCount} from "../../hooks/useModelCount.ts";
 import {useSession} from "../../hooks/useSession.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {safeRedirectPath} from "../../services/auth-state.ts";
@@ -19,7 +18,6 @@ import "./login-page.css";
 export function LoginPage() {
     const session = useSession();
     const location = useLocation();
-    const count = useModelCount();
     const emailId = useId();
     const passwordId = useId();
     const errorId = useId();
@@ -47,7 +45,7 @@ export function LoginPage() {
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
 
             <main className="loginMain">
                 <form className="loginCard" onSubmit={submit} aria-labelledby="login-title">

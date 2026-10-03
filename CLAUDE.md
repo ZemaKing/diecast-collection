@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Redesign in progress
 
-A phased redesign + Supabase migration is under way. **Read `ROADMAP.md` first** (findings in `docs/AUDIT.md`; mockups in `diecast-details/`). Implement **one phase at a time**, report per the workflow rules in the roadmap, update its checkboxes, then stop and wait for approval. Trucks were retired in Phase 11 (not migrated — see below). Sections below describe the architecture as of Phase 29 (bump this when a phase lands) and will be rewritten further in Phase 36.
+A phased redesign + Supabase migration is under way. **Read `ROADMAP.md` first** (findings in `docs/AUDIT.md`; mockups in `diecast-details/`). Implement **one phase at a time**, report per the workflow rules in the roadmap, update its checkboxes, then stop and wait for approval. Trucks were retired in Phase 11 (not migrated — see below). Sections below describe the architecture as of Phase 30 (bump this when a phase lands) and will be rewritten further in Phase 36.
 
 ## What this is
 

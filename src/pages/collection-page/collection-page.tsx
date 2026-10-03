@@ -141,7 +141,7 @@ export function CollectionPage() {
 
     return (
         <div className="layout">
-            <Header count={stats.totalModels}/>
+            <Header/>
 
             <div className="content">
                 <main className="main">

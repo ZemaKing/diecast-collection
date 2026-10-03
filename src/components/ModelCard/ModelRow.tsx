@@ -80,11 +80,11 @@ export function ModelListRow({model, linkState}: ModelRowProps) {
 
                 <span className="cardMeta">
                     <LogoOrText logoPath={model.brand.logoPath} name={model.brand.name} imgClassName="brandLogo" textClassName="cardMetaText"/>
-                    <span aria-hidden="true">•</span>
+                    <span aria-hidden="true">·</span>
                     <span>{model.year}</span>
-                    <span aria-hidden="true">•</span>
+                    <span aria-hidden="true">·</span>
                     <span>{model.manufacturer.name}</span>
-                    <span aria-hidden="true">•</span>
+                    <span aria-hidden="true">·</span>
                     <CategoryLabel category={model.category.name}/>
                 </span>
 

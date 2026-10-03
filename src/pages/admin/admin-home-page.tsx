@@ -31,7 +31,7 @@ export function AdminHomePage() {
 
     return (
         <div className="layout">
-            <Header count={count}/>
+            <Header/>
 
             <div className="content">
                 <main className="main">
@@ -58,7 +58,7 @@ export function AdminHomePage() {
                     <div className="adminGrid">
                         <section className="adminCard" aria-labelledby="admin-published">
                             <h2 id="admin-published" className="adminCardTitle">Published</h2>
-                            <p className="adminCardValue">{count}</p>
+                            <p className="adminCardValue">{count ?? "—"}</p>
                             <p className="adminCardBody">Models visitors can see. <Link to="/" className="adminLink">Open the collection</Link></p>
                         </section>
 
