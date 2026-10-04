@@ -10,7 +10,7 @@
 //
 // Exits 1 when any critical/serious violation remains that isn't a documented exception
 // (EXCEPTIONS below, mirrored in docs/accessibility.md). Admin pages need a signed-in owner, so
-// they're not covered here (Phase 35 runs them against the test project).
+// they're not covered here (Phase 35 stayed read-only, so they still need a by-hand check).
 import fs from "node:fs";
 import {createRequire} from "node:module";
 

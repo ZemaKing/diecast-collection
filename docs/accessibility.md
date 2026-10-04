@@ -1,6 +1,6 @@
 # Accessibility
 
-Target: **WCAG 2.2 AA**. Audit and fixes are from ROADMAP Phase 34 (2026-10-04). Phase 35 adds `@axe-core/playwright` to the E2E suite, which covers the admin pages too.
+Target: **WCAG 2.2 AA**. Audit and fixes are from ROADMAP Phase 34 (2026-10-04). Phase 35 adds `@axe-core/playwright` to the E2E suite (`e2e/a11y.spec.ts`: 7 key public pages × dark/light). The suite is read-only and never signs in, so it doesn't cover admin pages.
 
 ## How to check
 
@@ -13,7 +13,7 @@ npm run a11y:axe -- --all-impacts --incomplete --json out.json   # minor/moderat
 
 `scripts/a11y/axe.mjs` runs axe-core in a real headless Edge/Chrome (`scripts/lib/headless.mjs`, the same driver as `perf:vitals`). jsdom can't compute colors or layout, so contrast and target size need a real browser. It covers 23 scenarios: the collection in all three view modes, filtered, and empty; the filter dropdowns, sort, and the filter sheet; Quick View; the mobile drawer; the details page and its tabs; the lightbox; the brand and manufacturer index and detail pages; statistics; about; sign-in; and both 404s. Each runs in both themes at 1280 px and at 375 px (touch). The `target-size` rule (WCAG 2.2, 24 px) is switched on. Any critical or serious violation that isn't listed under [Exceptions](#exceptions) fails the run.
 
-**Not covered by the script:** `/admin/*` needs a signed-in owner, and Claude never types the password. The admin form's labelling and error wiring were reviewed in code: every field gets `id`, `aria-invalid` and `aria-describedby` from one `control()` helper, and save errors use `role="alert"`. Phase 35 runs axe there against the test project.
+**Not covered by the script:** `/admin/*` needs a signed-in owner, and Claude never types the password. The admin form's labelling and error wiring were reviewed in code: every field gets `id`, `aria-invalid` and `aria-describedby` from one `control()` helper, and save errors use `role="alert"`. Phase 35 stayed read-only (no test project), so the admin pages still have no automated axe run. Check them by hand while signed in.
 
 ## Results
 
@@ -92,4 +92,4 @@ None needed: the run has zero violations, so `EXCEPTIONS` in `scripts/a11y/axe.m
 
 - **Meta lines inside flex rows** (details page "2003 · Altaya · 1:43", Quick View): the dots are `aria-hidden`, and screen readers read the parts as separate items, so nothing runs together audibly. Card and row links aren't affected (they have their own names).
 - **Details page heading after slow loads**: if the model takes more than ~1.5 s to load, focus settles on `<main>` instead of the `<h1>`.
-- **Admin pages**: reviewed in code only until Phase 35's signed-in axe run.
+- **Admin pages**: reviewed in code only. Phase 35's E2E is read-only, so there's no signed-in axe run.

@@ -3,7 +3,9 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2023",
     "lib": [
-      "ES2023"
+      "ES2023",
+      // e2e/: callbacks passed to page.evaluate() run in the browser.
+      "DOM"
     ],
     "module": "ESNext",
     "types": [
@@ -25,6 +27,8 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "playwright.config.ts",
+    "e2e/**/*.ts"
   ]
 }

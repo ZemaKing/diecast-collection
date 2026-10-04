@@ -73,7 +73,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 32 | Mobile Responsive Pass | ✅ Done | Review mobile layout (built from the mockup's mobile + filter-panel insets); check add/edit on a phone signed in |
 | 33 | Performance | ✅ Done | Run `supabase/checks/performance.sql` once (EXPLAIN); decide on an 800px image variant (optional) |
 | 34 | Accessibility | ✅ Done | Screen-reader pass by hand (NVDA or VoiceOver); review the light-theme indicator color and darkened logos |
-| 35 | End-to-End Testing | ⬜ | Separate test Supabase project |
+| 35 | End-to-End Testing | ✅ Done | — (read-only by owner's choice: no test project; admin write journey not in E2E) |
 | 36 | Legacy Cleanup | ⬜ | Explicit approval to delete archives |
 | 37 | Production Verification | ⬜ | Vercel env vars; go/no-go |
 
@@ -226,7 +226,7 @@ Create the schema and lock it down.
 - [x] Anon: can read published models; **cannot** insert/update/delete anywhere; cannot see drafts, private notes or `admin_users`
 - [x] Authenticated non-admin: same as anon
 - [x] Admin: can CRUD
-- [ ] `supabase db push` on a clean project reproduces the schema from migrations alone *(**not yet proven**: the owner chose to skip the local Docker run. The files did apply cleanly, in order, to an empty project. A repeat run on the Phase 35 test project closes this)*
+- [ ] `supabase db push` on a clean project reproduces the schema from migrations alone *(**not yet proven**: the owner chose to skip the local Docker run. The files did apply cleanly, in order, to an empty project. A repeat run on the Phase 35 test project closes this. Still open: Phase 35 went read-only without a test project)*
 
 ### Definition of Done
 RLS enabled on all tables, verification script green, migrations reproducible.
@@ -938,22 +938,28 @@ No critical/serious axe violations; documented exceptions only. *(Done 2026-10-0
 
 ---
 
-## Phase 35 — End-to-End Testing
+## Phase 35 — End-to-End Testing ✅
 
 ### Goal
 Protect the major journeys.
 
 ### Tasks
-- [ ] Playwright; **separate test Supabase project** (never run write tests against production data); seeded via the import tool
-- [ ] Journeys: browse/filter/search/sort + deep links; details + gallery; login → create → edit → upload image → delete; RLS denial checks; 404s; mobile viewport smoke
-- [ ] `@axe-core/playwright` on key pages
-- [ ] Extend unit/component tests: services, query state, forms, auth guard
+- [x] Playwright; ~~**separate test Supabase project** (never run write tests against production data); seeded via the import tool~~ *(**owner's decision: skip the test project and keep E2E read-only.** The suite runs the production build (`vite preview` on :4174, rebuilt every run) against the live project in `.env.local`. It never writes: `e2e/fixtures.ts` aborts any non-GET request to Supabase and fails the test. A probe test confirmed a POST is blocked and reported. The expected values are read from PostgREST with the anon key, not through `src/services`, so counts follow the live data. Runs on the locally installed Edge, so no browser download)*
+- [x] Journeys: browse/filter/search/sort + deep links; details + gallery; ~~login → create → edit → upload image → delete~~; RLS denial checks *(read side only)*; 404s; mobile viewport smoke *(49 tests in `e2e/`, mapped in `e2e/README.md`. Login → create → edit → upload → delete and RLS **write** denials are left out by the owner's choice. They stay covered by `verify:rls`, `verify:model-form` and the unit tests. The anon RLS checks cover private notes, `admin_users`, drafts and `is_admin()`. The `/admin/*` guard is covered signed out)*
+- [x] `@axe-core/playwright` on key pages *(7 pages × dark/light; fails on critical/serious. The full matrix stays in `npm run a11y:axe`)*
+- [x] Extend unit/component tests: services, query state, forms, auth guard *(`src/services/auth.test.ts` (sign-in errors, `is_admin()`, the auth store), `AdminRoute.test.tsx` (the guard's four states), `useCollectionQuery.test.tsx` (URL query state), `useSession.test.tsx` (admin query states, cache reset per user), `login-page.test.tsx` (the sign-in form). The first component tests in the repo, using `@testing-library/react`. 822 → 852 tests)*
 
 ### Verification
-- [ ] Suite green locally and repeatable; failures produce traces
+- [x] Suite green locally and repeatable; failures produce traces *(two back-to-back full runs: 48 passed, 1 skipped (multi-photo paging, since no model has more than one photo yet), ~27 s each. No retries; every failure keeps `trace.zip`, a screenshot and the accessibility-tree `error-context.md` in `test-results/e2e/`)*
 
 ### Definition of Done
-`npm run test:e2e` covers all major journeys.
+`npm run test:e2e` covers all major journeys. *(Done 2026-10-04 for the read-only journeys. By the owner's choice, the admin write journey is outside E2E)*
+
+**Notes / deviations:**
+- New dev dependencies: **`@playwright/test`** (the E2E runner the roadmap names), **`@axe-core/playwright`** (axe inside those tests; the roadmap names it), **`@testing-library/react` + `@testing-library/dom`** (render components and hooks for the guard/form/query-state tests; nothing else in the repo could do that).
+- **No separate test project** → the Phase 6 item "migrations reproduce the schema on a clean project" is still open. It needs a clean project or the local Docker stack.
+- E2E depends on the network and on the live project being awake. A paused free-tier project (open decision 10) fails the whole run with the app's "paused project" error.
+- `tsconfig.node.json` now also type-checks `playwright.config.ts` and `e2e/` (with the DOM lib for `page.evaluate` callbacks). ESLint ignores Playwright's output folders, which are also git-ignored.
 
 ---
 

@@ -32,7 +32,9 @@
     "icons": "node scripts/generate-icons.mjs",
     "images:verify": "tsx --env-file-if-exists=.env.local scripts/migrate-images/verify.ts",
     "db:types": "supabase gen types typescript --linked --schema diecast > src/lib/database.types.ts",
-    "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts"
+    "db:types:local": "supabase gen types typescript --local --schema diecast > src/lib/database.types.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@fontsource-variable/nunito-sans": "^5.3.0",
@@ -43,7 +45,11 @@
     "react-router-dom": "^7.14.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

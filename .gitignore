@@ -31,3 +31,8 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright (Phase 35)
+/test-results
+/playwright-report
+/blob-report
