@@ -1,5 +1,6 @@
 import {Header} from "../Header/Header";
 import {Skeleton} from "./States.tsx";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 
 import "../../pages/collection-page/collection-page.css";
 
@@ -11,7 +12,7 @@ export function PageLoading() {
         <div className="layout">
             <Header/>
             <div className="content">
-                <main className="main pageLoading" aria-busy="true">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main pageLoading" aria-busy="true">
                     <span className="visuallyHidden" role="status">Loading page…</span>
                     <Skeleton className="pageLoadingTitle"/>
                     <Skeleton className="pageLoadingBlock"/>

@@ -3,6 +3,8 @@ import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {Header} from "../Header/Header";
 
 import {useAdminState, useSession, useSignOut} from "../../hooks/useSession.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "./AdminRoute.css";
 
@@ -26,11 +28,12 @@ export function AdminRoute() {
 
 function AdminGate({state, email}: {state: "checking" | "denied"; email: string | null}) {
     const signOut = useSignOut();
+    usePageTitle(state === "denied" ? "No admin access" : null);
 
     return (
         <div className="layout">
             <Header/>
-            <main className="adminGate">
+            <main id={MAIN_CONTENT_ID} tabIndex={-1} className="adminGate">
                 {state === "checking" ? (
                     <p className="adminGateChecking" role="status">Checking access…</p>
                 ) : (

@@ -1,5 +1,6 @@
 import {useState} from "react";
 
+import {Check} from "../../icons/Check.tsx";
 import {ColorCircle} from "../ColorCircle/ColorCircle.tsx";
 import {categoryColorVar} from "../../utils/category.ts";
 import {colorSwatchHex} from "../../utils/color.ts";
@@ -68,6 +69,7 @@ export function CategoryPills({options, selected, onToggle}: {
                         aria-pressed={isSelected}
                         onClick={() => onToggle(option.slug)}
                     >
+                        {isSelected && <Check className="categoryPillCheck" width={12} height={12} aria-hidden="true"/>}
                         {option.name} <span className="filterOptionCount">{option.count}</span>
                     </button>
                 );

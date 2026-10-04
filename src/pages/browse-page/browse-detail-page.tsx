@@ -25,11 +25,13 @@ import {describeResults, pluralizeModels} from "../../utils/collection-summary.t
 import {readFocusModel} from "../../utils/model-link.ts";
 import {PRIORITY_IMAGE_COUNT} from "../../utils/model-display.ts";
 import {slugify} from "../../utils/slug.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 
 import "../../components/PageIntro/PageIntro.css";
 import "../collection-page/collection-page.css";
 import "./browse-page.css";
 import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 const SKELETON_KEYS = Array.from({length: 10}, (_, i) => `skeleton-${i}`);
 
@@ -63,6 +65,7 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
     const visible = useMemo(() => sortModels(filterModels(own, categoryFilters), sort), [own, categoryFilters, sort]);
 
     useScrollRestoration({ready: modelsQuery.isSuccess, focusId: readFocusModel(location.state)});
+    usePageTitle(entry ? `${entry.name} · ${labels.plural}` : null);
 
     // `/brands/Citroën` or `/brands/Ford` (hand-typed, or a name pasted in) → the canonical slug.
     const canonical = slugify(slug);
@@ -89,7 +92,7 @@ export function BrowseDetailPage({kind}: {kind: BrowseKind}) {
                     ]}
                 />
 
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     {modelsQuery.isError ? (
                         <ErrorState error={modelsQuery.error} onRetry={() => modelsQuery.refetch()} retrying={modelsQuery.isFetching}/>
                     ) : !entry ? (

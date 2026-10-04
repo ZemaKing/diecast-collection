@@ -79,6 +79,7 @@
     --container-gutter: clamp(var(--space-lg), 3vw, var(--space-2xl));
     --header-height: 64px;
     --tap-target: 44px;
+    --target-min: 24px;   /* WCAG 2.2 AA minimum for any pointer target (Phase 34); --tap-target is the touch aim */
     /* collection grid: auto-fill column floor — reproduces the mockups' 1 (360) / 3 (768) /
        5 (1280–1440) columns with the container gutter (ROADMAP Phase 17) */
     --card-min-width: 220px;
@@ -179,6 +180,10 @@
        non-text mark), the meter's unfilled track a lighter step of the same gold */
     --chart-bar: #f5c33b;
     --chart-track: rgba(245, 195, 59, 0.16);
+
+    /* The 64 shipped brand/manufacturer SVGs (public/brands, public/manufacturers) are drawn in a
+       fixed light grey, #A9B1BF — fine on navy, 2:1 on white. Light theme darkens them (Phase 34). */
+    --logo-shipped-filter: none;
 }
 
 /* ---- 3. Semantic colors — light (derived; no mockup, flagged) ---------- */
@@ -235,6 +240,13 @@
     /* the gold fill is 1.6:1 on white — a darker step of it for chart marks (3.9:1) */
     --chart-bar: #a87a0a;
     --chart-track: rgba(168, 122, 10, 0.16);
+
+    /* Selected/current indicators (nav underline, active tab, active filter) must reach 3:1 like
+       any state cue (WCAG 1.4.11); the gold is 1.6:1 on white (Phase 34). */
+    --state-selected-border: var(--color-accent-text);
+
+    /* #A9B1BF × 0.5 ≈ #55595F: 7:1 on white (uploaded logos keep their own colors) */
+    --logo-shipped-filter: brightness(0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -298,6 +310,19 @@ body {
 :focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
+}
+
+/* Programmatic focus targets (Phase 34): the skip link and useFocusOnNavigation() move focus to
+   <main id="main-content"> or the page's <h1> so screen readers start there — not controls, so no ring. */
+#main-content:focus,
+#main-content h1[tabindex="-1"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+img[src^="/brands/"],
+img[src^="/manufacturers/"] {
+    filter: var(--logo-shipped-filter);
 }
 
 /* Page scroll lock while a modal <dialog> is open (useModalDialog). */

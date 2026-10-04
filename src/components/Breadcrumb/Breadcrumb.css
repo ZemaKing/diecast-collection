@@ -29,6 +29,8 @@
     color: var(--color-text-secondary);
     text-decoration: none;
     border-radius: var(--radius-xs);
+    /* WCAG 2.2 target size (24px) without moving the line: the extra height is padding (Phase 34). */
+    min-height: var(--target-min);
 }
 
 .breadcrumbLink:hover {

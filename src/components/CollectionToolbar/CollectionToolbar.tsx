@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useId, useMemo, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {Link} from "react-router-dom";
 
@@ -10,6 +10,7 @@ import {Filter} from "../../icons/Filter.tsx";
 import {ViewCompact} from "../../icons/ViewCompact.tsx";
 import {ViewGrid} from "../../icons/ViewGrid.tsx";
 import {ViewList} from "../../icons/ViewList.tsx";
+import {useFocusTrap} from "../../hooks/useFocusTrap.ts";
 import {getColors} from "../../services/lookups.ts";
 import type {BrowseKind} from "../../services/browse.ts";
 import type {CollectionFilters, FacetCount, FacetCounts, SortOption} from "../../services/collection-query.ts";
@@ -127,7 +128,11 @@ function FilterTrigger({label, variant, options, selected, onToggle, hexBySlug, 
         <details ref={ref} className={`filterTrigger${selected.length > 0 ? " filterTriggerActive" : ""}`} open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
             <summary className="filterTriggerSummary">
                 {label}
-                {selected.length > 0 && <span className="filterTriggerCount">{selected.length}</span>}
+                {selected.length > 0 && (
+                    <span className="filterTriggerCount">
+                        {selected.length}<span className="visuallyHidden"> selected</span>
+                    </span>
+                )}
                 <ChevronDown className="filterTriggerChevron"/>
             </summary>
             <div className="filterTriggerPanel">
@@ -182,6 +187,8 @@ export function SortTrigger({sort, onChange, showRelevance, hiddenOptions = []}:
 export function CollectionToolbar({filters, facets, resultsCount, onToggle, onClear, sort, onSortChange, hasQuery, viewMode, onViewModeChange}: CollectionToolbarProps) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const filtersToggleRef = useRef<HTMLButtonElement>(null);
+    const sheetRef = useRef<HTMLDivElement>(null);
+    const sheetTitleId = useId();
     const activeCount = GROUPS.reduce((n, {key}) => n + filters[key].length, 0);
 
     const colorsQuery = useQuery({queryKey: ["colors"], queryFn: getColors});
@@ -189,19 +196,15 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
 
     const closeSheet = () => setIsSheetOpen(false);
 
+    // The sheet is modal (scrim): focus moves into it, Tab stays inside, Escape closes it, and
+    // every way of closing returns focus to the Filters button (Phase 34).
+    useFocusTrap({active: isSheetOpen, containerRef: sheetRef, onEscape: closeSheet});
+
     // The "Filters" button/sheet only exists below desktop (1024px; a bottom sheet on phones, a side
-    // sheet on tablets — Phase 31) — the four triggers are inline above that. Esc closes the sheet
-    // and returns focus to the toggle button; resizing (or rotating) into desktop closes it too, so
-    // it can't get stuck open behind the inline row.
+    // sheet on tablets — Phase 31) — the four triggers are inline above that. Resizing (or rotating)
+    // into desktop closes it, so it can't get stuck open behind the inline row.
     useEffect(() => {
         if (!isSheetOpen) return;
-
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key !== "Escape") return;
-            setIsSheetOpen(false);
-            filtersToggleRef.current?.focus();
-        };
-        document.addEventListener("keydown", onKeyDown);
 
         const desktopUp = window.matchMedia(MEDIA.desktopUp);
         const onDesktopUp = (e: MediaQueryListEvent) => {
@@ -209,10 +212,7 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
         };
         desktopUp.addEventListener("change", onDesktopUp);
 
-        return () => {
-            document.removeEventListener("keydown", onKeyDown);
-            desktopUp.removeEventListener("change", onDesktopUp);
-        };
+        return () => desktopUp.removeEventListener("change", onDesktopUp);
     }, [isSheetOpen]);
 
     const chips = GROUPS.flatMap(({key}) =>
@@ -236,7 +236,11 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
                 >
                     <Filter/>
                     Filters
-                    {activeCount > 0 && <span className="filtersToggleCount">{activeCount}</span>}
+                    {activeCount > 0 && (
+                        <span className="filtersToggleCount">
+                            {activeCount}<span className="visuallyHidden"> active</span>
+                        </span>
+                    )}
                 </button>
 
                 <div className="toolbarTriggers">
@@ -289,9 +293,9 @@ export function CollectionToolbar({filters, facets, resultsCount, onToggle, onCl
             {isSheetOpen && (
                 <>
                     <div className="sheetScrim" onClick={closeSheet}/>
-                    <div id="collectionFilterSheet" className="filterSheet" role="dialog" aria-modal="true" aria-label="Filters">
+                    <div ref={sheetRef} id="collectionFilterSheet" className="filterSheet" role="dialog" aria-modal="true" aria-labelledby={sheetTitleId}>
                         <div className="sheetHeader">
-                            <span className="sheetTitle">Filters</span>
+                            <h2 id={sheetTitleId} className="sheetTitle">Filters</h2>
                             {activeCount > 0 && (
                                 <button type="button" className="clearAllButton" onClick={onClear}>
                                     Clear all

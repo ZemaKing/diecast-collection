@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {Navigate, useLocation, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 import "./collection-page.css";
 
 import {Header} from "../../components/Header/Header";
@@ -24,6 +25,7 @@ import {describeEmptyResults, describeResults} from "../../utils/collection-summ
 import {getLegacyModelRedirect, readFocusModel, type ModelLinkState} from "../../utils/model-link.ts";
 import {PRIORITY_IMAGE_COUNT} from "../../utils/model-display.ts";
 import type {ViewMode} from "../../utils/view-mode.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 // A fixed key set (not an index) avoids remounting skeleton nodes on every render. 10 = two full
 // rows at the mockup's 5-column desktop grid.
@@ -76,6 +78,7 @@ export function CollectionPage() {
 
     // Cars are Supabase-backed (ROADMAP Phase 10) — trucks are retired (Phase 11).
     const carsQuery = useQuery(modelSummariesQuery);
+    usePageTitle("");
     const summaries = useMemo(() => carsQuery.data ?? [], [carsQuery.data]);
 
     // Filter -> search -> sort, all on the Supabase domain shape (ModelSummary). Facets are
@@ -125,8 +128,12 @@ export function CollectionPage() {
         if (element) window.scrollBy(0, element.getBoundingClientRect().top - anchor.top);
     }, [viewMode]);
 
+    // Back to top also takes keyboard focus back up (to <main>), or it would stay on this button at
+    // the bottom of a 227-card page; smooth only when motion is welcome (Phase 34).
     const scrollToTop = () => {
-        window.scrollTo({top: 0, behavior: "smooth"});
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"});
+        document.getElementById(MAIN_CONTENT_ID)?.focus({preventScroll: true});
     };
 
     // Pre-Phase-19 shared links (`/?model=<id>`, also reached via `/cars?model=`) opened a modal;
@@ -141,7 +148,7 @@ export function CollectionPage() {
             <Header/>
 
             <div className="content">
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <CollectionHero
                         count={carsQuery.isSuccess ? stats.totalModels : null}
                         scales={stats.scales}

@@ -60,7 +60,9 @@ export function BrowseTile({kind, entry}: {kind: BrowseKind; entry: BrowseEntry}
                 <span className="visuallyHidden">Categories: {describeCategories(entry.categories)}.</span>
                 <span className="browseTileMeta">
                     {formatYears(entry.years)}
+                    {/* The dot is decoration; a screen reader gets a comma instead of "1969–20224 manufacturers". */}
                     <span aria-hidden="true"> · </span>
+                    <span className="visuallyHidden">, </span>
                     {formatRelated(kind, entry.relatedCount)}
                 </span>
             </div>

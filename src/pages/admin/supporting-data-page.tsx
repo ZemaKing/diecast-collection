@@ -30,6 +30,8 @@ import {
 } from "../../utils/lookup-admin.ts";
 import {countryCodeToFlagEmoji} from "../../utils/model-display.ts";
 import {SUPPORTING_DATA_PATH} from "../../utils/model-link.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "../collection-page/collection-page.css";
 import "../../components/ModelAdminActions/ModelAdminActions.css";
@@ -43,12 +45,13 @@ import "./supporting-data-page.css";
 export function SupportingDataPage() {
     const [searchParams] = useSearchParams();
     const kind = parseLookupTab(searchParams.get("tab"));
+    usePageTitle(`${LOOKUP_LABELS[kind].title} · Supporting data`);
 
     return (
         <div className="layout">
             <Header/>
             <div className="content">
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <PageIntro
                         eyebrow="Admin"
                         title="Supporting data"

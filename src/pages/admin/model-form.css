@@ -127,7 +127,7 @@
 
 .formSectionHighlighted {
     background: var(--color-accent-soft);
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
 }
 
 .formSectionHead {
@@ -900,7 +900,7 @@
 }
 
 .photoTileDropTarget {
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
     box-shadow: var(--focus-ring);
 }
 

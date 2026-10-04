@@ -213,7 +213,7 @@
 
 .detailsTabActive {
     color: var(--color-accent-text);
-    border-bottom-color: var(--color-accent);
+    border-bottom-color: var(--state-selected-border);
     font-weight: var(--weight-bold);
 }
 

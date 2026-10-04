@@ -5,14 +5,31 @@ import {describe, expect, it} from "vitest";
 import tokensCss from "./styles.css?raw";
 import {contrastRatio, parseHex} from "../utils/contrast.ts";
 
-function readTheme(selector: string): Record<string, string> {
+function themeBlock(selector: string): string {
     const start = tokensCss.indexOf(`${selector} {`);
-    const block = tokensCss.slice(start, tokensCss.indexOf("\n}", start));
-    return Object.fromEntries([...block.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{3,6})\s*;/g)].map((m) => [m[1], m[2]]));
+    return tokensCss.slice(start, tokensCss.indexOf("\n}", start));
 }
 
-const dark = readTheme(":root");
-const light = {...dark, ...readTheme('[data-theme="light"]')};
+function readTheme(selector: string): Record<string, string> {
+    return Object.fromEntries([...themeBlock(selector).matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{3,6})\s*;/g)].map((m) => [m[1], m[2]]));
+}
+
+// Tokens defined as another token (`--x: var(--y);`), resolved per theme.
+function readAliases(selector: string): Record<string, string> {
+    return Object.fromEntries([...themeBlock(selector).matchAll(/(--[\w-]+):\s*var\((--[\w-]+)\)\s*;/g)].map((m) => [m[1], m[2]]));
+}
+
+function resolve(theme: Record<string, string>, aliases: Record<string, string>): Record<string, string> {
+    const out = {...theme};
+    for (const [name, target] of Object.entries(aliases)) if (out[target]) out[name] = out[target];
+    return out;
+}
+
+// The light block overrides :root per token — with a value or with another alias.
+const lightValues = readTheme('[data-theme="light"]');
+const lightAliases = Object.fromEntries(Object.entries(readAliases(":root")).filter(([name]) => !(name in lightValues)));
+const dark = resolve(readTheme(":root"), readAliases(":root"));
+const light = resolve({...readTheme(":root"), ...lightValues}, {...lightAliases, ...readAliases('[data-theme="light"]')});
 
 const SURFACES = ["--color-bg", "--color-bg-elevated", "--color-surface", "--color-surface-sunken", "--color-surface-raised", "--color-surface-hover"];
 const TEXT = [
@@ -46,6 +63,12 @@ describe.each([["dark", dark], ["light", light]] as const)("%s theme", (_name, t
 
     it.each(SURFACES)("chart bars are visible on %s (≥ 3:1, non-text)", (bg) => {
         expect(contrastRatio(theme["--chart-bar"], theme[bg])).toBeGreaterThanOrEqual(3);
+    });
+
+    // Nav underline, active tab, active filter trigger, current thumbnail (Phase 34).
+    it.each(SURFACES)("selected-state indicators are visible on %s (≥ 3:1, non-text)", (bg) => {
+        expect(theme["--state-selected-border"]).toBeDefined();
+        expect(contrastRatio(theme["--state-selected-border"], theme[bg])).toBeGreaterThanOrEqual(3);
     });
 
     it("focus ring is visible against the page (≥ 3:1, non-text)", () => {

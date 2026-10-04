@@ -6,7 +6,7 @@ import {CategoryLabel} from "../CategoryLabel/CategoryLabel";
 import {LogoOrText} from "./LogoOrText.tsx";
 
 import type {ModelSummary} from "../../services/types.ts";
-import {countryCodeToFlagEmoji, photoLoading} from "../../utils/model-display.ts";
+import {countryCodeToFlagEmoji, modelLinkLabel, photoLoading} from "../../utils/model-display.ts";
 import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
@@ -67,7 +67,7 @@ function RacingInline({model}: {model: ModelSummary}) {
 
 export function ModelListRow({model, linkState, priority = false}: ModelRowProps) {
     return (
-        <Link className="listRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
+        <Link className="listRow" id={model.slug} to={modelPath(model.slug)} state={linkState} aria-label={modelLinkLabel(model)}>
             <RowThumb model={model} className="listRowThumb" priority={priority}>
                 {/* Below tablet the aside column is dropped to give the title room; the scale
                     moves onto the photo instead, as on the grid card. */}
@@ -105,7 +105,7 @@ export function ModelListRow({model, linkState, priority = false}: ModelRowProps
 
 export function ModelCompactRow({model, linkState, priority = false}: ModelRowProps) {
     return (
-        <Link className="compactRow" id={model.slug} to={modelPath(model.slug)} state={linkState}>
+        <Link className="compactRow" id={model.slug} to={modelPath(model.slug)} state={linkState} aria-label={modelLinkLabel(model)}>
             <RowThumb model={model} className="compactThumb" priority={priority}/>
 
             <span className="compactMain">

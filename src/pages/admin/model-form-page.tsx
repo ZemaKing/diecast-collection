@@ -14,19 +14,22 @@ import {getModelBySlug} from "../../services/models.ts";
 import type {Model} from "../../services/types.ts";
 import {emptyModelForm, localDateString, modelToFormValues} from "../../utils/model-form.ts";
 import {modelPath} from "../../utils/model-link.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "../collection-page/collection-page.css";
 
 // `/admin/models/new` (Phase 25) — behind AdminRoute. A new model is added today unless changed.
 export function NewModelPage() {
     const [initial] = useState(() => emptyModelForm(localDateString(new Date())));
+    usePageTitle("Add model");
 
     return (
         <div className="layout">
             <Header/>
             <div className="content">
                 <Breadcrumb home={{to: "/"}} trail={[{label: "Dashboard", to: "/admin"}, {label: "Add Model"}]}/>
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <ModelForm initial={initial} original={null} cancelTo="/admin"/>
                 </main>
             </div>
@@ -54,6 +57,7 @@ export function EditModelPage() {
         enabled: !!modelQuery.data,
         refetchOnWindowFocus: false,
     });
+    usePageTitle(modelQuery.data ? `Edit ${modelQuery.data.name}` : null);
 
     if (modelQuery.error?.kind === "not_found") return <NotFoundPage/>;
 
@@ -68,7 +72,7 @@ export function EditModelPage() {
                     home={{to: "/"}}
                     trail={model ? [{label: model.name, to: modelPath(model.slug)}, {label: "Edit"}] : [{label: "Edit"}]}
                 />
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     {error ? (
                         <ErrorState
                             error={error}

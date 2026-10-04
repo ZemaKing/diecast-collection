@@ -8,7 +8,7 @@ import {ImagePlaceholder} from "../States/States.tsx";
 
 import {Eye} from "../../icons/Eye.tsx";
 import type {ModelSummary} from "../../services/types.ts";
-import {countryCodeToFlagEmoji, photoLoading} from "../../utils/model-display.ts";
+import {countryCodeToFlagEmoji, modelLinkLabel, photoLoading} from "../../utils/model-display.ts";
 import {modelPath, type ModelLinkState} from "../../utils/model-link.ts";
 
 import "./ModelCard.css";
@@ -35,7 +35,7 @@ export function ModelCard({model, linkState, onQuickView, priority = false}: Mod
     const hasDriver = !!model.driver;
 
     const card = (
-        <Link className="card" id={model.slug} to={modelPath(model.slug)} state={linkState}>
+        <Link className="card" id={model.slug} to={modelPath(model.slug)} state={linkState} aria-label={modelLinkLabel(model)}>
             <div className="thumb">
                 {imageUrl && !imageBroken ? (
                     <img
@@ -98,10 +98,9 @@ export function ModelCard({model, linkState, onQuickView, priority = false}: Mod
         <div className="cardShell" data-slug={model.slug}>
             {card}
             <div className="quickViewLayer">
-                <button type="button" className="quickViewTrigger" onClick={() => onQuickView(model)}>
+                <button type="button" className="quickViewTrigger" onClick={() => onQuickView(model)} aria-label={`Quick view: ${model.name}`}>
                     <Eye width={16} height={16}/>
                     <span>Quick view</span>
-                    <span className="visuallyHidden">: {model.name}</span>
                 </button>
             </div>
         </div>

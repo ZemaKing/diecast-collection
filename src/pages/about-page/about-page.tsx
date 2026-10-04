@@ -1,4 +1,6 @@
 import {Header} from "../../components/Header/Header";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "./about-page.css";
 
@@ -6,11 +8,12 @@ import "./about-page.css";
 // sourced only from copy already approved in the mockup (diecast-details/Mockup Overall.png),
 // not invented. Replace with the owner's own words about the collection whenever they're ready.
 export function AboutPage() {
+    usePageTitle("About");
     return (
         <div className="aboutPage">
             <Header/>
 
-            <main className="aboutMain">
+            <main id={MAIN_CONTENT_ID} tabIndex={-1} className="aboutMain">
                 <div className="aboutCard">
                     <span className="aboutEyebrow">About</span>
                     <h1 className="aboutTitle">More than models.</h1>

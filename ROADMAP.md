@@ -72,7 +72,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 31 | Tablet Responsive Pass | ✅ Done | Review tablet layout (built from the mockup's tablet inset + the system — no full Tablet mockups) |
 | 32 | Mobile Responsive Pass | ✅ Done | Review mobile layout (built from the mockup's mobile + filter-panel insets); check add/edit on a phone signed in |
 | 33 | Performance | ✅ Done | Run `supabase/checks/performance.sql` once (EXPLAIN); decide on an 800px image variant (optional) |
-| 34 | Accessibility | ⬜ | — |
+| 34 | Accessibility | ✅ Done | Screen-reader pass by hand (NVDA or VoiceOver); review the light-theme indicator color and darkened logos |
 | 35 | End-to-End Testing | ⬜ | Separate test Supabase project |
 | 36 | Legacy Cleanup | ⬜ | Explicit approval to delete archives |
 | 37 | Production Verification | ⬜ | Vercel env vars; go/no-go |
@@ -911,22 +911,30 @@ Targets met or consciously accepted (e.g. LCP, CLS, JS size), documented. *(Done
 
 ---
 
-## Phase 34 — Accessibility
+## Phase 34 — Accessibility ✅
 
 ### Goal
 Keyboard, screen-reader and contrast correctness.
 
 ### Tasks
-- [ ] Keyboard paths for every flow; visible focus; focus trap/restore in dialogs, drawers, lightbox
-- [ ] Semantics/labels for icon buttons, filters, chips, tabs; `aria-live` for result counts
-- [ ] Contrast audit (gold, category colors, muted text on navy — known risk: Racing red / Supercar blue text on dark)
-- [ ] `prefers-reduced-motion`; touch target sizes
+- [x] Keyboard paths for every flow; visible focus; focus trap/restore in dialogs, drawers, lightbox *(scripted Tab walk of every page: each stop showed a ring. New: "Skip to content", focus moves to the new page's `<h1>` after a client-side page change (`useFocusOnNavigation`), the header search keeps focus when it navigates, the filter sheet traps and restores focus (`useFocusTrap`), the mobile drawer is an honest disclosure (focus in, Escape, outside click/Tab closes it), and Back to top returns focus. Quick View and the lightbox were already native `<dialog>`s)*
+- [x] Semantics/labels for icon buttons, filters, chips, tabs; `aria-live` for result counts *(the results count was already live. New: a per-page `<title>` (`usePageTitle`), card/row link names led by the model name (`modelLinkLabel`), "N selected"/"N active" on filter counts, ✓ on the selected category pill, the sheet's `<h2>`, and a browse tile separator)*
+- [x] Contrast audit (gold, category colors, muted text on navy — known risk: Racing red / Supercar blue text on dark) *(text tokens all ≥ 4.5:1 (Racing 5.1+, Supercar 5.5+, gold 9.5+ on dark). Found and fixed: light-theme selected/current indicators were gold at 1.6:1, now `--state-selected-border` (≥ 4.5:1, tested), and the shipped logos were 2:1 in light theme, now darkened ≈ 7:1)*
+- [x] `prefers-reduced-motion`; touch target sizes *(nothing animates under reduce; Back to top no longer smooth-scrolls. axe `target-size` (24 px) passes everywhere; breadcrumb links raised to 24 px; the few targets below the 44 px aim are listed in `docs/accessibility.md`)*
 
 ### Verification
-- [ ] axe (manual now, automated in Phase 35); keyboard-only run-through; screen-reader spot check
+- [x] axe (manual now, automated in Phase 35); keyboard-only run-through; screen-reader spot check *(new `npm run a11y:axe`: 23 scenarios × 2 themes × 2 viewports in headless Edge. Baseline 0 critical/serious + 1 moderate; now **0 violations of any impact**. Keyboard run-through scripted, plus checks in the browser pane. The screen-reader check used Chrome's computed accessibility tree, not a real screen reader, so the owner should do one by hand. Tests 822/822 pass, lint is clean, build ok, no horizontal scroll at 360/768/1280)*
 
 ### Definition of Done
-No critical/serious axe violations; documented exceptions only.
+No critical/serious axe violations; documented exceptions only. *(Done 2026-10-04: zero violations; `EXCEPTIONS` is empty. Accepted limits are in `docs/accessibility.md`)*
+
+**Notes / deviations:**
+- New dev dependency **`axe-core`**: the standard WCAG rule engine, injected by `scripts/a11y/axe.mjs`. Phase 35's `@axe-core/playwright` is built on it.
+- `scripts/perf/vitals.mjs`'s headless-browser driver moved to `scripts/lib/headless.mjs` (shared with the axe script). Behavior is unchanged; checked with a run.
+- **Light theme visuals changed slightly**: the active nav underline, active tab, active filter/view outlines, current thumbnail and selected color ring are now the darker gold `#8a6100`, and shipped brand/manufacturer logos are darker grey. Dark theme is unchanged.
+- **Mobile drawer semantics**: `role="dialog" aria-modal` was removed. It was never modal (its close control is the header's ☰), so it now follows the `AccountMenu` disclosure pattern.
+- **Filled category pill** (Phase 30 note) stays outlined. Say if you want the mockup's fill; it needs a per-category contrast pass on the tint.
+- **Admin pages** aren't covered by the axe script (they need your sign-in). They were reviewed in code; Phase 35 adds signed-in axe runs.
 
 ---
 

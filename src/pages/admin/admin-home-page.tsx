@@ -11,6 +11,8 @@ import type {AppError} from "../../lib/errors.ts";
 import {getDraftModels} from "../../services/models.ts";
 import type {ModelSummary} from "../../services/types.ts";
 import {editModelPath, modelPath, NEW_MODEL_PATH, readAdminNotice, SUPPORTING_DATA_PATH} from "../../utils/model-link.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "../collection-page/collection-page.css";
 import "../../components/ModelAdminActions/ModelAdminActions.css";
@@ -24,6 +26,7 @@ export function AdminHomePage() {
     const session = useSession();
     const count = useModelCount();
     const email = session.status === "signedIn" ? session.user.email : null;
+    usePageTitle("Dashboard");
 
     const draftsQuery = useQuery<ModelSummary[], AppError>({queryKey: ["models", "drafts"], queryFn: getDraftModels});
     const signOutMutation = useSignOut();
@@ -34,7 +37,7 @@ export function AdminHomePage() {
             <Header/>
 
             <div className="content">
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <PageIntro eyebrow="Admin" title="Dashboard" subtitle={email ? `Signed in as ${email}` : null}>
                         <div className="adminIntroActions">
                             <Link to={NEW_MODEL_PATH} className="adminPrimary">+ Add Model</Link>

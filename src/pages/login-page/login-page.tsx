@@ -8,6 +8,8 @@ import {useSession} from "../../hooks/useSession.ts";
 import type {AppError} from "../../lib/errors.ts";
 import {safeRedirectPath} from "../../services/auth-state.ts";
 import {signInWithPassword} from "../../services/auth.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "./login-page.css";
 
@@ -16,6 +18,7 @@ import "./login-page.css";
 // dashboard (docs/SUPABASE-SETUP.md), where a password is reset too. Nothing public links here —
 // visitors never need an account. No mockup exists; built from the design system.
 export function LoginPage() {
+    usePageTitle("Sign in");
     const session = useSession();
     const location = useLocation();
     const emailId = useId();
@@ -47,7 +50,7 @@ export function LoginPage() {
         <div className="layout">
             <Header/>
 
-            <main className="loginMain">
+            <main id={MAIN_CONTENT_ID} tabIndex={-1} className="loginMain">
                 <form className="loginCard" onSubmit={submit} aria-labelledby="login-title">
                     <p className="loginEyebrow">Owner</p>
                     <h1 id="login-title" className="loginTitle">Sign in</h1>

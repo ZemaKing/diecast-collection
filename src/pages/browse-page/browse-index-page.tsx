@@ -12,6 +12,8 @@ import {getBrowseEntries, sortBrowseEntries, type BrowseKind, type BrowseSort} f
 import {modelSummariesQuery} from "../../hooks/model-queries.ts";
 import {BROWSE_LABELS, getBrowseSortFromSearchParams, withBrowseSort} from "../../utils/browse-link.ts";
 import {pluralizeModels} from "../../utils/collection-summary.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "../collection-page/collection-page.css";
 import "./browse-page.css";
@@ -30,6 +32,7 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
     const [searchParams, setSearchParams] = useSearchParams();
     const order = getBrowseSortFromSearchParams(searchParams);
     const labels = BROWSE_LABELS[kind];
+    usePageTitle(labels.plural);
 
     const modelsQuery = useQuery(modelSummariesQuery);
     const models = useMemo(() => modelsQuery.data ?? [], [modelsQuery.data]);
@@ -44,7 +47,7 @@ export function BrowseIndexPage({kind}: {kind: BrowseKind}) {
             <Header/>
 
             <div className="content">
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <PageIntro
                         eyebrow="Browse"
                         title={labels.plural}

@@ -38,10 +38,12 @@ import {collectionPath, readAdminNotice, readCollectionSearch, type ModelLinkSta
 // The page reuses the card's photo badges (manufacturer/scale) and skeleton shimmer — imported
 // explicitly, since a direct load of /models/:slug never renders a ModelCard.
 // Likewise the collection page's container styles (`.layout`, `.content`).
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 import "../../components/ModelCard/ModelCard.css";
 import "../collection-page/collection-page.css";
 import "./model-details-page.css";
 import {ErrorState, Skeleton} from "../../components/States/States.tsx";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 // The model details page (ROADMAP Phase 19), `/models/:slug` — replaces the `?model=` modal
 // deep link. Every section below renders only when its data exists (docs/SCHEMA.md principle 4:
@@ -68,6 +70,7 @@ export function ModelDetailsPage() {
     });
 
     useScrollRestoration({ready: !modelQuery.isPending});
+    usePageTitle(modelQuery.data?.name ?? null);
 
     if (modelQuery.error?.kind === "not_found") {
         return <NotFoundPage/>;
@@ -92,7 +95,7 @@ export function ModelDetailsPage() {
                     ] : []}
                 />
 
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     {adminNotice && <p className="adminNotice" role="status">{adminNotice}</p>}
                     {modelQuery.isPending ? (
                         <DetailsSkeleton/>

@@ -3,6 +3,8 @@ import {useRouteError} from "react-router-dom";
 
 import {StateIcon} from "../../components/States/StateIcon.tsx";
 import {isChunkLoadError} from "../../utils/error-display.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 import "../../components/States/States.css";
 import "../not-found-page/not-found-page.css";
@@ -15,6 +17,7 @@ import "../not-found-page/not-found-page.css";
 export function RouteErrorPage() {
     const error = useRouteError();
     const staleChunk = isChunkLoadError(error);
+    usePageTitle(staleChunk ? "Reload needed" : "Something went wrong");
 
     useEffect(() => {
         console.error("[route error]", error);
@@ -22,7 +25,7 @@ export function RouteErrorPage() {
 
     return (
         <div className="notFoundPage">
-            <main className="notFoundMain" role="alert">
+            <main id={MAIN_CONTENT_ID} tabIndex={-1} className="notFoundMain" role="alert">
                 <StateIcon name="error"/>
                 <h1 className="notFoundTitle">{staleChunk ? "This page needs a reload" : "Something went wrong"}</h1>
                 <p className="notFoundBody">

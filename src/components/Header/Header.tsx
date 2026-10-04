@@ -6,8 +6,10 @@ import {Email} from "../../icons/Email.tsx";
 import {Instagram} from "../../icons/Instagram.tsx";
 import {Menu} from "../../icons/Menu.tsx";
 import {Search} from "../../icons/Search.tsx";
+import {useFocusOnNavigation} from "../../hooks/useFocusOnNavigation.ts";
 import {useModelCount} from "../../hooks/useModelCount.ts";
 import {MEDIA} from "../../styles/breakpoints.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 import {getSearchQueryFromSearchParams, withSearchQuery} from "../../utils/url-params.ts";
 import {ThemeToggle} from "../ThemeToggle/ThemeToggle.tsx";
 import {AccountMenu} from "./AccountMenu.tsx";
@@ -30,6 +32,19 @@ const NAV_LINKS = [
 
 const SEARCH_DEBOUNCE_MS = 250;
 
+// Router state on the navigation the search box makes from another page to "/?q=": the new page's
+// header puts focus back in the box, so typing carries on (each page renders its own Header).
+type HeaderLocationState = {focusSearch?: boolean} | null;
+
+// "Skip to content" (Phase 34): moves focus to the page's <main id="main-content" tabIndex={-1}>.
+// Handled here rather than as a plain #hash link, which would add a history entry the router sees.
+function skipToContent(e: React.MouseEvent<HTMLAnchorElement>) {
+    const main = document.getElementById(MAIN_CONTENT_ID);
+    if (!main) return;
+    e.preventDefault();
+    main.focus();
+}
+
 function navLinkClass({isActive}: {isActive: boolean}) {
     return `siteNavLink${isActive ? " siteNavLinkActive" : ""}`;
 }
@@ -44,6 +59,8 @@ export function Header() {
     const count = useModelCount();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
+    const drawerRef = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const drawerId = useId();
     const searchId = useId();
 
@@ -73,13 +90,23 @@ export function Header() {
     }
     const inSection = (section: string | null) => !!section && location.pathname.startsWith(section);
 
+    // Declared before useFocusOnNavigation, which then sees focus already placed and leaves it.
+    const focusSearch = (location.state as HeaderLocationState)?.focusSearch === true;
+    useEffect(() => {
+        if (!focusSearch) return;
+        const input = searchInputRef.current;
+        input?.focus({preventScroll: true});
+        input?.setSelectionRange(input.value.length, input.value.length);
+    }, [focusSearch]);
+    useFocusOnNavigation();
+
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
             if (location.pathname === "/") {
                 setWrittenQuery(raw.trim() ? raw : "");
                 setSearchParams((current) => withSearchQuery(current, raw), {replace: true});
             } else if (raw.trim()) {
-                navigate(`/?q=${encodeURIComponent(raw.trim())}`);
+                navigate(`/?q=${encodeURIComponent(raw.trim())}`, {state: {focusSearch: true} satisfies HeaderLocationState});
             }
             // else: not on "/" and nothing typed — nothing to do, don't navigate for an empty box.
         }, SEARCH_DEBOUNCE_MS);
@@ -91,15 +118,30 @@ export function Header() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [raw]);
 
+    // The drawer is a disclosure (like AccountMenu), not a modal: the page below stays live. Opening
+    // it moves focus to its first link; Escape closes it and returns focus to ☰; a click outside
+    // it, or Tab moving focus out of it, just closes it (Phase 34).
     useEffect(() => {
         if (!isMenuOpen) return;
+
+        drawerRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+        const inMenu = (node: EventTarget | null) =>
+            node instanceof Node && (!!drawerRef.current?.contains(node) || !!menuButtonRef.current?.contains(node));
 
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key !== "Escape") return;
             setIsMenuOpen(false);
             menuButtonRef.current?.focus();
         };
+        const onPointerDown = (e: PointerEvent) => {
+            if (!inMenu(e.target)) setIsMenuOpen(false);
+        };
+        const onFocusIn = (e: FocusEvent) => {
+            if (!inMenu(e.target)) setIsMenuOpen(false);
+        };
         document.addEventListener("keydown", onKeyDown);
+        document.addEventListener("pointerdown", onPointerDown);
+        document.addEventListener("focusin", onFocusIn);
 
         // The drawer is phone-only content (Phase 31: tablet shows the nav inline); if a resize (or
         // rotation) crosses into tablet, the inline nav takes over and a stuck-open drawer would double up.
@@ -111,6 +153,8 @@ export function Header() {
 
         return () => {
             document.removeEventListener("keydown", onKeyDown);
+            document.removeEventListener("pointerdown", onPointerDown);
+            document.removeEventListener("focusin", onFocusIn);
             tabletUp.removeEventListener("change", onTabletUp);
         };
     }, [isMenuOpen]);
@@ -125,6 +169,7 @@ export function Header() {
 
     return (
         <header className="siteHeader">
+            <a className="skipLink" href={`#${MAIN_CONTENT_ID}`} onClick={skipToContent}>Skip to content</a>
             <div className="siteHeaderInner">
                 {/* Phone only, first in the row as in the mobile mockup (Phase 32). */}
                 <button
@@ -157,7 +202,7 @@ export function Header() {
 
                 <label className="siteSearch" htmlFor={searchId}>
                     <Search className="siteSearchIcon"/>
-                    <input id={searchId} {...searchInputProps}/>
+                    <input ref={searchInputRef} id={searchId} {...searchInputProps}/>
                     {raw && (
                         <button type="button" className="siteSearchClear" onClick={() => setRaw("")} aria-label="Clear search">
                             <Close width={12} height={12}/>
@@ -178,7 +223,7 @@ export function Header() {
             </div>
 
             {isMenuOpen && (
-                <div id={drawerId} className="mobileDrawer" role="dialog" aria-modal="true" aria-label="Menu">
+                <div ref={drawerRef} id={drawerId} className="mobileDrawer">
                     <nav className="mobileNav" aria-label="Primary">
                         {NAV_LINKS.map(({to, label, end, section}) => (
                             <NavLink key={to} to={to} end={end} onClick={closeMenu} className={({isActive}) => mobileNavLinkClass({isActive: isActive || inSection(section)})}>

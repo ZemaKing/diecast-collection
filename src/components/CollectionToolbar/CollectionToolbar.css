@@ -78,14 +78,14 @@
 
 .filterTrigger[open] .filterTriggerSummary {
     color: var(--color-text);
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
 }
 
 /* A trigger with a selection is highlighted like the mockup's "Manufacturer: Ixo" (Phase 30). */
 .filterTriggerActive .filterTriggerSummary {
     color: var(--color-text);
     background: var(--color-accent-soft);
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
 }
 
 .filterTriggerChevron {
@@ -222,7 +222,7 @@
 .viewModeButtonActive,
 .viewModeButtonActive:hover {
     color: var(--color-accent-text);
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
     background: var(--color-accent-soft);
 }
 
@@ -352,6 +352,11 @@
     font-weight: var(--weight-semibold);
 }
 
+/* Selected is shown by a check, not only by the faint fill and weight (Phase 34). */
+.categoryPillCheck {
+    flex: none;
+}
+
 /* Color: swatches, Multi as a conic gradient (ColorCircle) ------------------ */
 
 .colorSwatches {
@@ -385,7 +390,7 @@
 }
 
 .colorSwatchButtonSelected .circle {
-    outline: var(--border-width-strong) solid var(--color-accent);
+    outline: var(--border-width-strong) solid var(--state-selected-border);
     outline-offset: 2px;
 }
 
@@ -463,6 +468,7 @@
 }
 
 .sheetTitle {
+    margin: 0;
     color: var(--color-text);
     font-size: var(--text-lg);
     font-weight: var(--weight-bold);
@@ -573,7 +579,7 @@
 /* The active "Filters" button is gold-outlined, like the mockup. */
 .filtersToggleActive {
     background: var(--color-accent-soft);
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
 }
 
 @media (min-width: 1024px) {

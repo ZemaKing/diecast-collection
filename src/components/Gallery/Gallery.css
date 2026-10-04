@@ -202,7 +202,7 @@
 .galleryThumbActive,
 .galleryThumbActive:hover {
     opacity: 1;
-    border-color: var(--color-accent);
+    border-color: var(--state-selected-border);
 }
 
 .galleryThumb img {

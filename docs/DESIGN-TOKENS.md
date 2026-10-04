@@ -10,7 +10,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
   - no new hard-coded colors outside `styles.css`. Existing debt in `Header` is capped and may only go down (`DetailsModal` was deleted in Phase 20, `landing-page` earlier);
   - breakpoints stay in sync with `breakpoints.ts`;
   - every category in the data has a dark and a light color token.
-- `src/styles/contrast.test.ts` enforces ≥ 4.5:1 for every text token on every surface, in both themes.
+- `src/styles/contrast.test.ts` enforces ≥ 4.5:1 for every text token on every surface, in both themes, and ≥ 3:1 for the non-text cues (focus ring, chart bars, `--state-selected-border`). Accessibility as a whole: `docs/accessibility.md`.
 - Prefer **semantic** tokens (`--color-surface`, `--color-text-muted`) over raw values. Legacy names (`--bg`, `--panel`, `--muted`, …) are aliases for pre-redesign components; don't use them in new code. They are removed in Phase 36.
 
 ## Token groups
@@ -22,7 +22,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 | Borders | `--color-border-subtle`, `--color-border`, `--color-border-strong`, `--border-width(-strong)` | Translucent hairlines |
 | Accent | `--color-accent` (+`-hover`, `-active`, `-soft`), `--color-accent-text`, `--color-on-accent` | Gold. Use `-accent` for fills and borders, `-accent-text` for gold text/icons, and `-on-accent` for text on a gold fill |
 | Feedback | `--color-success`, `-info`, `-warning`, `-danger` | "Collected" green / "Near Mint" blue from the details mockup |
-| States | `--state-hover`, `--state-active`, `--state-selected-bg`, `--state-selected-border`, `--state-disabled-opacity`, `--focus-ring`, `--focus-ring-color` | Hover/active are overlays that work on any surface. A global `:focus-visible` uses `--focus-ring` |
+| States | `--state-hover`, `--state-active`, `--state-selected-bg`, `--state-selected-border`, `--state-disabled-opacity`, `--focus-ring`, `--focus-ring-color` | Hover/active are overlays that work on any surface. A global `:focus-visible` uses `--focus-ring`. **`--state-selected-border` is for every selected/current cue drawn as a line** (nav underline, active tab, active filter, current thumbnail, selected swatch ring): gold in dark, `--color-accent-text` in light, since raw `--color-accent` is 1.6:1 on white (Phase 34) |
 | Elevation | `--shadow-sm/md/lg`, `--shadow-color`, `--color-overlay`, `--color-scrim-strong`, `--color-on-scrim(-muted)`, `--color-scrim-control(-hover)` (lightbox — theme-independent, the scrim is black in both) | |
 | Category | `--cat-rally`, `-racing`, `-supercar`, `-premium`, `-retro`, `--cat-fallback` | Keyed by **slug** (`categorySlug()` in `src/utils/category.ts`). Truck-only slugs are removed in Phase 11 |
 | Typography | `--font-sans`, `--text-2xs … --text-3xl`, `--text-display`, `--weight-*`, `--leading-*`, `--tracking-*` | `--text-display` is fluid (`clamp`) for the hero |
@@ -30,7 +30,8 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 | Radius | `--radius-xs` (4) … `--radius-xl` (20), `--radius-pill`, `--radius-round` | |
 | Motion | `--duration-instant/fast/base/slow/slower`, `--ease-standard/emphasized/exit` | All durations → `0ms` under `prefers-reduced-motion` |
 | Layers | `--z-base`, `--z-sticky`, `--z-dropdown`, `--z-modal`, `--z-lightbox`, `--z-toast` | |
-| Layout | `--container-max`, `--container-gutter`, `--header-height`, `--tap-target` (44px), `--card-min-width` (220px) | `--card-min-width` is the collection grid's `auto-fill` column floor (Phase 17) |
+| Layout | `--container-max`, `--container-gutter`, `--header-height`, `--tap-target` (44px), `--target-min` (24px), `--card-min-width` (220px) | `--card-min-width` is the collection grid's `auto-fill` column floor (Phase 17). `--tap-target` is the touch aim, `--target-min` the WCAG 2.2 AA floor for any pointer target (Phase 34) |
+| Logos | `--logo-shipped-filter` | `none` in dark, `brightness(0.5)` in light: the 64 shipped brand/manufacturer SVGs are fixed `#A9B1BF` (2:1 on white → ≈ 7:1). Applied in `styles.css` to `img[src^="/brands/"]` and `img[src^="/manufacturers/"]`; uploaded logos are untouched (Phase 34) |
 | Hero | `--hero-glow`, `--hero-sheen`, `--hero-art-opacity` | Collection hero backdrop, per theme (Phase 17) |
 | Charts | `--chart-bar`, `--chart-track` | Statistics bars/columns/meter fill (one hue, ≥ 3:1 on every surface — tested) and the meter's unfilled track (Phase 23) |
 
@@ -124,3 +125,5 @@ Generated from `styles.css`, and enforced by `src/styles/contrast.test.ts`. ⚠ 
 | `--color-on-accent` on `--color-accent` | `#0a1220` / `#f5c33b` | 11.38 | | | |
 
 Focus ring vs page (non-text, needs ≥ 3:1): dark `#f5c33b` 11.61:1 · light `#8a6100` 5.08:1.
+
+Selected-state indicators (`--state-selected-border`, non-text, ≥ 3:1 on every surface): dark `#f5c33b` ≥ 9.55:1 · light `#8a6100` ≥ 4.54:1.

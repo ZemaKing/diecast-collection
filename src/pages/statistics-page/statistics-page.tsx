@@ -18,10 +18,12 @@ import {BROWSE_LABELS, browseIndexPath, browsePath} from "../../utils/browse-lin
 import {colorSwatchHex} from "../../utils/color.ts";
 import {pluralizeModels} from "../../utils/collection-summary.ts";
 import {logoSrc} from "../../utils/model-display.ts";
+import {MAIN_CONTENT_ID} from "../../utils/a11y.ts";
 
 import "../collection-page/collection-page.css";
 import "./statistics-page.css";
 import {EmptyState, ErrorState, Skeleton} from "../../components/States/States.tsx";
+import {usePageTitle} from "../../hooks/usePageTitle.ts";
 
 // How many brands/manufacturers the ranked lists show before "See all".
 const TOP_N = 10;
@@ -37,6 +39,7 @@ function filterPath(key: "category" | "color", slug: string): string {
 // a meter (one share of a whole), everything else compares magnitudes with single-hue bars.
 // No pie charts, no per-color bars: the color chart's identity is its real swatch beside the name.
 export function StatisticsPage() {
+    usePageTitle("Statistics");
     const modelsQuery = useQuery(modelSummariesQuery);
     // Same query key as the Color filter's, so the swatches are usually already cached.
     const colorsQuery = useQuery({queryKey: ["colors"], queryFn: getColors});
@@ -55,7 +58,7 @@ export function StatisticsPage() {
             <Header/>
 
             <div className="content">
-                <main className="main">
+                <main id={MAIN_CONTENT_ID} tabIndex={-1} className="main">
                     <PageIntro
                         eyebrow="Statistics"
                         title="The collection in numbers"
