@@ -495,8 +495,7 @@
         display: none;
     }
 
-    /* The drawer's own search box and social links are for phones only — tablet has them inline. */
-    .siteSearchMobile,
+    /* The drawer's own social links are for phones only — tablet has them inline. */
     .mobileSocial {
         display: none;
     }

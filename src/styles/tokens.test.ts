@@ -34,17 +34,12 @@ describe("token references", () => {
 });
 
 describe("no new hard-coded colors outside styles.css", () => {
-    // Pre-redesign debt, removed as those components are rebuilt. Lower these, never raise them.
-    const ALLOWED: Record<string, number> = {
-        "../components/Header/Header.css": 2,
-    };
     const COLOR = /#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/g;
 
     it.each(sourceFiles.filter(([path]) => /\.(css|tsx)$/.test(path) && !path.endsWith("styles.css")))(
         "%s",
-        (path, content) => {
-            const count = (content.match(COLOR) ?? []).length;
-            expect(count, "use a token from styles.css instead").toBeLessThanOrEqual(ALLOWED[path] ?? 0);
+        (_path, content) => {
+            expect(content.match(COLOR) ?? [], "use a token from styles.css instead").toEqual([]);
         },
     );
 });

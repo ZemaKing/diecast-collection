@@ -5,7 +5,7 @@ import {chainable} from "./chainable.test-data.ts";
 const from = vi.fn();
 vi.mock("../lib/supabase.ts", () => ({supabase: {from: (...args: unknown[]) => from(...args)}}));
 
-const {getDraftModels, getModelBySlug, getModels, getRecentlyAddedModels} = await import("./models.ts");
+const {getDraftModels, getModelBySlug, getModels} = await import("./models.ts");
 const {SUMMARY_COLUMNS} = await import("./mappers.ts");
 
 const summaryRow = {
@@ -49,7 +49,7 @@ const summaryRow = {
     image_count: 1,
 };
 
-describe("getModels / getRecentlyAddedModels", () => {
+describe("getModels / getDraftModels", () => {
     beforeEach(() => {
         from.mockReset();
     });
@@ -59,11 +59,6 @@ describe("getModels / getRecentlyAddedModels", () => {
         from.mockReturnValue(published);
         await getModels();
         expect(published.calls).toContainEqual(["eq", ["is_published", true]]);
-
-        const recent = chainable({data: [summaryRow], error: null});
-        from.mockReturnValue(recent);
-        await getRecentlyAddedModels();
-        expect(recent.calls).toContainEqual(["eq", ["is_published", true]]);
     });
 
     it("getDraftModels asks for unpublished models only", async () => {
@@ -84,13 +79,6 @@ describe("getModels / getRecentlyAddedModels", () => {
         expect(query.calls).toContainEqual(["select", [SUMMARY_COLUMNS]]);
         expect(models).toHaveLength(1);
         expect(models[0]!.slug).toBe(summaryRow.slug);
-    });
-
-    it("getRecentlyAddedModels reads model_summaries too", async () => {
-        from.mockReturnValue(chainable({data: [summaryRow], error: null}));
-        const models = await getRecentlyAddedModels(5);
-        expect(from).toHaveBeenCalledWith("model_summaries");
-        expect(models).toHaveLength(1);
     });
 
     it("surfaces a Supabase error as an AppError", async () => {

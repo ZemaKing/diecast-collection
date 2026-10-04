@@ -268,7 +268,7 @@ Phase 7's importer must print exactly these numbers, and Phase 8 verifies them. 
 **Keep SVGs in `public/`; store the path.** `logo_path = '/brands/<Name>.svg'` / `'/manufacturers/<Name>.svg'` exactly as the files are named today, including `Citroën.svg`, `Škoda.svg` and `Leo Models.svg`. The UI applies `encodeURI()` when rendering.
 - No file renames, and no risk of breaking the current app during migration.
 - All 45 brands and 19 manufacturers have a logo file (checked).
-- `Corvette.svg` becomes unused after the merge; it's removed in Phase 36 with the truck-only logos.
+- `Corvette.svg` became unused after the merge; it was removed in Phase 36 with the truck-only logos (the owner kept Alfa Romeo, Volvo and Zastava for possible future cars).
 - **Uploaded logos (Phase 28):** the admin's brand/manufacturer dialog uploads to the public bucket **`lookup-logos`** (migration `20261002090000`; admin-only writes, 256 KB, SVG/WebP/PNG) at `{brands|manufacturers}/{slug}-{12 hex}.{svg|webp}` — a new key per upload, never overwritten — and stores that key in `logo_path`. `resolveLogoUrl()` (`src/services/image-url.ts`): `/…` → `encodeURI` (public/), a `scheme:` URL → as is, anything else → the bucket's public URL. A replaced or removed uploaded logo's file is deleted after the row is written; files in `public/` are never touched by the app.
 
 ## 8. Mockup fields → schema

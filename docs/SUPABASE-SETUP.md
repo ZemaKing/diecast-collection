@@ -8,7 +8,7 @@ How the app connects to Supabase, and the one-time steps only the owner can do.
 | --- | --- |
 | Project | Dedicated project **`zemaking-diecast-car-collection`** in the owner's **second** Supabase account (signed in with the second GitHub account). The main account's two free slots stay with recipes and games |
 | Schema | All app objects live in the Postgres schema **`diecast`**, not `public`. The client uses `db: { schema: 'diecast' }` (`src/lib/supabase.ts`). This keeps a future move (`pg_dump --schema=diecast`) or sharing trivial. The schema must be listed under **Data API → Exposed schemas** |
-| Environments | Hosted project for development and production. The second account's remaining free slot is for the **E2E test project** (Phase 35). The **local Docker stack** (`npm run db:start`) is optional, and is the place to test migrations from scratch before pushing (Phase 6) |
+| Environments | One hosted project for development, production and the E2E suite. There is **no separate test project** (owner's decision, Phase 35): `npm run test:e2e` is read-only against it, and blocks any write. The **local Docker stack** (`npm run db:start`) is optional, and is the place to test migrations from scratch before pushing (Phase 6) |
 | Migrations | Source of truth: `supabase/migrations/*.sql`. **The Phase 6 migrations were applied by hand in the dashboard SQL editor (2026-09-27)** because the owner prefers the web UI. Future migrations are applied the same way, in filename order, and the ROADMAP phase records which files ran. If the CLI is ever linked, first run `npx supabase migration repair --status applied 20260927140000 20260927140100 20260927140200` (plus any later versions already applied), or `db push` would try to re-run them. The GitHub integration "Deploy to production" remains an option later; it needs the CLI history repaired first |
 | Client | One client in `src/lib/supabase.ts`. Only `src/lib` and `src/services` may import `@supabase/supabase-js` (ESLint rule in Phase 9). Own `storageKey` (`zk-diecast-auth`) |
 | Keys in the browser | Only the **anon / publishable** key (`VITE_SUPABASE_ANON_KEY`). `src/lib/env.ts` throws on a secret or service_role key, and `postbuild` fails the build if one reaches `dist/` |
@@ -68,7 +68,7 @@ Project Settings → **Data API → Exposed schemas** includes `diecast` (done 2
 Bucket `model-images` (public read, admin-only writes, WebP/PNG/JPEG up to 5 MB) is created by migration `20260930120000_diecast_storage.sql`. Moving the images there is a local, service-role run: see [`scripts/migrate-images/README.md`](../scripts/migrate-images/README.md) (upload → verify → flip, and the rollback).
 
 ### 7. Vercel (Phase 10 / 37)
-Add the same two `VITE_` variables to Vercel when the site starts reading from Supabase (Phase 10). Until then production doesn't need them: nothing in the shipped UI imports the client.
+Vercel needs the same two `VITE_` variables (Project Settings → Environment Variables, for Production and Preview). The UI reads every model from Supabase (since Phase 10), so a deploy without them doesn't load: `src/lib/supabase.ts` refuses to start without a valid URL and public key. Nothing else (no service-role key, no `RLS_*`) belongs in Vercel.
 
 ## Scripts
 

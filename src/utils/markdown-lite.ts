@@ -141,15 +141,6 @@ export function parseInline(text: string): Inline[] {
     return out;
 }
 
-// Plain text of a description (cards, meta tags, the checklist): markers removed.
-export function markdownLiteToText(source: string): string {
-    const inline = (nodes: Inline[]): string =>
-        nodes.map((n) => (n.type === "text" ? n.text : n.type === "break" ? " " : inline(n.children))).join("");
-    return parseMarkdownLite(source)
-        .map((b) => (b.type === "paragraph" ? inline(b.children) : b.items.map(inline).join(" ")))
-        .join(" ");
-}
-
 // ---- editor toolbar ---------------------------------------------------------------------------
 
 export type MarkdownFormat = "bold" | "italic" | "bullet" | "numbered" | "link";

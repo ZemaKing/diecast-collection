@@ -8,7 +8,6 @@
      1. Theme-independent scales (spacing, radius, type, motion, z-index)
      2. Semantic color tokens, dark (default) — sampled from the mockups
      3. Semantic color tokens, light (derived — no light mockup exists)
-     4. Legacy aliases for pre-redesign components (removed in Phase 36)
 
    Breakpoints (CSS can't use var() inside @media — keep in sync with
    src/styles/breakpoints.ts; a test enforces it):
@@ -257,39 +256,6 @@
         --duration-slow: 0ms;
         --duration-slower: 0ms;
     }
-}
-
-/* ---- 4. Legacy aliases (pre-redesign names) ------------------------------
-   Existing components use these. They now resolve to the new palette so the
-   whole app moves together; delete each once nothing references it (Phase 36).
-   (data-theme lives on <html> = :root, so these resolve per theme.) */
-:root {
-    --bg: var(--color-bg);
-    --panel: var(--color-surface);
-    --panel2: var(--color-surface-sunken);
-    --panel-alt: var(--color-surface-hover);
-    --panel-alt-hover: var(--color-surface-raised);
-    --modal-bg: var(--color-surface-raised);
-    --text: var(--color-text);
-    --muted: var(--color-text-muted);
-    --border: var(--color-border);
-    --border-soft: var(--color-border-subtle);
-    --overlay: var(--color-overlay);
-    --pill-accent: var(--color-accent-text);
-    --pill-accent-hover-bg: var(--color-accent-soft);
-    --surface-1: var(--state-hover);
-    --surface-2: var(--state-hover);
-    --surface-3: var(--state-active);
-    --input-bg: var(--color-surface-sunken);
-}
-
-/* legacy green "Clear" button accent — replaced by the toolbar in Phase 13 */
-:root {
-    --accent: #6fd768;
-}
-
-[data-theme="light"] {
-    --accent: #3fae44;
 }
 
 /* ---- Base --------------------------------------------------------------- */

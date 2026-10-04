@@ -3,7 +3,7 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {describe, expect, it} from "vitest";
 
 import {MarkdownLite} from "../components/MarkdownLite/MarkdownLite.tsx";
-import {applyMarkdownFormat, markdownLiteToText, parseInline, parseMarkdownLite, safeHref} from "./markdown-lite.ts";
+import {applyMarkdownFormat, parseInline, parseMarkdownLite, safeHref} from "./markdown-lite.ts";
 
 const html = (source: string) => renderToStaticMarkup(createElement(MarkdownLite, {source}));
 
@@ -87,12 +87,6 @@ describe("<MarkdownLite> — XSS (ROADMAP Phase 26 verification)", () => {
             '<div class="markdownLite"><p><strong>Bold</strong> and <em>it</em></p><ul><li>one</li><li>two</li></ul>' +
             '<p><a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow">site</a></p></div>',
         );
-    });
-});
-
-describe("markdownLiteToText", () => {
-    it("strips the markers", () => {
-        expect(markdownLiteToText("The **C8** is *new*.\n\n- Fast\n- [Loud](https://x.com)")).toBe("The C8 is new. Fast Loud");
     });
 });
 

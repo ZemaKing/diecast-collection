@@ -1,6 +1,6 @@
 // Test-only: derives ModelSummary[] fixtures from the real src/data/car-models.json, so
-// collection-query tests exercise the same shape and distribution the services layer will once
-// Phase 10 switches the UI to Supabase. Mirrors the importer's brand merge and slugging
+// the pure services tests (collection-query, browse, stats) exercise the real shape and distribution
+// of the collection as imported on 2026-09-28. Mirrors the importer's brand merge and slugging
 // (scripts/import/transform.ts), not its full alias/validation pipeline — good enough for pure
 // query-logic tests. Filename doesn't end in .test.ts so Vitest doesn't try to run it as a suite.
 import carModels from "../data/car-models.json";

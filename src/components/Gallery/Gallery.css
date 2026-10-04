@@ -20,11 +20,6 @@
     overflow: hidden;
 }
 
-.gallery-page .galleryFrame {
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
-}
-
 .galleryStage {
     position: absolute;
     inset: 0;
@@ -73,16 +68,6 @@
     align-items: flex-start;
     padding: var(--space-md);
     pointer-events: none;
-}
-
-.gallery-page .galleryBadges .manufacturerBadge img {
-    height: 32px;
-    max-width: 140px;
-}
-
-.gallery-page .galleryBadges .scaleBadge {
-    font-size: var(--text-sm);
-    padding: var(--space-xs) var(--space-md);
 }
 
 .galleryNav,

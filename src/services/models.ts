@@ -23,19 +23,6 @@ export async function getDraftModels(): Promise<ModelSummary[]> {
     return rows.map(mapModelSummary);
 }
 
-export async function getRecentlyAddedModels(limit = 8): Promise<ModelSummary[]> {
-    const rows = await unwrap(
-        supabase
-            .from("model_summaries")
-            .select(SUMMARY_COLUMNS)
-            .eq("is_published", true)
-            .order("added_at", {ascending: false, nullsFirst: false})
-            .order("name")
-            .limit(limit),
-    );
-    return rows.map(mapModelSummary);
-}
-
 // Four queries instead of one deep embed: `model_colors`/`model_images`/`model_tags` all carry an
 // FK to `models` AND to the `model_summaries` view (same FK name on both, since the view exposes
 // the same id), which makes PostgREST's embed resolution ambiguous from `models`. Fetching them

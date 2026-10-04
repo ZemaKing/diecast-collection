@@ -12,15 +12,11 @@ import "./tokens-page.css";
 
 const ALL_TOKENS = [...new Set([...tokensCss.matchAll(/^\s*(--[\w-]+)\s*:/gm)].map((m) => m[1]))];
 
-const LEGACY = new Set(["--bg", "--panel", "--panel2", "--panel-alt", "--panel-alt-hover", "--modal-bg", "--text",
-    "--muted", "--border", "--border-soft", "--overlay", "--pill-accent", "--pill-accent-hover-bg", "--surface-1",
-    "--surface-2", "--surface-3", "--input-bg", "--accent"]);
-
 // Tokens that are backgrounds/lines, not text — a contrast ratio against the page is meaningless.
 const NON_TEXT = /bg|surface|border|overlay|scrim|soft|inverse|on-accent|subtle|^--color-accent(-hover|-active)?$/;
 
 const byPrefix =(...prefixes: string[]) =>
-    ALL_TOKENS.filter((t) => !LEGACY.has(t) && prefixes.some((p) => t.startsWith(p)));
+    ALL_TOKENS.filter((t) => prefixes.some((p) => t.startsWith(p)));
 
 function readTokens() {
     const root = document.documentElement;

@@ -1,7 +1,6 @@
 import {describe, expect, it} from "vitest";
 
 import carModelsData from "../data/car-models.json";
-import type {DiecastModel} from "../types.ts";
 import {getSwatchBackground} from "./color.ts";
 
 describe("getSwatchBackground", () => {
@@ -22,14 +21,14 @@ describe("getSwatchBackground", () => {
         );
     });
 
-    // Current (unguarded) behavior — Phase 16 may add a fallback.
+    // Unguarded on purpose: an empty livery is allowed, so every caller skips the swatch when it's empty.
     it("yields an empty gradient for an empty array", () => {
         expect(getSwatchBackground([])).toBe("conic-gradient()");
     });
 });
 
 describe("hex data on the real dataset", () => {
-    const cars = carModelsData as DiecastModel[];
+    const cars = carModelsData as {color: string[]; hex?: string[]}[];
 
     it("every car has 1–4 hex values, independent of how many color names it has", () => {
         const hexLengths = cars.map((m) => m.hex?.length ?? 0);

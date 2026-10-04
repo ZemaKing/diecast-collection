@@ -9,16 +9,14 @@ export function ThemeToggle() {
     const label = isDark ? "Switch to light theme" : "Switch to dark theme";
 
     return (
-        <div className="countPill countPillTotal">
-            <button
-                type="button"
-                className="linkPill themeToggle"
-                onClick={toggleTheme}
-                aria-label={label}
-                title={label}
-            >
-                {isDark ? <Sun/> : <Moon/>}
-            </button>
-        </div>
+        <button
+            type="button"
+            className="themeToggle"
+            onClick={toggleTheme}
+            aria-label={label}
+            title={label}
+        >
+            {isDark ? <Sun/> : <Moon/>}
+        </button>
     );
 }

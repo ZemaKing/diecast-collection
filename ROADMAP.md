@@ -74,7 +74,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 33 | Performance | ✅ Done | Run `supabase/checks/performance.sql` once (EXPLAIN); decide on an 800px image variant (optional) |
 | 34 | Accessibility | ✅ Done | Screen-reader pass by hand (NVDA or VoiceOver); review the light-theme indicator color and darkened logos |
 | 35 | End-to-End Testing | ✅ Done | — (read-only by owner's choice: no test project; admin write journey not in E2E) |
-| 36 | Legacy Cleanup | ⬜ | Explicit approval to delete archives |
+| 36 | Legacy Cleanup | ✅ Done | — (archives kept: deleting `archive/legacy-data/` or the import/verify scripts still needs your explicit approval) |
 | 37 | Production Verification | ⬜ | Vercel env vars; go/no-go |
 
 ### Mapping from the original draft (31–67) to this roadmap
@@ -963,21 +963,25 @@ Protect the major journeys.
 
 ---
 
-## Phase 36 — Legacy Cleanup
+## Phase 36 — Legacy Cleanup ✅
 
 ### Goal
 Remove what the redesign made obsolete — only after everything is verified.
 
 ### Tasks
-- [ ] Remove old components/styles (`Sidebar`, `DetailsModal`, `landing-page`, `countPill` remnants, `CategoryLabel` map), old `types.ts`, dead CSS, unused truck-only brand SVGs, unused deps
-- [ ] Rewrite `CLAUDE.md` and `README.md` (Supabase, admin workflow, env, scripts)
-- [ ] **Keep** `archive/legacy-data/*.json` and import/verify scripts until explicitly approved
+- [x] Remove old components/styles (`Sidebar`, `DetailsModal`, `landing-page`, `countPill` remnants, `CategoryLabel` map), old `types.ts`, dead CSS, unused truck-only brand SVGs, unused deps *(`Sidebar`, `DetailsModal`, `landing-page` and the `CategoryLabel` map were already gone (Phases 11–20). Removed in this phase: `src/types.ts` (`DiecastModel`), along with `src/utils/collection-filters.ts` and its tests. The live pipeline, `collection-query.ts`, has its own characterization tests with the same counts. Also removed: the unused `src/services/index.ts` barrel, `getRecentlyAddedModels()` and `markdownLiteToText()` (never called), the empty and unimported `src/App.css`, ThemeToggle's `countPill`/`linkPill` wrapper, the 18 legacy alias tokens (`--bg`, `--panel`, `--muted`, `--accent`, …), which nothing used, and dead selectors (`.gallery-page …`, `.siteSearchMobile`). `Header.css` no longer had any hard-coded colors, so the color test now allows none anywhere. **In `public/`, with the owner's approval:** `cars-logo.png` + `trucks-logo.png` (1.4 MB) and 15 brand SVGs (`Corvette` plus the truck-only FAP, Iveco, Jelcz, Kamaz, Magirus, MAN, OM, Raba, Star, TAM, Tatra, Torpedo, ZIL, Żubr). **Alfa Romeo, Volvo and Zastava were kept** for possible future cars. There were no unused dependencies. The `supabase` CLI stays for the documented optional `db:*` path)*
+- [x] Rewrite `CLAUDE.md` and `README.md` (Supabase, admin workflow, env, scripts) *(`README.md` replaces the Vite template text. It covers what the app is, setup/env, scripts, the admin workflow, the layout, the docs and deployment. In `CLAUDE.md`, the status header, the data model/categories notes, and the tests and styling notes now match the code, and stale notes were fixed (the "disabled" header search, the legacy type and filters). Also refreshed: `docs/DESIGN-TOKENS.md` (aliases, color ratchet, the two 1280px queries), `docs/SUPABASE-SETUP.md` (no test project; Vercel env vars), `docs/SCHEMA.md` (Corvette logo) and four stale code comments)*
+- [x] **Keep** `archive/legacy-data/*.json` and import/verify scripts until explicitly approved *(kept untouched. So are `src/data/car-models.json` (the import source and test fixture) and the `/cars`, `/trucks` and `?model=` redirects for old links)*
 
 ### Verification
-- [ ] Build/lint/tests/E2E green; bundle smaller; no unreferenced assets
+- [x] Build/lint/tests/E2E green; bundle smaller; no unreferenced assets *(build, lint and typecheck are clean. Unit tests: 822/822 pass (852 − 30 that tested the deleted code). E2E: 48 passed + 1 skipped, as before. `a11y:axe`: no critical/serious violations. `dist/` went from 3.1 MB to 1.6 MB, and CSS is 0.9 kB smaller (raw). JS is unchanged at 200.1 kB gzip: the removed code was already tree-shaken. Every remaining `public/` file is referenced by the app, `index.html`, the manifest or a DB `logo_path`, except the 3 logos the owner chose to keep)*
 
 ### Definition of Done
-No dead code; docs match reality; archives intact.
+No dead code; docs match reality; archives intact. *(Done 2026-10-04)*
+
+**Notes / deviations:**
+- **ThemeToggle markup**: the button is now a direct child of the header actions, without the old wrapper `<div>`. Its size and position are unchanged (checked in the browser and by the E2E/axe runs).
+- Remaining exports that only tests use (`queryClientConfig`, `safeHref`, `decadeOf`, …) are deliberate test seams, not dead code.
 
 ---
 

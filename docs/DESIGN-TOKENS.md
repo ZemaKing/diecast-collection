@@ -7,11 +7,11 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 - Components use `var(--token)` only. No hard-coded colors, spacing, radii, font sizes, shadows or durations.
 - `src/styles/tokens.test.ts` enforces:
   - every `var(--x)` used in `src` is defined;
-  - no new hard-coded colors outside `styles.css`. Existing debt in `Header` is capped and may only go down (`DetailsModal` was deleted in Phase 20, `landing-page` earlier);
+  - no hard-coded colors outside `styles.css` (the last pre-redesign allowance, in `Header`, reached zero in Phase 36);
   - breakpoints stay in sync with `breakpoints.ts`;
   - every category in the data has a dark and a light color token.
 - `src/styles/contrast.test.ts` enforces ≥ 4.5:1 for every text token on every surface, in both themes, and ≥ 3:1 for the non-text cues (focus ring, chart bars, `--state-selected-border`). Accessibility as a whole: `docs/accessibility.md`.
-- Prefer **semantic** tokens (`--color-surface`, `--color-text-muted`) over raw values. Legacy names (`--bg`, `--panel`, `--muted`, …) are aliases for pre-redesign components; don't use them in new code. They are removed in Phase 36.
+- Prefer **semantic** tokens (`--color-surface`, `--color-text-muted`) over raw values.
 
 ## Token groups
 
@@ -46,7 +46,7 @@ Source of truth: [`src/styles/styles.css`](../src/styles/styles.css). Live refer
 
 CSS can't use `var()` inside `@media`, so the numbers are written literally. Write media queries min-width first (mobile-up).
 
-Some pre-redesign files still use other widths: 1280/1500/1800 in the grid and card, 768 on the landing page (and 600 in `DetailsModal`, deleted in Phase 20). Changing them now would move the current layout, so they are converted when those components are rebuilt (Phases 16–17, 20, 11).
+Two deliberate extra widths remain, both `min-width: 1280px` for density only: the card's tighter details padding (`ModelCard.css`) and the model form's four-column rows (`model-form.css`). The grid itself has no column breakpoints (`auto-fill` + `--card-min-width`).
 
 ## Decisions
 

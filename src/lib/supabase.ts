@@ -2,7 +2,7 @@
 // (enforced by ESLint from ROADMAP Phase 9); components go through services.
 //
 // Importing this module validates the env and throws EnvError if it's missing or unsafe —
-// deliberately loud. Nothing in the current UI imports it yet (cars still read JSON until Phase 10).
+// deliberately loud.
 import {createClient} from "@supabase/supabase-js";
 
 import type {Database} from "./database.types.ts";
