@@ -16,7 +16,7 @@ How the app connects to Supabase, and the one-time steps only the owner can do.
 | Secrets in chat | Never paste passwords or secret keys into chat or commit them. The database password is typed only into the CLI prompt |
 | Errors | Everything goes through `toAppError()` (`src/lib/errors.ts`), which gives one of: `network`, `unavailable`, `auth`, `permission`, `not_found`, `conflict`, `validation`, `config`, `unknown` |
 | Types | `src/lib/database.types.ts` is **hand-written from the migrations** in the exact `supabase gen types` format, because the CLI isn't linked. `npm run verify:types` checks every column against the live DB (as admin). Update it with every migration, or regenerate with `npm run db:types` once the CLI is linked |
-| Free-plan pause | The project pauses after about 7 days without traffic, and the site then shows the "temporarily unavailable" state. Decide on a paid plan or a keep-alive before launch (Phase 37, open decision #10) |
+| Free-plan pause | The project pauses after about 7 days without traffic, and the site then shows "The collection is taking a break". **Accepted by the owner (Phase 37)**: restore it from the dashboard when it happens. Steps, the 90-day limit and the alternatives are in `docs/production-verification.md` §4 |
 
 ## Owner steps
 
@@ -83,6 +83,7 @@ Vercel needs the same two `VITE_` variables (Project Settings → Environment Va
 | `npm run images:flip` | Verifies, then points `model_images` at Storage in one transaction (dry run by default; `-- --rollback` undoes it) |
 | `npm run images:verify` | Every image row resolves like the app does and answers HEAD 200; spot checks; `-- --legacy` checks the postimg rollback URLs |
 | `npm run verify:types` | Checks `database.types.ts` columns against the live schema |
+| `npm run backup:export` | Read-only JSON export of every `diecast` table + Storage lists to git-ignored `backups/` (`-- --photos` for the files). Needs `SUPABASE_SERVICE_ROLE_KEY`. See `scripts/backup/README.md` |
 | `npm run db:push` | CLI-only alternative to the SQL editor; **repair the history first** (see Migrations) |
 | `npm run db:types` | Regenerates `src/lib/database.types.ts` for schema `diecast` (`db:types:local` for the Docker stack) |
 | `npm run db:start` / `db:stop` | Starts/stops the optional local stack (Docker). `diecast` is exposed there via `supabase/config.toml` |

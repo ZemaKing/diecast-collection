@@ -24,6 +24,10 @@ fails the test that sent it, so a write test can't slip in by accident. Nothing 
   tree) in `test-results/e2e/<test>/`. Open a trace with
   `npx playwright show-trace test-results/e2e/<test>/trace.zip`. There are no retries, so a flaky
   test shows up instead of being hidden.
+- **Against a deployed site** (Phase 37): `E2E_BASE_URL=https://diecast-collection.vercel.app npm run test:e2e`
+  (PowerShell: `$env:E2E_BASE_URL="…"; npm run test:e2e`) skips the local build and tests that URL
+  instead, for a Vercel preview before promoting it or for production after. The site must use the
+  same Supabase project as `.env.local`. The read-only guard still applies.
 - **Needs** the network and the Supabase project awake. A paused free-tier project fails every
   journey with the app's "paused project" error state.
 

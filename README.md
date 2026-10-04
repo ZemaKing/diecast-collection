@@ -44,6 +44,7 @@ More detail, including the owner's one-time Supabase steps, is in [`docs/SUPABAS
 | `npm run verify:rls` | Proves the row-level security and Storage policies as anon, a normal user and the admin. Needs the `RLS_*` logins |
 | `npm run verify:stats` | Recounts every Statistics-page number from the base tables |
 | `npm run verify:model-form` | Runs every model through the admin form's save path as a dry run |
+| `npm run backup:export` | Read-only export of every table (and with `-- --photos`, every Storage file) to the git-ignored `backups/` folder. See [`scripts/backup/README.md`](scripts/backup/README.md) |
 | `npm run icons` | Regenerates the PWA icons and favicon from `public/favicon.svg` |
 
 The one-time migration tools are kept for reference and rollback: `import:cars` and `verify:migration` (JSON → Supabase, see [`scripts/import/README.md`](scripts/import/README.md)), and `images:*` (postimg → Storage, see [`scripts/migrate-images/README.md`](scripts/migrate-images/README.md)). **Don't run `npm run import:cars -- --apply` again**: it would overwrite edits made in the admin UI with the frozen JSON snapshot.
@@ -90,3 +91,5 @@ archive/        retired data (the old truck gallery's JSON), not used by the app
 ## Deployment
 
 Vercel builds with `npm run build` and serves `dist/`. `vercel.json` rewrites every path to the SPA and caches the hashed `/assets/*` files for a year. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the Vercel project. Nothing else belongs there.
+
+Production is https://diecast-collection.vercel.app. Every push to `main` deploys it. The release gate (check a preview first), the rollback plan and the backup routine are in [`docs/production-verification.md`](docs/production-verification.md).

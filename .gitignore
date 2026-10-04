@@ -36,3 +36,6 @@ yarn.lock
 /test-results
 /playwright-report
 /blob-report
+
+# Database exports (Phase 37) — contain private notes; never commit
+/backups

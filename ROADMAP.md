@@ -75,7 +75,7 @@ React components ─► hooks / URL state ─► src/services (repositories) ─
 | 34 | Accessibility | ✅ Done | Screen-reader pass by hand (NVDA or VoiceOver); review the light-theme indicator color and darkened logos |
 | 35 | End-to-End Testing | ✅ Done | — (read-only by owner's choice: no test project; admin write journey not in E2E) |
 | 36 | Legacy Cleanup | ✅ Done | — (archives kept: deleting `archive/legacy-data/` or the import/verify scripts still needs your explicit approval) |
-| 37 | Production Verification | ⬜ | Vercel env vars; go/no-go |
+| 37 | Production Verification | 🟡 Awaiting owner | Approve pushing a preview branch, then `main`; the signed-in run (login/create/edit/upload/delete); go/no-go |
 
 ### Mapping from the original draft (31–67) to this roadmap
 
@@ -985,20 +985,20 @@ No dead code; docs match reality; archives intact. *(Done 2026-10-04)*
 
 ---
 
-## Phase 37 — Production Verification
+## Phase 37 — Production Verification 🟡
 
 ### Goal
 Confirm the live site against Supabase across devices.
 
 ### Tasks
-- [ ] Vercel env vars set; preview deploy verified before promoting to production
-- [ ] Checklist on Desktop / Tablet / Mobile: collection load, search, filters, sort, details, gallery, login, create, edit, delete, image upload, direct URLs + refresh, 404
-- [ ] Re-run `verify-rls.mjs` against production with the anon key; confirm no service-role key in the built bundle
-- [ ] **Free-tier pause mitigation** (paid plan or scheduled keep-alive), backups/export routine, rollback plan (previous Vercel deploy + JSON archive)
-- [ ] Clean up any throwaway records created during testing
+- [ ] Vercel env vars set; preview deploy verified before promoting to production *(env vars: ✅ production is live at https://diecast-collection.vercel.app against the right project (`gduqlrdjbhiftwzamtoe`). Deploys use the Git integration: every push to `main` goes to production. **Pending:** push a branch with Phases 36–37, check its preview (`E2E_BASE_URL=<preview> npm run test:e2e` now supports this), then push `main`. Waiting for the owner's go-ahead to push)*
+- [ ] Checklist on Desktop / Tablet / Mobile: collection load, search, filters, sort, details, gallery, login, create, edit, delete, image upload, direct URLs + refresh, 404 *(public journeys ✅ on production: the full E2E suite (desktop + Pixel 7, 48 passed / 1 skipped) and tablet by hand in the browser pane. **Pending, owner signed in by hand:** login → create (draft) → upload → edit → delete. Steps are in `docs/production-verification.md` §3)*
+- [x] Re-run `verify-rls.mjs` against production with the anon key; confirm no service-role key in the built bundle *(`verify:rls` 133/133 (production uses the same project and anon key). `check-bundle-secrets.mjs` now takes `--url` and crawled the live site: 12 files, clean, including a check for the literal key. Also green against production: `verify:types` 13/13, `verify:stats` 97/97, `verify:model-form` 229/229, `images:verify` all 454 files)*
+- [x] **Free-tier pause mitigation** (paid plan or scheduled keep-alive), backups/export routine, rollback plan (previous Vercel deploy + JSON archive) *(pause: **accepted by the owner**; the restore steps and the 90-day limit are documented. Backups: new `npm run backup:export` (read-only, service role; tables + Storage lists, `--photos` for the files). First full backup taken (229 models, 454 files, 33 MB, git-ignored `backups/`). Restore notes are in `scripts/backup/README.md`. Rollback plan per failure type: `docs/production-verification.md` §6)*
+- [ ] Clean up any throwaway records created during testing *(checked read-only: no `zz-*`/test rows in any table, no orphan or `zz-rls/` Storage files. The two drafts (Plymouth GTX, Mazda RX-7) are real models in progress, per the owner. Recheck after the owner's signed-in run)*
 
 ### Verification
-- [ ] Signed checklist in `docs/production-verification.md`
+- [ ] Signed checklist in `docs/production-verification.md` *(written; the automated part is signed. The preview/promotion, the owner run and go/no-go rows are open)*
 
 ### Definition of Done
 Owner go/no-go recorded; site stable on Supabase.
@@ -1018,6 +1018,6 @@ Owner go/no-go recorded; site stable on Supabase.
 | 7 | Heart / "Add to Collection" — what should they mean on a single-owner site? *(Phase 19 ships without them.)* Breadcrumb "model line" level — wanted? *(no data; crumb is `Collection › Brand › Model`)* | Ph 20 |
 | 8 | ~~Corvette / scale~~ → **merge Corvette into Chevrolet**; **all 227 are 1:43** (Phase 4) | Ph 4 / 7 |
 | 9 | ~~npm or pnpm~~ → **npm** (decided in Phase 2) | Ph 2 |
-| 10 | Supabase plan (free projects pause after inactivity) — pay, or keep-alive ping? *Project is on the free plan (second account); decide before launch* | Ph 5 / 37 |
+| 10 | ~~Supabase plan — pay, or keep-alive ping?~~ → **stay on Free and accept pausing** (owner, Phase 37); restore from the dashboard when it happens | Ph 5 / 37 |
 | 11 | Assets: header logo (SVG preferred), hero background image | Ph 12, 17 |
 | 12 | **D15**: manufacturer "DTM" (3 BMW/Mercedes models) is a race series, not a model maker. Keep, or give the real manufacturers? | Ph 7 |
