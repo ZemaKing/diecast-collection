@@ -1,0 +1,38 @@
+name: Supabase keep-alive
+
+# Free-tier Supabase projects are paused after 7 days without activity. This makes one
+# small read-only API request every day so the project never goes idle.
+# Needs two repo secrets (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL       https://<project-ref>.supabase.co
+#   SUPABASE_ANON_KEY  the public anon/publishable key (same value as in .env.local)
+# GitHub turns scheduled workflows off after 60 days with no commits to the repo;
+# re-enable it from the Actions tab if that happens.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set"
+            exit 1
+          fi
+          status=$(curl -sS -o /dev/null -w '%{http_code}' --retry 3 --retry-all-errors \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Accept-Profile: diecast" \
+            "$SUPABASE_URL/rest/v1/models?select=id&limit=1")
+          echo "HTTP $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Unexpected status $status (project paused or misconfigured?)"
+            exit 1
+          fi
